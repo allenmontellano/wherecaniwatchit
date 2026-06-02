@@ -16,9 +16,9 @@ CREATE POLICY "profiles_public_read" ON profiles FOR SELECT USING (TRUE);
 -- All writes go through API routes using the service role, which bypasses RLS.
 
 -- Flags: anyone can submit; only owner or service role can read
-CREATE POLICY "flags_public_insert" ON flags FOR INSERT WITH CHECK (TRUE);
-CREATE POLICY "flags_owner_or_service_read" ON flags FOR SELECT USING (
-  auth.uid() = user_id OR auth.role() = 'service_role'
+CREATE POLICY "flags_public_insert" ON flags FOR INSERT WITH CHECK (ip_hash IS NOT NULL);
+CREATE POLICY "flags_owner_read" ON flags FOR SELECT USING (
+  auth.uid() IS NOT NULL AND auth.uid() = user_id
 );
 
 -- Profiles: users manage only their own row
@@ -26,4 +26,5 @@ CREATE POLICY "profiles_insert_own" ON profiles
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 CREATE POLICY "profiles_update_own" ON profiles
-  FOR UPDATE USING (auth.uid() = user_id);
+  FOR UPDATE USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
