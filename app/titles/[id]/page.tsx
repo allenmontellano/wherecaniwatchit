@@ -54,7 +54,6 @@ export default async function TitlePage({
               {byRegion[region].map((a) => (
                 <li key={a.id}>
                   {a.platform.name}
-                  {/* Flag button — Phase 2 */}
                 </li>
               ))}
             </ul>
