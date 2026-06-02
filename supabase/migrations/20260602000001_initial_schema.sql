@@ -40,7 +40,7 @@ CREATE TABLE availability (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title_id UUID NOT NULL REFERENCES titles(id) ON DELETE CASCADE,
   platform_id UUID NOT NULL REFERENCES platforms(id) ON DELETE CASCADE,
-  region_code CHAR(2) NOT NULL,
+  region_code CHAR(2) NOT NULL REFERENCES regions(country_code),
   available BOOLEAN NOT NULL DEFAULT TRUE,
   last_verified TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   source TEXT NOT NULL DEFAULT 'api',
@@ -51,12 +51,13 @@ CREATE TABLE availability (
 
 CREATE INDEX idx_availability_title ON availability(title_id);
 CREATE INDEX idx_availability_title_region ON availability(title_id, region_code);
+CREATE INDEX idx_availability_platform_region ON availability(platform_id, region_code);
 
 -- User profiles — extends auth.users (Phase 2 auth; schema created now)
 CREATE TABLE profiles (
   user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   username TEXT UNIQUE NOT NULL,
-  region_code CHAR(2),
+  region_code CHAR(2) REFERENCES regions(country_code),
   contribution_count INTEGER NOT NULL DEFAULT 0,
   reputation_score INTEGER NOT NULL DEFAULT 0,
   joined_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -69,11 +70,14 @@ CREATE TABLE flags (
   flag_type TEXT NOT NULL CHECK (flag_type IN ('incorrect', 'outdated', 'missing')),
   status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'reviewed', 'resolved')),
   user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
-  ip_hash TEXT,
+  ip_hash TEXT NOT NULL,
   notes TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+CREATE INDEX idx_flags_availability ON flags(availability_id);
+CREATE INDEX idx_flags_status ON flags(status);
 
 -- Auto-update updated_at on titles, availability, and flags
 CREATE OR REPLACE FUNCTION update_updated_at()
