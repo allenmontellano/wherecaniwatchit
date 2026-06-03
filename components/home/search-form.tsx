@@ -82,13 +82,18 @@ export function SearchForm({ initialCountry, reduced }: SearchFormProps) {
         aria-label="Search for a movie or TV show"
       >
         <div
-          className={cn(
-            'flex items-center rounded-full transition-all duration-200',
-            'bg-white/80 backdrop-blur-xl border',
-            focused
-              ? 'border-[#2B72E8] shadow-[0_0_0_4px_rgba(43,114,232,0.10),0_8px_32px_rgba(43,114,232,0.14),0_2px_8px_rgba(0,0,0,0.06)]'
-              : 'border-white/80 shadow-[0_8px_32px_rgba(43,114,232,0.09),0_2px_8px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.95)]',
-          )}
+          className="flex items-center rounded-full transition-all duration-200"
+          style={{
+            background: 'rgba(255, 255, 255, 0.82)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: focused
+              ? '1px solid rgba(43, 114, 232, 0.55)'
+              : '1px solid rgba(255, 255, 255, 0.8)',
+            boxShadow: focused
+              ? '0 0 0 4px rgba(43,114,232,0.10), 0 8px 32px rgba(43,114,232,0.14), 0 2px 8px rgba(0,0,0,0.06)'
+              : '0 8px 32px rgba(43,114,232,0.10), 0 2px 8px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.95)',
+          }}
         >
           {/* Country selector */}
           <div className="relative flex-shrink-0" ref={dropdownRef}>
@@ -100,10 +105,21 @@ export function SearchForm({ initialCountry, reduced }: SearchFormProps) {
               aria-expanded={dropdownOpen}
               aria-haspopup="listbox"
             >
-              <span className="text-xl leading-none select-none">{selected.flag}</span>
+              {/* Flag image — reliable cross-platform, no emoji rendering issues */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`https://flagcdn.com/24x18/${selected.code.toLowerCase()}.png`}
+                alt={selected.name}
+                width={24}
+                height={18}
+                className="rounded-[3px] object-cover flex-shrink-0"
+              />
+              <span className="text-xs font-semibold text-[#171717] tracking-wide leading-none">
+                {selected.code}
+              </span>
               <ChevronDown
                 className={cn(
-                  'w-3.5 h-3.5 text-[#AEAEB8] transition-transform duration-200 flex-shrink-0',
+                  'w-3 h-3 text-[#AEAEB8] transition-transform duration-200 flex-shrink-0',
                   dropdownOpen && 'rotate-180'
                 )}
               />
@@ -129,7 +145,14 @@ export function SearchForm({ initialCountry, reduced }: SearchFormProps) {
                         : 'text-[#171717] font-normal hover:bg-[#2B72E8]/[0.05]',
                     )}
                   >
-                    <span className="text-base select-none">{c.flag}</span>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`https://flagcdn.com/24x18/${c.code.toLowerCase()}.png`}
+                      alt={c.name}
+                      width={24}
+                      height={18}
+                      className="rounded-[3px] object-cover flex-shrink-0"
+                    />
                     <span>{c.name}</span>
                   </button>
                 ))}
