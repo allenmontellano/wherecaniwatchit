@@ -104,6 +104,7 @@ export async function syncTitle(result: TMDBSearchResult): Promise<SyncedTitle> 
             available: true,
             last_verified: new Date().toISOString(),
             source: 'api',
+            watch_url: option.link,
           },
           { onConflict: 'title_id,platform_id,region_code' }
         )
