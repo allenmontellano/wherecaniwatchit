@@ -2,18 +2,24 @@
 
 import { motion, useReducedMotion } from 'framer-motion'
 
-// Clouds: discrete positions so they read as separate blobs, not a full-page tint
-// Using 0.12 opacity (temporarily high) so we can confirm animation is working
+// Soft cloud puffs: white core fading to a faint blue tint at the edge.
+// Positioned so several are partially visible at the screen edges, varied in size.
 const CLOUDS = [
-  // top-left large blob
-  { w: 700, h: 500, top: -100, left: -80,  xDrift: 120, duration: 34, delay: 0  },
-  // bottom-right
-  { w: 600, h: 420, top: 480,  left: 900,  xDrift: 100, duration: 40, delay: 6  },
-  // top-right
-  { w: 500, h: 360, top: -60,  left: 1100, xDrift: 80,  duration: 28, delay: 12 },
-  // center-left mid
-  { w: 440, h: 320, top: 300,  left: -120, xDrift: 110, duration: 36, delay: 18 },
+  // large — top-left, hugging the corner
+  { w: 760, h: 520, top: '-12%', left: '-10%', xDrift: 90,  yDrift: 30,  duration: 38, delay: 0  },
+  // large — bottom-right, partially off-screen
+  { w: 720, h: 500, top: '62%',  left: '70%',  xDrift: -80, yDrift: -36, duration: 44, delay: 4  },
+  // medium — top-right edge
+  { w: 540, h: 380, top: '-8%',  left: '74%',  xDrift: 70,  yDrift: 24,  duration: 32, delay: 9  },
+  // medium — center-left edge
+  { w: 500, h: 360, top: '46%',  left: '-12%', xDrift: 86,  yDrift: -22, duration: 36, delay: 14 },
+  // small — upper-center drifting accent
+  { w: 380, h: 280, top: '8%',   left: '40%',  xDrift: -60, yDrift: 30,  duration: 30, delay: 18 },
 ] as const
+
+// White core → 10% blue edge. Page stays white; only the cloud fringe shows colour.
+const CLOUD_GRADIENT =
+  'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.9) 0%, rgba(43,114,232,0.08) 72%, rgba(43,114,232,0) 100%)'
 
 export function AnimatedBackground() {
   const reduced = useReducedMotion()
@@ -34,11 +40,11 @@ export function AnimatedBackground() {
             top: c.top,
             left: c.left,
             borderRadius: '50%',
-            backgroundColor: 'rgba(43, 114, 232, 0.12)',
-            filter: 'blur(90px)',
+            background: CLOUD_GRADIENT,
+            filter: 'blur(70px)',
             willChange: 'transform',
           }}
-          animate={reduced ? {} : { x: [0, c.xDrift] }}
+          animate={reduced ? {} : { x: [0, c.xDrift, 0], y: [0, c.yDrift, 0] }}
           transition={{
             duration: c.duration,
             delay: c.delay,
