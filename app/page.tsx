@@ -19,7 +19,10 @@ export default async function HomePage() {
         : 'PH'
 
   return (
-    <main className="relative min-h-dvh flex flex-col items-center justify-center overflow-hidden bg-white">
+    <main
+      className="relative min-h-dvh flex flex-col items-center justify-center overflow-hidden"
+      style={{ backgroundColor: '#FFFFFF' }}
+    >
       <AnimatedBackground />
       <div className="relative z-10 flex flex-col items-center w-full max-w-3xl px-4 py-16">
         <HeroContent initialCountry={country} />

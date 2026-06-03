@@ -117,44 +117,17 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
-@theme inline {
-  /* Brand overrides */
-  --color-brand: #2B72E8;
-  --color-brand-hover: #1d5fd1;
-  --color-brand-glow: rgba(43, 114, 232, 0.25);
-  --color-surface-text: #171717;
-  --color-muted-text: #717177;
-  --color-muted-light: #AEAEB8;
-  --color-success: #34C759;
-  --color-error: #FF3B30;
-
-  /* Font utilities */
-  --font-display: var(--font-display);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
-}
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-white text-[#171717];
-  }
+  /* Force white background — belt and suspenders */
   html {
-    @apply font-sans;
+    background-color: #FFFFFF !important;
     color-scheme: light;
   }
-}
-
-/* Animated grain texture overlay */
-.grain {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 100;
-  opacity: 0.028;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 256px 256px;
+  body {
+    background-color: #FFFFFF !important;
+    color: #171717;
+  }
 }
