@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 const mockFetch = vi.fn()
 vi.stubGlobal('fetch', mockFetch)
 
-process.env.RAPIDAPI_KEY = 'test-rapidapi-key'
+process.env.MOTN_API_KEY = 'test-motn-key'
 
 import { fetchShowByTMDBId, LAUNCH_REGIONS } from './client'
 import type { SAShow } from './types'
@@ -50,6 +50,7 @@ describe('fetchShowByTMDBId', () => {
     await fetchShowByTMDBId(27205, 'movie')
 
     const calledUrl = mockFetch.mock.calls[0][0] as string
+    expect(calledUrl).toContain('api.movieofthenight.com/v4')
     expect(calledUrl).toContain('/shows/tmdb%3Amovie%3A27205')
     expect(calledUrl).toContain('output_language=en')
   })
@@ -63,13 +64,13 @@ describe('fetchShowByTMDBId', () => {
     expect(calledUrl).toContain('/shows/tmdb%3Atv%3A66732')
   })
 
-  it('sends the RapidAPI key in request headers', async () => {
+  it('sends the MOTN API key in X-API-Key header', async () => {
     mockFetch.mockResolvedValueOnce({ ok: true, status: 200, json: async () => mockShow })
 
     await fetchShowByTMDBId(27205, 'movie')
 
     const calledHeaders = mockFetch.mock.calls[0][1]?.headers as Record<string, string>
-    expect(calledHeaders['x-rapidapi-key']).toBe('test-rapidapi-key')
+    expect(calledHeaders['X-API-Key']).toBe('test-motn-key')
   })
 
   it('returns null for a 404 response', async () => {

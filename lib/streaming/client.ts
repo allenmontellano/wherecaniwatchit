@@ -1,6 +1,6 @@
 import type { SAShow } from './types'
 
-const BASE = 'https://streaming-availability.p.rapidapi.com'
+const BASE = 'https://api.movieofthenight.com/v4'
 
 export const LAUNCH_REGIONS = ['ph', 'us', 'gb', 'au', 'ca'] as const
 
@@ -17,8 +17,7 @@ export async function fetchShowByTMDBId(
 
   const res = await fetch(url.toString(), {
     headers: {
-      'x-rapidapi-key': process.env.RAPIDAPI_KEY!,
-      'x-rapidapi-host': 'streaming-availability.p.rapidapi.com',
+      'X-API-Key': process.env.MOTN_API_KEY!,
     },
     next: { revalidate: 86400 },
   } as RequestInit)
