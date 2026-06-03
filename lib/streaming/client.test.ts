@@ -51,7 +51,7 @@ describe('fetchShowByTMDBId', () => {
 
     const calledUrl = mockFetch.mock.calls[0][0] as string
     expect(calledUrl).toContain('api.movieofthenight.com/v4')
-    expect(calledUrl).toContain('/shows/tmdb%3Amovie%3A27205')
+    expect(calledUrl).toContain('/shows/movie/27205')
     expect(calledUrl).toContain('output_language=en')
   })
 
@@ -61,7 +61,7 @@ describe('fetchShowByTMDBId', () => {
     await fetchShowByTMDBId(66732, 'tv')
 
     const calledUrl = mockFetch.mock.calls[0][0] as string
-    expect(calledUrl).toContain('/shows/tmdb%3Atv%3A66732')
+    expect(calledUrl).toContain('/shows/tv/66732')
   })
 
   it('sends the MOTN API key in X-API-Key header', async () => {
