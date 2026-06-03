@@ -1,4 +1,12 @@
 import Link from 'next/link'
+import { cookies } from 'next/headers'
+import { AnimatedBackground } from '@/components/home/animated-background'
+import { Logo } from '@/components/logo'
+import { CompactSearchForm } from '@/components/search/compact-search-form'
+import { ResultsSection } from '@/components/search/results-section'
+
+const SUPPORTED = ['PH', 'US', 'GB', 'AU', 'CA'] as const
+type CountryCode = (typeof SUPPORTED)[number]
 
 interface SyncedResult {
   title: {
@@ -9,7 +17,6 @@ interface SyncedResult {
     poster_url: string | null
     imdb_rating: number | null
     season_count: number | null
-    synopsis: string | null
   }
   availabilityByRegion: Record<string, string[]>
 }
@@ -26,46 +33,106 @@ async function fetchSearch(query: string): Promise<{ results: SyncedResult[]; qu
   return res.json()
 }
 
+function resolveCountry(
+  urlParam: string | undefined,
+  cookieValue: string | undefined
+): CountryCode {
+  if (urlParam && SUPPORTED.includes(urlParam as CountryCode)) return urlParam as CountryCode
+  if (cookieValue && SUPPORTED.includes(cookieValue as CountryCode)) return cookieValue as CountryCode
+  return 'PH'
+}
+
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string }>
+  searchParams: Promise<{ q?: string; country?: string }>
 }) {
-  const { q } = await searchParams
-  if (!q) return <main><p>Enter a search query.</p></main>
+  const { q, country: countryParam } = await searchParams
+  const cookieStore = await cookies()
+  const savedCountry = cookieStore.get('selected-country')?.value
+  const country = resolveCountry(countryParam, savedCountry)
+
+  if (!q) {
+    return (
+      <main
+        className="relative min-h-dvh flex flex-col items-center justify-center overflow-hidden"
+        style={{ backgroundColor: '#FFFFFF' }}
+      >
+        <AnimatedBackground />
+        <div className="relative z-10 text-center px-4">
+          <p className="text-lg text-[#717177]" style={{ fontFamily: 'var(--font-display)' }}>
+            Enter a search query to get started.
+          </p>
+          <Link
+            href="/"
+            className="mt-4 inline-block text-sm text-[#2B72E8] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2B72E8] rounded"
+          >
+            ← Back to search
+          </Link>
+        </div>
+      </main>
+    )
+  }
 
   let data: { results: SyncedResult[]; query: string }
   try {
     data = await fetchSearch(q)
   } catch {
-    return <main><p>Search failed. Please try again.</p></main>
+    return (
+      <main
+        className="relative min-h-dvh flex flex-col items-center justify-center overflow-hidden"
+        style={{ backgroundColor: '#FFFFFF' }}
+      >
+        <AnimatedBackground />
+        <div className="relative z-10 text-center px-4">
+          <p
+            className="text-xl font-semibold text-[#171717] mb-2"
+            style={{ fontFamily: 'var(--font-display)' }}
+          >
+            Search failed
+          </p>
+          <p className="text-sm text-[#717177] mb-4">Something went wrong. Please try again.</p>
+          <Link
+            href="/"
+            className="text-sm text-[#2B72E8] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2B72E8] rounded"
+          >
+            ← Back to search
+          </Link>
+        </div>
+      </main>
+    )
   }
 
   return (
-    <main>
-      <h1>Results for: {data.query}</h1>
-      {data.results.length === 0 && <p>No results found.</p>}
-      <ul>
-        {data.results.map(({ title, availabilityByRegion }) => (
-          <li key={title.id}>
-            <Link href={`/titles/${title.id}`}>
-              <strong>{title.title}</strong>
-            </Link>
-            {' '}
-            ({title.type === 'tv'
-              ? `TV · ${title.season_count ?? '?'} seasons`
-              : 'Movie'})
-            {title.release_year && ` · ${title.release_year}`}
-            {title.imdb_rating && ` · ★ ${title.imdb_rating}`}
-            <br />
-            {Object.entries(availabilityByRegion).map(([region, slugs]) => (
-              <span key={region}>
-                [{region}: {slugs.join(', ') || 'not available'}]{' '}
-              </span>
-            ))}
-          </li>
-        ))}
-      </ul>
+    <main
+      className="relative min-h-dvh flex flex-col overflow-hidden"
+      style={{ backgroundColor: '#FFFFFF' }}
+    >
+      <AnimatedBackground />
+
+      {/* Sticky header */}
+      <header
+        className="sticky top-0 z-50 flex items-center gap-3 px-4 sm:px-6 py-2.5"
+        style={{
+          background: 'rgba(255, 255, 255, 0.86)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          borderBottom: '1px solid rgba(229, 229, 229, 0.55)',
+          boxShadow: '0 1px 0 rgba(0,0,0,0.03)',
+        }}
+      >
+        <Link href="/" aria-label="Home" className="flex-shrink-0">
+          <Logo width={110} />
+        </Link>
+        <div className="flex-1 max-w-lg">
+          <CompactSearchForm initialQuery={q} initialCountry={country} />
+        </div>
+      </header>
+
+      {/* Results */}
+      <div className="relative z-10 flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 pt-8 pb-16">
+        <ResultsSection results={data.results} query={data.query} country={country} />
+      </div>
     </main>
   )
 }
