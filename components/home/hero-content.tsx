@@ -25,9 +25,9 @@ export function HeroContent({ initialCountry }: HeroContentProps) {
 
   return (
     <div className="flex flex-col items-center gap-7 w-full">
-      {/* SVG logo — no PNG, no white box */}
+      {/* Logo lockup (icon + wordmark) */}
       <motion.div {...fadeUp(0, reduced)}>
-        <Logo iconSize={72} />
+        <Logo width={360} />
       </motion.div>
 
       {/* Tagline */}

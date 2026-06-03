@@ -78,21 +78,37 @@ export function SearchForm({ initialCountry, reduced }: SearchFormProps) {
       <motion.form
         {...fadeUp(0, reduced)}
         onSubmit={(e) => { e.preventDefault(); doSearch(query) }}
-        className="w-full max-w-[620px]"
+        className="relative w-full max-w-[620px]"
         aria-label="Search for a movie or TV show"
       >
+        {/* Outer glow platform — soft blurred shape behind the pill for depth */}
         <div
-          className="flex items-center rounded-full transition-all duration-200"
+          aria-hidden="true"
+          className="absolute rounded-full transition-all duration-300 ease-out"
           style={{
-            background: 'rgba(255, 255, 255, 0.82)',
+            inset: '-10px 6px',
+            background: 'rgba(43, 114, 232, 0.20)',
+            filter: 'blur(30px)',
+            opacity: focused ? 0.85 : 0.5,
+            transform: focused ? 'scale(1.02)' : 'scale(1)',
+            zIndex: 0,
+          }}
+        />
+
+        {/* Inner crisp white glass pill */}
+        <div
+          className="relative flex items-center rounded-full transition-all duration-300 ease-out"
+          style={{
+            zIndex: 1,
+            background: 'rgba(255, 255, 255, 0.88)',
             backdropFilter: 'blur(12px)',
             WebkitBackdropFilter: 'blur(12px)',
             border: focused
               ? '1px solid rgba(43, 114, 232, 0.55)'
-              : '1px solid rgba(255, 255, 255, 0.8)',
+              : '1px solid rgba(255, 255, 255, 0.9)',
             boxShadow: focused
-              ? '0 0 0 4px rgba(43,114,232,0.10), 0 8px 32px rgba(43,114,232,0.14), 0 2px 8px rgba(0,0,0,0.06)'
-              : '0 8px 32px rgba(43,114,232,0.10), 0 2px 8px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.95)',
+              ? '0 0 0 4px rgba(43,114,232,0.12), 0 20px 50px rgba(43,114,232,0.22), 0 2px 8px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.95)'
+              : '0 20px 50px rgba(43,114,232,0.12), 0 2px 8px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.95)',
           }}
         >
           {/* Country selector */}
