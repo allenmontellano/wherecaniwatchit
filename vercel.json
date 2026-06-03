@@ -1,8 +1,10 @@
 {
   "crons": [
-    {
-      "path": "/api/cron/sync-availability",
-      "schedule": "0 2 * * *"
-    }
+    { "path": "/api/cron/sync-availability",  "schedule": "0 2 * * *" },
+    { "path": "/api/cron/checkers/ph",         "schedule": "0 2 * * *" },
+    { "path": "/api/cron/checkers/us",         "schedule": "0 2 * * *" },
+    { "path": "/api/cron/checkers/gb",         "schedule": "0 2 * * *" },
+    { "path": "/api/cron/checkers/au",         "schedule": "0 2 * * *" },
+    { "path": "/api/cron/checkers/ca",         "schedule": "0 2 * * *" }
   ]
 }
