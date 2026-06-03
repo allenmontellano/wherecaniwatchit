@@ -14,7 +14,6 @@ export async function GET(req: NextRequest) {
     console.error(
       `[checker] Circuit breaker triggered for ${regionCode}: ${(errorRate * 100).toFixed(1)}% error rate`
     )
-    // TODO Phase 2: Sentry.captureException(new Error(`Checker circuit breaker: ${regionCode} at ${(errorRate*100).toFixed(1)}%`))
   }
 
   const result = await runCheckerBatch(PH_CONFIG.regionCode, PH_CONFIG.platforms, { onCircuitBreak })
