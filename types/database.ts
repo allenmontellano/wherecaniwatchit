@@ -44,6 +44,8 @@ export interface Availability {
   available: boolean
   last_verified: string
   source: string
+  watch_url: string | null
+  consecutive_failures: number
   created_at: string
   updated_at: string
 }
