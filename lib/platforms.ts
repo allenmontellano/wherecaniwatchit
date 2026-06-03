@@ -6,6 +6,7 @@ export interface PlatformBadge {
 
 const KNOWN: Record<string, PlatformBadge> = {
   netflix:           { label: 'Netflix',      bg: '#FEE2E2', text: '#991B1B' },
+  apple:             { label: 'Apple TV+',   bg: '#F1F5F9', text: '#334155' },
   prime:             { label: 'Prime Video',  bg: '#DBEAFE', text: '#1E40AF' },
   'disney-plus':     { label: 'Disney+',      bg: '#EDE9FE', text: '#5B21B6' },
   hbo:               { label: 'HBO Max',      bg: '#F3E8FF', text: '#7E22CE' },

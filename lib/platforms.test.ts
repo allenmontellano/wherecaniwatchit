@@ -27,4 +27,8 @@ describe('platformLabel', () => {
   it('handles single-word unknown slug', () => {
     expect(platformLabel('hulu').label).toBe('Hulu')
   })
+
+  it('returns Apple TV+ for the apple slug returned by MOTN API', () => {
+    expect(platformLabel('apple').label).toBe('Apple TV+')
+  })
 })
