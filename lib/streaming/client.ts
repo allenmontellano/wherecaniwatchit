@@ -8,10 +8,10 @@ export async function fetchShowByTMDBId(
   tmdbId: number,
   mediaType: 'movie' | 'tv'
 ): Promise<SAShow | null> {
-  const prefix = mediaType === 'tv' ? 'tmdb:tv' : 'tmdb:movie'
-  const id = `${prefix}:${tmdbId}`
+  const prefix = mediaType === 'tv' ? 'tv' : 'movie'
+  const id = `${prefix}/${tmdbId}`
 
-  const url = new URL(`${BASE}/shows/${encodeURIComponent(id)}`)
+  const url = new URL(`${BASE}/shows/${id}`)
   url.searchParams.set('output_language', 'en')
   url.searchParams.set('series_granularity', 'show')
 
