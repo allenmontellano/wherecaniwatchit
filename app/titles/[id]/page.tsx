@@ -8,10 +8,8 @@ import { AnimatedBackground } from '@/components/home/animated-background'
 import { Logo } from '@/components/logo'
 import { AvailabilityTabs } from '@/components/title/availability-tabs'
 import { formatRuntime } from '@/lib/title-utils'
+import { SUPPORTED_COUNTRIES, type CountryCode, resolveCountry } from '@/lib/country'
 import type { Title, AvailabilityWithPlatform } from '@/types/database'
-
-const SUPPORTED = ['PH', 'US', 'GB', 'AU', 'CA'] as const
-type CountryCode = (typeof SUPPORTED)[number]
 
 async function fetchTitle(
   id: string
@@ -26,14 +24,6 @@ async function fetchTitle(
   return res.json()
 }
 
-function resolveCountry(
-  urlParam: string | undefined,
-  cookieValue: string | undefined
-): CountryCode {
-  if (urlParam && SUPPORTED.includes(urlParam as CountryCode)) return urlParam as CountryCode
-  if (cookieValue && SUPPORTED.includes(cookieValue as CountryCode)) return cookieValue as CountryCode
-  return 'PH'
-}
 
 export async function generateMetadata({
   params,

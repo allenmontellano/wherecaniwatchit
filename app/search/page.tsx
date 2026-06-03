@@ -4,9 +4,7 @@ import { AnimatedBackground } from '@/components/home/animated-background'
 import { Logo } from '@/components/logo'
 import { CompactSearchForm } from '@/components/search/compact-search-form'
 import { ResultsSection } from '@/components/search/results-section'
-
-const SUPPORTED = ['PH', 'US', 'GB', 'AU', 'CA'] as const
-type CountryCode = (typeof SUPPORTED)[number]
+import { SUPPORTED_COUNTRIES, type CountryCode, resolveCountry } from '@/lib/country'
 
 interface SyncedResult {
   title: {
@@ -33,14 +31,6 @@ async function fetchSearch(query: string): Promise<{ results: SyncedResult[]; qu
   return res.json()
 }
 
-function resolveCountry(
-  urlParam: string | undefined,
-  cookieValue: string | undefined
-): CountryCode {
-  if (urlParam && SUPPORTED.includes(urlParam as CountryCode)) return urlParam as CountryCode
-  if (cookieValue && SUPPORTED.includes(cookieValue as CountryCode)) return cookieValue as CountryCode
-  return 'PH'
-}
 
 export default async function SearchPage({
   searchParams,
