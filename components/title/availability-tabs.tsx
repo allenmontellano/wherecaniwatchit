@@ -48,14 +48,15 @@ export function AvailabilityTabs({ availability, initialCountry }: AvailabilityT
             <button
               key={region.code}
               type="button"
-              onClick={() => setActive(region.code)}
+              disabled={!hasPlatforms}
+              onClick={hasPlatforms ? () => setActive(region.code) : undefined}
               className={cn(
-                'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2B72E8] focus-visible:ring-offset-1',
+                'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-150',
                 active === region.code
-                  ? 'bg-[#2B72E8] text-white shadow-[0_2px_8px_rgba(43,114,232,0.30)]'
+                  ? 'bg-[#2B72E8] text-white shadow-[0_2px_8px_rgba(43,114,232,0.30)] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2B72E8] focus-visible:ring-offset-1'
                   : hasPlatforms
-                  ? 'bg-white border border-[#E5E5E5] text-[#171717] hover:border-[#2B72E8] hover:text-[#2B72E8]'
-                  : 'bg-white border border-[#E5E5E5] text-[#AEAEB8] cursor-default'
+                  ? 'bg-white border border-[#E5E5E5] text-[#171717] hover:border-[#2B72E8] hover:text-[#2B72E8] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2B72E8] focus-visible:ring-offset-1'
+                  : 'bg-white border border-[#E5E5E5] text-[#AEAEB8] disabled:opacity-60'
               )}
               aria-pressed={active === region.code}
               aria-label={`Show availability in ${region.name}`}
