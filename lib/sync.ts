@@ -1,5 +1,17 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { fetchMovieDetail, fetchTVDetail, posterUrl } from '@/lib/tmdb/client'
+import {
+  extractCast,
+  extractCreatorsMovie,
+  extractCreatorsTV,
+  extractNetworkMovie,
+  extractNetworkTV,
+  extractMovieCertification,
+  extractTVCertification,
+  extractOriginCountryMovie,
+  extractOriginCountryTV,
+  languageName,
+} from '@/lib/tmdb/extract'
 import { fetchShowByTMDBId, LAUNCH_REGIONS } from '@/lib/streaming/client'
 import type { TMDBSearchResult } from '@/lib/tmdb/types'
 import type { Title, Platform } from '@/types/database'
@@ -34,6 +46,14 @@ export async function syncTitle(result: TMDBSearchResult): Promise<SyncedTitle> 
       imdb_rating: d.vote_average ? parseFloat(d.vote_average.toFixed(1)) : null,
       imdb_id: d.imdb_id ?? null,
       season_count: null,
+      network: extractNetworkMovie(d.production_companies),
+      cast: extractCast(d.credits),
+      creators: extractCreatorsMovie(d.credits),
+      origin_country: extractOriginCountryMovie(d.production_countries),
+      episode_count: null,
+      status: d.status ?? null,
+      original_language: languageName(d.original_language),
+      content_rating: extractMovieCertification(d.release_dates),
     }
   } else {
     const d = await fetchTVDetail(result.id)
@@ -49,6 +69,14 @@ export async function syncTitle(result: TMDBSearchResult): Promise<SyncedTitle> 
       imdb_rating: d.vote_average ? parseFloat(d.vote_average.toFixed(1)) : null,
       imdb_id: d.external_ids?.imdb_id ?? null,
       season_count: d.number_of_seasons ?? null,
+      network: extractNetworkTV(d.networks),
+      cast: extractCast(d.credits),
+      creators: extractCreatorsTV(d.created_by),
+      origin_country: extractOriginCountryTV(d.origin_country),
+      episode_count: d.number_of_episodes ?? null,
+      status: d.status ?? null,
+      original_language: languageName(d.original_language),
+      content_rating: extractTVCertification(d.content_ratings),
     }
   }
 
