@@ -1,6 +1,17 @@
 import { describe, it, expect } from 'vitest'
-import { formatRuntime, groupByRegion } from './title-utils'
+import { formatRuntime, groupByRegion, formatExtent } from './title-utils'
 import type { AvailabilityWithPlatform } from '@/types/database'
+
+describe('formatExtent', () => {
+  it('formats tv as N seasons', () =>
+    expect(formatExtent({ type: 'tv', season_count: 7, runtime: null })).toBe('7 seasons'))
+  it('singular season', () =>
+    expect(formatExtent({ type: 'tv', season_count: 1, runtime: null })).toBe('1 season'))
+  it('formats movie runtime', () =>
+    expect(formatExtent({ type: 'movie', season_count: null, runtime: 132 })).toBe('2h 12m'))
+  it('returns null when nothing to show', () =>
+    expect(formatExtent({ type: 'tv', season_count: null, runtime: null })).toBeNull())
+})
 
 describe('formatRuntime', () => {
   it('formats exact hours', () => {
