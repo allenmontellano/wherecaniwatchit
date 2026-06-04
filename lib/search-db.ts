@@ -31,6 +31,7 @@ export async function searchLocalTitles(query: string, limit: number): Promise<S
     .from('titles')
     .select('*')
     .ilike('title', `%${query}%`)
+    .order('imdb_rating', { ascending: false, nullsFirst: false })
     .limit(limit)
 
   if (error) throw new Error(`Local title search failed: ${error.message}`)
