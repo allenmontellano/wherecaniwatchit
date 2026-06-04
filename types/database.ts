@@ -32,6 +32,14 @@ export interface Title {
   imdb_rating: number | null
   imdb_id: string | null
   season_count: number | null
+  network: string | null
+  cast: string[] | null
+  creators: string[] | null
+  origin_country: string | null
+  episode_count: number | null
+  status: string | null
+  original_language: string | null
+  content_rating: string | null
   created_at: string
   updated_at: string
 }

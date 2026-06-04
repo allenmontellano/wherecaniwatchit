@@ -34,3 +34,32 @@ export interface TMDBTVDetail {
   genres: Array<{ id: number; name: string }>
   external_ids: { imdb_id: string | null }
 }
+
+export interface TMDBCredits {
+  cast: Array<{ name: string; order: number }>
+  crew: Array<{ name: string; job: string }>
+}
+
+export interface TMDBMovieDetailFull extends TMDBMovieDetail {
+  credits?: TMDBCredits
+  production_companies?: Array<{ name: string }>
+  production_countries?: Array<{ iso_3166_1: string; name: string }>
+  original_language?: string
+  spoken_languages?: Array<{ iso_639_1: string; english_name: string }>
+  status?: string
+  release_dates?: {
+    results: Array<{ iso_3166_1: string; release_dates: Array<{ certification: string }> }>
+  }
+}
+
+export interface TMDBTVDetailFull extends TMDBTVDetail {
+  credits?: TMDBCredits
+  created_by?: Array<{ name: string }>
+  networks?: Array<{ name: string }>
+  origin_country?: string[]
+  number_of_episodes?: number
+  status?: string
+  original_language?: string
+  spoken_languages?: Array<{ iso_639_1: string; english_name: string }>
+  content_ratings?: { results: Array<{ iso_3166_1: string; rating: string }> }
+}
