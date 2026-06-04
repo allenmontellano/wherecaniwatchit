@@ -14,34 +14,30 @@ import { POST } from './route'
 
 beforeEach(() => {
   mockInsert.mockReset()
+  mockInsert.mockResolvedValue({ error: null })
 })
 
-function makeRequest(body: unknown): NextRequest {
+function makeRequest(body: unknown, headers: Record<string, string> = {}): NextRequest {
   return new NextRequest('http://localhost:3000/api/flags', {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
+    headers: { 'content-type': 'application/json', ...headers },
     body: JSON.stringify(body),
   })
 }
 
 describe('POST /api/flags', () => {
-  it('returns 400 when availability_id is missing', async () => {
-    const res = await POST(makeRequest({ flag_type: 'incorrect' }))
+  it('returns 400 when title_id/region_code/issue_type are missing', async () => {
+    const res = await POST(makeRequest({ issue_type: 'not-here' }))
     expect(res.status).toBe(400)
     const body = await res.json()
     expect(body.error).toMatch(/required/i)
   })
 
-  it('returns 400 when flag_type is missing', async () => {
-    const res = await POST(makeRequest({ availability_id: 'uuid' }))
-    expect(res.status).toBe(400)
-  })
-
-  it('returns 400 for an invalid flag_type', async () => {
-    const res = await POST(makeRequest({ availability_id: 'uuid', flag_type: 'spam' }))
+  it('returns 400 for an invalid issue_type', async () => {
+    const res = await POST(makeRequest({ title_id: 't', region_code: 'PH', issue_type: 'spam' }))
     expect(res.status).toBe(400)
     const body = await res.json()
-    expect(body.error).toMatch(/invalid flag_type/i)
+    expect(body.error).toMatch(/invalid issue_type/i)
   })
 
   it('returns 400 for invalid JSON body', async () => {
@@ -54,42 +50,48 @@ describe('POST /api/flags', () => {
     expect(res.status).toBe(400)
   })
 
-  it('returns 201 on a valid flag submission', async () => {
-    mockInsert.mockResolvedValueOnce({ error: null })
-
-    const res = await POST(makeRequest({
-      availability_id: 'avail-uuid',
-      flag_type: 'incorrect',
-      notes: 'This is wrong',
-    }))
-
+  it('inserts a mapped flag and returns 201', async () => {
+    const res = await POST(
+      makeRequest({
+        title_id: 't',
+        region_code: 'PH',
+        issue_type: 'is-here',
+        platform: 'Vivamax',
+        notes: 'hi',
+      })
+    )
     expect(res.status).toBe(201)
     const body = await res.json()
     expect(body.success).toBe(true)
+    expect(mockInsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title_id: 't',
+        region_code: 'PH',
+        issue_type: 'is-here',
+        flag_type: 'missing',
+        availability_id: null,
+        notes: 'Platform: Vivamax\nhi',
+        status: 'pending',
+      })
+    )
   })
 
   it('inserts an ip_hash rather than a raw IP', async () => {
-    mockInsert.mockResolvedValueOnce({ error: null })
-
-    const req = new NextRequest('http://localhost:3000/api/flags', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', 'x-forwarded-for': '1.2.3.4' },
-      body: JSON.stringify({ availability_id: 'uuid', flag_type: 'outdated' }),
-    })
-    await POST(req)
-
+    await POST(
+      makeRequest(
+        { title_id: 't', region_code: 'PH', issue_type: 'wrong-season' },
+        { 'x-forwarded-for': '1.2.3.4' }
+      )
+    )
     const insertedRow = mockInsert.mock.calls[0][0]
     expect(insertedRow.ip_hash).toBeDefined()
     expect(insertedRow.ip_hash).not.toBe('1.2.3.4')
-    expect(insertedRow.ip_hash.length).toBeGreaterThan(0)
+    expect(insertedRow.flag_type).toBe('outdated')
   })
 
-  it('truncates notes to 500 characters', async () => {
-    mockInsert.mockResolvedValueOnce({ error: null })
-
+  it('truncates composed notes to 500 characters', async () => {
     const longNote = 'x'.repeat(600)
-    await POST(makeRequest({ availability_id: 'uuid', flag_type: 'incorrect', notes: longNote }))
-
+    await POST(makeRequest({ title_id: 't', region_code: 'PH', issue_type: 'other', notes: longNote }))
     const insertedRow = mockInsert.mock.calls[0][0]
     expect(insertedRow.notes.length).toBe(500)
   })
