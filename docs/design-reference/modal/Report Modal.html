@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Report Incorrect Info — Modal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --blue: #2B72E8; --blue-hover: #1d5fd1;
+    --fg: #171717; --muted: #717177; --faint: #AEAEB8;
+    --border: #E5E5E5; --green: #34C759; --red: #FF3B30;
+    --font-sans: 'DM Sans', system-ui, sans-serif;
+    --font-display: 'Space Grotesk', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100dvh;
+    /* dark scrim — #171717 @ 50% — over a faint representation of the page behind */
+    background:
+      linear-gradient(rgba(23,23,23,0.5), rgba(23,23,23,0.5)),
+      repeating-linear-gradient(180deg, #f3f4f6 0 22px, #eceef1 22px 23px),
+      #fff;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 0; padding: 56px 24px;
+  }
+
+  .stage {
+    display: flex; flex-wrap: wrap; gap: 36px;
+    align-items: flex-start; justify-content: center;
+  }
+  .stage-col { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .state-label {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(255,255,255,0.82);
+  }
+
+  /* ── Modal ── */
+  .modal {
+    position: relative;
+    width: 480px; max-width: 88vw;
+    background: #fff; border-radius: 22px;
+    box-shadow: 0 40px 90px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.2);
+    padding: 28px 28px 22px;
+  }
+  .close {
+    position: absolute; top: 18px; right: 18px;
+    width: 32px; height: 32px; border-radius: 9999px;
+    display: flex; align-items: center; justify-content: center;
+    background: transparent; border: none; cursor: pointer; color: var(--faint);
+    transition: all 150ms ease;
+  }
+  .close:hover { background: rgba(0,0,0,0.05); color: var(--fg); }
+  .close svg { width: 17px; height: 17px; }
+
+  .modal-head { display: flex; align-items: center; gap: 11px; margin-bottom: 6px; padding-right: 30px; }
+  .flag { width: 26px; height: 19px; border-radius: 3px; object-fit: cover; flex-shrink: 0; box-shadow: 0 0 0 1px rgba(0,0,0,0.06); }
+  .modal-title { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--fg); margin: 0; }
+  .modal-sub { font-size: 13.5px; color: var(--muted); line-height: 1.5; margin: 0 0 22px; }
+
+  .field { margin-bottom: 17px; }
+  .field > label { display: block; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); margin-bottom: 8px; }
+  .req { color: var(--red); margin-left: 3px; }
+
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: ""; position: absolute; right: 16px; top: 50%; width: 9px; height: 9px;
+    border-right: 2px solid var(--faint); border-bottom: 2px solid var(--faint);
+    transform: translateY(-65%) rotate(45deg); pointer-events: none;
+  }
+  select, .input, textarea {
+    width: 100%; border: 1px solid var(--border); border-radius: 12px;
+    padding: 12px 14px; font-size: 14px; color: var(--fg);
+    font-family: var(--font-sans); background: #fff;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+  }
+  select { appearance: none; -webkit-appearance: none; padding-right: 38px; cursor: pointer; }
+  select:focus, .input:focus, textarea:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(43,114,232,0.12); }
+  textarea { resize: none; min-height: 78px; line-height: 1.5; }
+  ::placeholder { color: var(--faint); }
+
+  .conditional { overflow: hidden; max-height: 0; opacity: 0; margin-bottom: 0; transition: max-height 240ms ease, opacity 200ms ease, margin-bottom 240ms ease; }
+  .conditional.show { max-height: 110px; opacity: 1; margin-bottom: 17px; }
+
+  .ta-wrap { position: relative; }
+  .counter { position: absolute; right: 12px; bottom: 10px; font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); background: #fff; padding-left: 6px; }
+  .counter.warn { color: var(--red); }
+
+  .modal-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 22px; flex-wrap: wrap; }
+  .foot-note { font-size: 11.5px; color: var(--faint); line-height: 1.4; max-width: 50%; }
+  .foot-actions { display: flex; gap: 10px; margin-left: auto; }
+  .btn { padding: 10px 20px; border-radius: 11px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 150ms ease; font-family: var(--font-sans); border: none; }
+  .btn-ghost { background: transparent; color: var(--muted); }
+  .btn-ghost:hover { background: rgba(0,0,0,0.05); color: var(--fg); }
+  .btn-primary { background: var(--blue); color: #fff; }
+  .btn-primary:hover { background: var(--blue-hover); box-shadow: 0 6px 18px rgba(43,114,232,0.35); }
+
+  /* Success */
+  .success { text-align: center; padding: 14px 8px 8px; }
+  .success .check {
+    width: 68px; height: 68px; border-radius: 9999px; margin: 0 auto 20px;
+    background: rgba(52,199,89,0.12); display: flex; align-items: center; justify-content: center;
+    animation: pop 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .success .check svg { width: 34px; height: 34px; }
+  @keyframes pop { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .success-title { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--fg); margin: 0 0 10px; }
+  .success-body { font-size: 14.5px; color: var(--muted); line-height: 1.55; margin: 0 auto 24px; max-width: 34ch; }
+  .success .btn-ghost { background: rgba(0,0,0,0.04); }
+
+  @media (prefers-reduced-motion: reduce) { .success .check { animation: none; } }
+  @media (max-width: 560px) { .foot-note { max-width: 100%; } .foot-actions { margin-left: 0; } }
+</style>
+</head>
+<body data-screen-label="Report Modal">
+  <div class="stage">
+    <!-- Form state -->
+    <div class="stage-col">
+      <span class="state-label">Form state</span>
+      <div class="modal" id="formModal" data-screen-label="Report — form">
+        <button class="close" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+        <div class="modal-head">
+          <img class="flag" src="https://flagcdn.com/24x18/ph.png" alt="Philippines" />
+          <h2 class="modal-title">Report incorrect info</h2>
+        </div>
+        <p class="modal-sub">Help us keep availability data accurate. Reports are reviewed daily.</p>
+
+        <div class="field">
+          <label for="issue">What's incorrect?<span class="req">*</span></label>
+          <div class="select-wrap">
+            <select id="issue">
+              <option value="not-here">This title is not available here</option>
+              <option value="is-here">This title IS available here</option>
+              <option value="wrong-platform" selected>Wrong platform listed</option>
+              <option value="wrong-season">Wrong season information</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field conditional show" id="platformField">
+          <label for="platform">Which platform is it actually on?</label>
+          <input class="input" id="platform" type="text" placeholder="e.g. Netflix, Vivamax, iWantTFC..." />
+        </div>
+
+        <div class="field">
+          <label for="notes">Additional notes (optional)</label>
+          <div class="ta-wrap">
+            <textarea id="notes" maxlength="280" placeholder="Any other details that might help..."></textarea>
+            <span class="counter" id="counter">0 / 280</span>
+          </div>
+        </div>
+
+        <div class="modal-foot">
+          <span class="foot-note">No account needed · Reports are anonymous</span>
+          <div class="foot-actions">
+            <button class="btn btn-ghost">Cancel</button>
+            <button class="btn btn-primary" id="submitBtn">Submit report</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success state -->
+    <div class="stage-col">
+      <span class="state-label">Success state</span>
+      <div class="modal" data-screen-label="Report — success">
+        <button class="close" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+        <div class="success">
+          <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="#34C759" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+          <h2 class="success-title">Report submitted</h2>
+          <p class="success-body">Thanks for helping keep our data accurate. We'll review this within 24 hours.</p>
+          <button class="btn btn-ghost">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const issue = document.getElementById('issue');
+    const platformField = document.getElementById('platformField');
+    const notes = document.getElementById('notes');
+    const counter = document.getElementById('counter');
+
+    function syncConditional() {
+      const show = issue.value === 'wrong-platform' || issue.value === 'is-here';
+      platformField.classList.toggle('show', show);
+    }
+    issue.addEventListener('change', syncConditional);
+    syncConditional();
+
+    notes.addEventListener('input', () => {
+      const n = notes.value.length;
+      counter.textContent = `${n} / 280`;
+      counter.classList.toggle('warn', n >= 260);
+    });
+
+    // Demo: submitting flips the form modal to the success state in place
+    document.getElementById('submitBtn').addEventListener('click', () => {
+      const m = document.getElementById('formModal');
+      m.innerHTML = `
+        <button class="close" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+        <div class="success">
+          <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="#34C759" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+          <h2 class="success-title">Report submitted</h2>
+          <p class="success-body">Thanks for helping keep our data accurate. We'll review this within 24 hours.</p>
+          <button class="btn btn-ghost" onclick="location.reload()">Close</button>
+        </div>`;
+    });
+  </script>
+</body>
+</html>

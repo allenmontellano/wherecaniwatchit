@@ -61,15 +61,21 @@ const mockUpsertedTitle = {
   created_at: '', updated_at: '',
 }
 
+let capturedTitleData: Record<string, unknown> | null = null
+
 function setupSupabaseMock() {
+  capturedTitleData = null
   mockFrom.mockImplementation((table: string) => {
     if (table === 'titles') {
       return {
-        upsert: () => ({
-          select: () => ({
-            single: () => ({ data: mockUpsertedTitle, error: null }),
-          }),
-        }),
+        upsert: (data: Record<string, unknown>) => {
+          capturedTitleData = data
+          return {
+            select: () => ({
+              single: () => ({ data: mockUpsertedTitle, error: null }),
+            }),
+          }
+        },
       }
     }
     if (table === 'platforms') {
@@ -136,6 +142,43 @@ describe('syncTitle', () => {
     expect(result.title.title).toBe('Inception')
     expect(result.title.type).toBe('movie')
     expect(result.availabilityByRegion['US']).toContain('netflix')
+  })
+
+  it('maps extended TMDB metadata onto the title for a tv result', async () => {
+    const tvResult: TMDBSearchResult = {
+      id: 1234, media_type: 'tv', name: 'Parks and Recreation',
+      overview: '', poster_path: null, vote_average: 8.6, genre_ids: [35],
+    }
+    const tvDetail = {
+      id: 1234, name: 'Parks and Recreation', overview: 'Pawnee.',
+      poster_path: null, first_air_date: '2009-04-09', vote_average: 8.6,
+      number_of_seasons: 7, genres: [{ id: 35, name: 'Comedy' }],
+      external_ids: { imdb_id: 'tt1266020' },
+      credits: { cast: [{ name: 'Amy Poehler', order: 0 }, { name: 'Nick Offerman', order: 1 }], crew: [] },
+      created_by: [{ name: 'Michael Schur' }, { name: 'Greg Daniels' }],
+      networks: [{ name: 'NBC' }],
+      origin_country: ['US'],
+      number_of_episodes: 125,
+      status: 'Ended',
+      original_language: 'en',
+      content_ratings: { results: [{ iso_3166_1: 'US', rating: 'TV-14' }] },
+    }
+    vi.mocked(fetchTVDetail).mockResolvedValueOnce(tvDetail)
+    vi.mocked(fetchShowByTMDBId).mockResolvedValueOnce({ ...mockSAShow, showType: 'series' })
+    setupSupabaseMock()
+
+    await syncTitle(tvResult)
+
+    expect(capturedTitleData).toMatchObject({
+      network: 'NBC',
+      cast: ['Amy Poehler', 'Nick Offerman'],
+      creators: ['Michael Schur', 'Greg Daniels'],
+      origin_country: 'United States',
+      episode_count: 125,
+      status: 'Ended',
+      original_language: 'English',
+      content_rating: 'TV-14',
+    })
   })
 
   it('skips rent/buy streaming options — only upserts subscription and free', async () => {

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Where Can I Watch It? — Find streaming availability worldwide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --blue: #2B72E8;
+    --blue-hover: #1d5fd1;
+    --blue-active: #1752be;
+    --fg: #171717;
+    --muted: #717177;
+    --placeholder: #AEAEB8;
+    --border: #E5E5E5;
+    --green: #34C759;
+    --font-sans: 'DM Sans', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #FFFFFF;
+    color: var(--fg);
+    color-scheme: light;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .stage {
+    position: relative;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: #FFFFFF;
+  }
+
+  /* ── Animated cloud background ── */
+  .bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+    background-color: #FFFFFF;
+  }
+  .cloud {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.9) 0%, rgba(43,114,232,0.08) 72%, rgba(43,114,232,0) 100%);
+    filter: blur(70px);
+    will-change: transform;
+  }
+  .grain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px 256px;
+    pointer-events: none;
+  }
+
+  @keyframes drift0 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(90px,30px); } }
+  @keyframes drift1 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-80px,-36px); } }
+  @keyframes drift2 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(70px,24px); } }
+  @keyframes drift3 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(86px,-22px); } }
+  @keyframes drift4 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-60px,30px); } }
+
+  /* ── Hero ── */
+  .hero {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 768px;
+    padding: 64px 16px;
+    gap: 28px;
+  }
+
+  .logo {
+    width: 360px;
+    max-width: 84vw;
+    height: auto;
+    display: block;
+    user-select: none;
+  }
+
+  .tagline {
+    margin: 0;
+    color: var(--muted);
+    font-size: 16px;
+    text-align: center;
+    line-height: 1.6;
+  }
+  @media (min-width: 640px) { .tagline { white-space: nowrap; } }
+
+  .search-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+  }
+
+  /* ── Search bar ── */
+  .search-form {
+    position: relative;
+    width: 100%;
+    max-width: 620px;
+  }
+  .glow {
+    position: absolute;
+    inset: -10px 6px;
+    border-radius: 9999px;
+    background: rgba(43, 114, 232, 0.20);
+    filter: blur(30px);
+    opacity: 0.5;
+    transform: scale(1);
+    transition: all 300ms ease-out;
+    z-index: 0;
+  }
+  .search-form.focused .glow { opacity: 0.85; transform: scale(1.02); }
+
+  .pill {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 20px 50px rgba(43,114,232,0.12), 0 2px 8px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.95);
+    transition: all 300ms ease-out;
+  }
+  .search-form.focused .pill {
+    border: 1px solid rgba(43, 114, 232, 0.55);
+    box-shadow: 0 0 0 4px rgba(43,114,232,0.12), 0 20px 50px rgba(43,114,232,0.22), 0 2px 8px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.95);
+  }
+
+  /* Country selector */
+  .country { position: relative; flex-shrink: 0; }
+  .country-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 10px 14px 16px;
+    border: none;
+    background: transparent;
+    border-radius: 9999px 0 0 9999px;
+    cursor: pointer;
+    transition: background-color 150ms ease;
+    font-family: var(--font-sans);
+  }
+  .country-btn:hover { background: rgba(0,0,0,0.03); }
+  .country-btn:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--blue); }
+  .flag {
+    width: 24px; height: 18px;
+    border-radius: 3px;
+    object-fit: cover;
+    flex-shrink: 0;
+    display: block;
+  }
+  .country-code {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--fg);
+    letter-spacing: 0.03em;
+    line-height: 1;
+  }
+  .chevron {
+    width: 12px; height: 12px;
+    color: var(--placeholder);
+    flex-shrink: 0;
+    transition: transform 200ms ease;
+  }
+  .country.open .chevron { transform: rotate(180deg); }
+
+  .dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 8px;
+    z-index: 50;
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid rgba(0,0,0,0.06);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+    padding: 6px 0;
+    min-width: 196px;
+    overflow: hidden;
+    display: none;
+  }
+  .country.open .dropdown { display: block; }
+  .opt {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    color: var(--fg);
+    font-family: var(--font-sans);
+    text-align: left;
+    transition: background-color 100ms ease;
+  }
+  .opt:hover { background: rgba(43,114,232,0.05); }
+  .opt.selected { color: var(--blue); font-weight: 500; background: rgba(43,114,232,0.05); }
+
+  .divider {
+    width: 1px;
+    height: 20px;
+    background: rgba(0,0,0,0.08);
+    flex-shrink: 0;
+  }
+
+  .search-input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    padding: 14px 16px;
+    font-size: 15px;
+    color: var(--fg);
+    font-family: var(--font-sans);
+  }
+  .search-input::placeholder { color: var(--placeholder); }
+  .search-input:focus { outline: none; }
+  .search-input::-webkit-search-cancel-button { -webkit-appearance: none; }
+
+  .search-btn {
+    flex-shrink: 0;
+    margin: 6px 6px 6px 0;
+    width: 40px; height: 40px;
+    border-radius: 9999px;
+    background: var(--blue);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 150ms ease;
+  }
+  .search-btn:hover { background: var(--blue-hover); box-shadow: 0 4px 18px rgba(43,114,232,0.42); }
+  .search-btn:active { background: var(--blue-active); }
+  .search-btn:focus-visible { outline: none; box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--blue); }
+
+  /* Chips */
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    font-size: 14px;
+    background: #fff;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 150ms ease;
+    font-family: var(--font-sans);
+  }
+  .chip:hover { border-color: var(--blue); color: var(--blue); background: rgba(43,114,232,0.04); }
+  .chip:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--blue); }
+  .chip svg { width: 12px; height: 12px; flex-shrink: 0; }
+
+  /* Trust line */
+  .trust {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--placeholder);
+    letter-spacing: 0.03em;
+  }
+  .ping { position: relative; display: flex; height: 6px; width: 6px; flex-shrink: 0; }
+  .ping-wave {
+    position: absolute;
+    display: inline-flex;
+    height: 100%; width: 100%;
+    border-radius: 9999px;
+    background: var(--green);
+    opacity: 0.75;
+    animation: ping 1.4s cubic-bezier(0,0,0.2,1) infinite;
+  }
+  .ping-dot {
+    position: relative;
+    display: inline-flex;
+    height: 6px; width: 6px;
+    border-radius: 9999px;
+    background: var(--green);
+  }
+  @keyframes ping { 75%,100% { transform: scale(2); opacity: 0; } }
+
+  /* Entrance — base state is the visible end-state; animate FROM hidden */
+  .fade { opacity: 1; transform: translateY(0); animation: fadeUp 0.55s ease-out; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cloud, .ping-wave { animation: none !important; }
+    .fade { animation: none; }
+  }
+</style>
+</head>
+<body>
+  <main class="stage" data-screen-label="Home">
+    <div class="bg" aria-hidden="true">
+      <div class="cloud" style="width:760px;height:520px;top:-12%;left:-10%;animation:drift0 38s ease-in-out infinite;"></div>
+      <div class="cloud" style="width:720px;height:500px;top:62%;left:70%;animation:drift1 44s ease-in-out infinite 4s;"></div>
+      <div class="cloud" style="width:540px;height:380px;top:-8%;left:74%;animation:drift2 32s ease-in-out infinite 9s;"></div>
+      <div class="cloud" style="width:500px;height:360px;top:46%;left:-12%;animation:drift3 36s ease-in-out infinite 14s;"></div>
+      <div class="cloud" style="width:380px;height:280px;top:8%;left:40%;animation:drift4 30s ease-in-out infinite 18s;"></div>
+      <div class="grain"></div>
+    </div>
+
+    <div class="hero">
+      <div class="fade" style="animation-delay:0s;">
+        <img class="logo" src="logo.png" alt="Where Can I Watch It" width="360" />
+      </div>
+
+      <p class="tagline fade" style="animation-delay:0.12s;">
+        Find out where any movie or show is streaming&nbsp;—&nbsp;anywhere in the world.
+      </p>
+
+      <div class="search-block">
+        <form class="search-form fade" style="animation-delay:0.24s;" id="searchForm" aria-label="Search for a movie or TV show">
+          <div class="glow" aria-hidden="true"></div>
+          <div class="pill">
+            <div class="country" id="country">
+              <button type="button" class="country-btn" id="countryBtn" aria-haspopup="listbox" aria-expanded="false">
+                <img class="flag" id="selectedFlag" src="https://flagcdn.com/24x18/ph.png" alt="Philippines" width="24" height="18" />
+                <span class="country-code" id="selectedCode">PH</span>
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="dropdown" id="dropdown" role="listbox" aria-label="Select country"></div>
+            </div>
+
+            <div class="divider" aria-hidden="true"></div>
+
+            <input class="search-input" id="searchInput" type="search" placeholder="Search for a movie or TV show..." aria-label="Search query" autocomplete="off" spellcheck="false" />
+
+            <button type="submit" class="search-btn" aria-label="Search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            </button>
+          </div>
+        </form>
+
+        <div class="chips fade" style="animation-delay:0.36s;" id="chips"></div>
+
+        <div class="trust fade" style="animation-delay:0.48s;">
+          <span class="ping"><span class="ping-wave"></span><span class="ping-dot"></span></span>
+          <span>Availability data verified daily across 140+ countries</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const COUNTRIES = [
+      { code: 'PH', name: 'Philippines' },
+      { code: 'US', name: 'United States' },
+      { code: 'GB', name: 'United Kingdom' },
+      { code: 'AU', name: 'Australia' },
+      { code: 'CA', name: 'Canada' },
+    ];
+    const CHIPS = ['Severance', 'Parks and Recreation', 'Parasite'];
+    const searchIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>';
+
+    let selected = localStorage.getItem('wciwi-country') || 'PH';
+    if (!COUNTRIES.some(c => c.code === selected)) selected = 'PH';
+
+    const countryEl = document.getElementById('country');
+    const countryBtn = document.getElementById('countryBtn');
+    const dropdown = document.getElementById('dropdown');
+    const selectedFlag = document.getElementById('selectedFlag');
+    const selectedCode = document.getElementById('selectedCode');
+    const form = document.getElementById('searchForm');
+    const input = document.getElementById('searchInput');
+    const chipsEl = document.getElementById('chips');
+
+    function renderSelected() {
+      const c = COUNTRIES.find(c => c.code === selected);
+      selectedFlag.src = `https://flagcdn.com/24x18/${c.code.toLowerCase()}.png`;
+      selectedFlag.alt = c.name;
+      selectedCode.textContent = c.code;
+    }
+    function renderDropdown() {
+      dropdown.innerHTML = COUNTRIES.map(c => `
+        <button type="button" class="opt ${c.code === selected ? 'selected' : ''}" role="option" aria-selected="${c.code === selected}" data-code="${c.code}">
+          <img class="flag" src="https://flagcdn.com/24x18/${c.code.toLowerCase()}.png" alt="${c.name}" width="24" height="18" />
+          <span>${c.name}</span>
+        </button>`).join('');
+    }
+    function openDropdown(open) {
+      countryEl.classList.toggle('open', open);
+      countryBtn.setAttribute('aria-expanded', String(open));
+    }
+
+    renderSelected();
+    renderDropdown();
+
+    countryBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openDropdown(!countryEl.classList.contains('open'));
+    });
+    dropdown.addEventListener('click', (e) => {
+      const btn = e.target.closest('.opt');
+      if (!btn) return;
+      selected = btn.dataset.code;
+      localStorage.setItem('wciwi-country', selected);
+      renderSelected();
+      renderDropdown();
+      openDropdown(false);
+      input.focus();
+    });
+    document.addEventListener('mousedown', (e) => {
+      if (!countryEl.contains(e.target)) openDropdown(false);
+    });
+
+    input.addEventListener('focus', () => form.classList.add('focused'));
+    input.addEventListener('blur', () => form.classList.remove('focused'));
+
+    chipsEl.innerHTML = CHIPS.map(chip =>
+      `<button type="button" class="chip" data-q="${chip}" aria-label="Search for ${chip}">${searchIcon}<span>${chip}</span></button>`
+    ).join('');
+
+    function doSearch(q) {
+      const t = (q || '').trim();
+      if (!t) return;
+      // In the live app this navigates to /search?q=...&country=...
+      window.location.href = `../search-results/Search Results.html`;
+    }
+    form.addEventListener('submit', (e) => { e.preventDefault(); doSearch(input.value); });
+    chipsEl.addEventListener('click', (e) => {
+      const btn = e.target.closest('.chip');
+      if (btn) doSearch(btn.dataset.q);
+    });
+  </script>
+</body>
+</html>

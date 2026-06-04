@@ -1,23 +1,11 @@
 import Link from 'next/link'
 import { cookies } from 'next/headers'
 import { AnimatedBackground } from '@/components/home/animated-background'
-import { Logo } from '@/components/logo'
-import { CompactSearchForm } from '@/components/search/compact-search-form'
+import { CountryProvider } from '@/components/country/country-context'
+import { SiteHeader } from '@/components/layout/site-header'
 import { ResultsSection } from '@/components/search/results-section'
-import { SUPPORTED_COUNTRIES, type CountryCode, resolveCountry } from '@/lib/country'
-
-interface SyncedResult {
-  title: {
-    id: string
-    title: string
-    type: string
-    release_year: number | null
-    poster_url: string | null
-    imdb_rating: number | null
-    season_count: number | null
-  }
-  availabilityByRegion: Record<string, string[]>
-}
+import { resolveCountry } from '@/lib/country'
+import type { SyncedResult } from '@/types/search'
 
 async function fetchSearch(query: string): Promise<{ results: SyncedResult[]; query: string }> {
   const base = process.env.VERCEL_URL
@@ -30,7 +18,6 @@ async function fetchSearch(query: string): Promise<{ results: SyncedResult[]; qu
   if (!res.ok) throw new Error('Search failed')
   return res.json()
 }
-
 
 export default async function SearchPage({
   searchParams,
@@ -94,35 +81,17 @@ export default async function SearchPage({
   }
 
   return (
-    <main
-      className="relative min-h-dvh flex flex-col overflow-hidden"
-      style={{ backgroundColor: '#FFFFFF' }}
-    >
-      <AnimatedBackground />
-
-      {/* Sticky header */}
-      <header
-        className="sticky top-0 z-50 flex items-center gap-3 px-4 sm:px-6 py-2.5"
-        style={{
-          background: 'rgba(255, 255, 255, 0.86)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(229, 229, 229, 0.55)',
-          boxShadow: '0 1px 0 rgba(0,0,0,0.03)',
-        }}
+    <CountryProvider initial={country}>
+      <main
+        className="relative min-h-dvh flex flex-col overflow-hidden"
+        style={{ backgroundColor: '#FFFFFF' }}
       >
-        <Link href="/" aria-label="Home" className="flex-shrink-0">
-          <Logo width={110} />
-        </Link>
-        <div className="flex-1 max-w-lg">
-          <CompactSearchForm initialQuery={q} initialCountry={country} />
+        <AnimatedBackground />
+        <SiteHeader initialQuery={q} />
+        <div className="relative z-10 flex-1 w-full max-w-[880px] mx-auto px-4 min-[721px]:px-6 pt-8 pb-24">
+          <ResultsSection results={data.results} query={data.query} />
         </div>
-      </header>
-
-      {/* Results */}
-      <div className="relative z-10 flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 pt-8 pb-16">
-        <ResultsSection results={data.results} query={data.query} country={country} />
-      </div>
-    </main>
+      </main>
+    </CountryProvider>
   )
 }

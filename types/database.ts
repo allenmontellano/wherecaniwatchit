@@ -32,6 +32,14 @@ export interface Title {
   imdb_rating: number | null
   imdb_id: string | null
   season_count: number | null
+  network: string | null
+  cast: string[] | null
+  creators: string[] | null
+  origin_country: string | null
+  episode_count: number | null
+  status: string | null
+  original_language: string | null
+  content_rating: string | null
   created_at: string
   updated_at: string
 }
@@ -65,7 +73,10 @@ export interface Profile {
 
 export interface Flag {
   id: string
-  availability_id: string
+  availability_id: string | null
+  title_id: string | null
+  region_code: string | null
+  issue_type: string | null
   flag_type: FlagType
   status: FlagStatus
   user_id: string | null

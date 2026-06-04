@@ -1,4 +1,8 @@
-import type { TMDBSearchResult, TMDBMovieDetail, TMDBTVDetail } from './types'
+import type {
+  TMDBSearchResult,
+  TMDBMovieDetailFull,
+  TMDBTVDetailFull,
+} from './types'
 
 const BASE = 'https://api.themoviedb.org/3'
 const IMAGE_BASE = 'https://image.tmdb.org/t/p/w500'
@@ -29,17 +33,20 @@ export async function searchTMDB(query: string): Promise<TMDBSearchResult[]> {
   )
 }
 
-export async function fetchMovieDetail(tmdbId: number): Promise<TMDBMovieDetail> {
-  const url = tmdbUrl(`/movie/${tmdbId}`, { language: 'en-US' })
+export async function fetchMovieDetail(tmdbId: number): Promise<TMDBMovieDetailFull> {
+  const url = tmdbUrl(`/movie/${tmdbId}`, {
+    language: 'en-US',
+    append_to_response: 'credits,release_dates',
+  })
   const res = await fetch(url, { next: { revalidate: 3600 } } as RequestInit)
   if (!res.ok) throw new Error(`TMDB movie detail failed: ${res.status}`)
   return res.json()
 }
 
-export async function fetchTVDetail(tmdbId: number): Promise<TMDBTVDetail> {
+export async function fetchTVDetail(tmdbId: number): Promise<TMDBTVDetailFull> {
   const url = tmdbUrl(`/tv/${tmdbId}`, {
     language: 'en-US',
-    append_to_response: 'external_ids',
+    append_to_response: 'external_ids,credits,content_ratings',
   })
   const res = await fetch(url, { next: { revalidate: 3600 } } as RequestInit)
   if (!res.ok) throw new Error(`TMDB TV detail failed: ${res.status}`)

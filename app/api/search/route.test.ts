@@ -37,7 +37,7 @@ describe('GET /api/search', () => {
       { id: 27205, media_type: 'movie', title: 'Inception', overview: '', poster_path: null, vote_average: 8.4, genre_ids: [] },
     ])
     vi.mocked(syncTitle).mockResolvedValueOnce({
-      title: { id: 'uuid', tmdb_id: 27205, title: 'Inception', type: 'movie', genres: [], runtime: 148, release_year: 2010, synopsis: null, poster_url: null, imdb_rating: 8.4, imdb_id: null, season_count: null, created_at: '', updated_at: '' },
+      title: { id: 'uuid', tmdb_id: 27205, title: 'Inception', type: 'movie', genres: [], runtime: 148, release_year: 2010, synopsis: null, poster_url: null, imdb_rating: 8.4, imdb_id: null, season_count: null, network: null, cast: null, creators: null, origin_country: null, episode_count: null, status: null, original_language: null, content_rating: null, created_at: '', updated_at: '' },
       availabilityByRegion: { US: ['netflix'] },
     })
 

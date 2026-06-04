@@ -1,14 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createHash } from 'crypto'
+import {
+  ISSUE_TYPES,
+  issueToFlagType,
+  composeNotes,
+  type IssueType,
+} from '@/lib/flags'
 
 interface FlagBody {
-  availability_id: string
-  flag_type: 'incorrect' | 'outdated' | 'missing'
+  title_id: string
+  region_code: string
+  issue_type: IssueType
+  platform?: string
   notes?: string
 }
-
-const VALID_FLAG_TYPES = new Set(['incorrect', 'outdated', 'missing'])
 
 function hashIp(ip: string): string {
   return createHash('sha256')
@@ -25,17 +31,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  const { availability_id, flag_type, notes } = body
+  const { title_id, region_code, issue_type, platform, notes } = body
 
-  if (!availability_id || !flag_type) {
+  if (!title_id || !region_code || !issue_type) {
     return NextResponse.json(
-      { error: 'availability_id and flag_type are required' },
+      { error: 'title_id, region_code and issue_type are required' },
       { status: 400 }
     )
   }
 
-  if (!VALID_FLAG_TYPES.has(flag_type)) {
-    return NextResponse.json({ error: 'Invalid flag_type' }, { status: 400 })
+  if (!ISSUE_TYPES.includes(issue_type)) {
+    return NextResponse.json({ error: 'Invalid issue_type' }, { status: 400 })
   }
 
   const ip =
@@ -43,12 +49,17 @@ export async function POST(req: NextRequest) {
     req.headers.get('x-real-ip') ??
     'unknown'
 
+  const composed = composeNotes(issue_type, platform, notes)
+
   const supabase = createAdminClient()
 
   const { error } = await supabase.from('flags').insert({
-    availability_id,
-    flag_type,
-    notes: notes ? notes.slice(0, 500) : null,
+    availability_id: null,
+    title_id,
+    region_code,
+    issue_type,
+    flag_type: issueToFlagType(issue_type),
+    notes: composed ? composed.slice(0, 500) : null,
     ip_hash: hashIp(ip),
     status: 'pending',
   })
