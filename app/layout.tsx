@@ -24,7 +24,12 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 })
 
+// Pre-launch toggle: keep false to block search engines (noindex, nofollow).
+// Flip to true on launch day to allow indexing. This is the only line to change.
+const SITE_INDEXABLE = false
+
 export const metadata: Metadata = {
+  robots: { index: SITE_INDEXABLE, follow: SITE_INDEXABLE },
   title: 'Where Can I Watch It? — Find streaming availability worldwide',
   description:
     "Search any movie or TV show and instantly see where it's streaming — Netflix, Disney+, Prime Video and more, across Philippines, US, UK, Australia, and Canada.",
