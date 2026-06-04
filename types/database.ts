@@ -73,7 +73,10 @@ export interface Profile {
 
 export interface Flag {
   id: string
-  availability_id: string
+  availability_id: string | null
+  title_id: string | null
+  region_code: string | null
+  issue_type: string | null
   flag_type: FlagType
   status: FlagStatus
   user_id: string | null
