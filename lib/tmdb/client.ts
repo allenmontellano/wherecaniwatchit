@@ -33,6 +33,35 @@ export async function searchTMDB(query: string): Promise<TMDBSearchResult[]> {
   )
 }
 
+export async function fetchPopular(
+  mediaType: 'movie' | 'tv',
+  page: number
+): Promise<TMDBSearchResult[]> {
+  const url = tmdbUrl(`/${mediaType}/popular`, { language: 'en-US', page: String(page) })
+  const res = await fetch(url, { next: { revalidate: 3600 } } as RequestInit)
+  if (!res.ok) throw new Error(`TMDB popular ${mediaType} failed: ${res.status}`)
+  const data = await res.json()
+  return (data.results as TMDBSearchResult[]).map((r) => ({ ...r, media_type: mediaType }))
+}
+
+export async function fetchDiscover(
+  mediaType: 'movie' | 'tv',
+  page: number,
+  filters: Record<string, string>
+): Promise<TMDBSearchResult[]> {
+  const url = tmdbUrl(`/discover/${mediaType}`, {
+    language: 'en-US',
+    page: String(page),
+    sort_by: 'popularity.desc',
+    include_adult: 'false',
+    ...filters,
+  })
+  const res = await fetch(url, { next: { revalidate: 3600 } } as RequestInit)
+  if (!res.ok) throw new Error(`TMDB discover ${mediaType} failed: ${res.status}`)
+  const data = await res.json()
+  return (data.results as TMDBSearchResult[]).map((r) => ({ ...r, media_type: mediaType }))
+}
+
 export async function fetchMovieDetail(tmdbId: number): Promise<TMDBMovieDetailFull> {
   const url = tmdbUrl(`/movie/${tmdbId}`, {
     language: 'en-US',

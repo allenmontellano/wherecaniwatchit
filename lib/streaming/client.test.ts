@@ -5,11 +5,17 @@ vi.stubGlobal('fetch', mockFetch)
 
 process.env.MOTN_API_KEY = 'test-motn-key'
 
+vi.mock('@/lib/quota', () => ({
+  incrementQuota: vi.fn().mockResolvedValue(1),
+}))
+
 import { fetchShowByTMDBId, LAUNCH_REGIONS } from './client'
+import { incrementQuota } from '@/lib/quota'
 import type { SAShow } from './types'
 
 beforeEach(() => {
   mockFetch.mockReset()
+  vi.mocked(incrementQuota).mockClear()
 })
 
 const mockShow: SAShow = {
@@ -97,5 +103,40 @@ describe('fetchShowByTMDBId', () => {
     expect(result?.title).toBe('Inception')
     expect(result?.streamingOptions.us).toHaveLength(1)
     expect(result?.streamingOptions.us[0].service.id).toBe('netflix')
+  })
+})
+
+describe('fetchShowByTMDBId quota counting', () => {
+  it('increments the MOTN quota counter once on a successful call', async () => {
+    mockFetch.mockResolvedValueOnce({ ok: true, status: 200, json: async () => mockShow })
+
+    await fetchShowByTMDBId(27205, 'movie')
+
+    expect(incrementQuota).toHaveBeenCalledTimes(1)
+    expect(incrementQuota).toHaveBeenCalledWith('motn')
+  })
+
+  it('increments the counter on a 404 — the lookup still consumed a call', async () => {
+    mockFetch.mockResolvedValueOnce({ ok: false, status: 404 })
+
+    await fetchShowByTMDBId(99999, 'movie')
+
+    expect(incrementQuota).toHaveBeenCalledTimes(1)
+  })
+
+  it('increments the counter on an error response before throwing', async () => {
+    mockFetch.mockResolvedValueOnce({ ok: false, status: 429 })
+
+    await expect(fetchShowByTMDBId(27205, 'movie')).rejects.toThrow()
+
+    expect(incrementQuota).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not increment when fetch itself throws (no response received)', async () => {
+    mockFetch.mockRejectedValueOnce(new Error('network down'))
+
+    await expect(fetchShowByTMDBId(27205, 'movie')).rejects.toThrow('network down')
+
+    expect(incrementQuota).not.toHaveBeenCalled()
   })
 })

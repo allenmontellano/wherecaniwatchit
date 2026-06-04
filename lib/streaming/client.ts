@@ -1,4 +1,5 @@
 import type { SAShow } from './types'
+import { incrementQuota } from '@/lib/quota'
 
 const BASE = 'https://api.movieofthenight.com/v4'
 
@@ -21,6 +22,10 @@ export async function fetchShowByTMDBId(
     },
     next: { revalidate: 86400 },
   } as RequestInit)
+
+  // A response was received from MOTN, so a call was consumed — count it
+  // (including 404 lookups and error responses) before branching.
+  await incrementQuota('motn')
 
   if (res.status === 404) return null
   if (!res.ok) throw new Error(`Streaming Availability API failed: ${res.status}`)
