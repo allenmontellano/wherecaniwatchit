@@ -6,7 +6,6 @@ import type { RegionMeta } from '@/lib/country'
 import { ISSUE_TYPES, type IssueType } from '@/lib/flags'
 
 interface ReportModalProps {
-  open: boolean
   onClose: () => void
   titleId: string
   titleName: string
@@ -21,34 +20,20 @@ const ISSUE_LABELS: Record<IssueType, string> = {
   other: 'Other',
 }
 
-export function ReportModal({ open, onClose, titleId, titleName, region }: ReportModalProps) {
+export function ReportModal({ onClose, titleId, titleName, region }: ReportModalProps) {
   const [issue, setIssue] = useState<IssueType>('not-here')
   const [platform, setPlatform] = useState('')
   const [notes, setNotes] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [done, setDone] = useState(false)
 
-  // Reset whenever the modal opens.
   useEffect(() => {
-    if (open) {
-      setIssue('not-here')
-      setPlatform('')
-      setNotes('')
-      setSubmitting(false)
-      setDone(false)
-    }
-  }, [open])
-
-  useEffect(() => {
-    if (!open) return
     function onKey(e: KeyboardEvent) {
       if (e.key === 'Escape') onClose()
     }
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
-  }, [open, onClose])
-
-  if (!open) return null
+  }, [onClose])
 
   const showPlatform = issue === 'wrong-platform' || issue === 'is-here'
   const counterWarn = notes.length >= 260
