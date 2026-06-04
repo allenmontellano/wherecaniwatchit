@@ -1,5 +1,4 @@
 import { Logo } from '@/components/logo'
-import { ChevronLeft } from 'lucide-react'
 
 export default function TitleLoading() {
   return (
@@ -7,60 +6,57 @@ export default function TitleLoading() {
       className="relative min-h-dvh flex flex-col overflow-hidden"
       style={{ backgroundColor: '#FFFFFF' }}
     >
-      {/* Header skeleton */}
+      {/* Header skeleton (matches SiteHeader) */}
       <header
-        className="sticky top-0 z-50 flex items-center gap-3 px-4 sm:px-6 py-2.5"
+        className="sticky top-0 z-40 grid items-center gap-3 min-[721px]:gap-6 px-4 min-[721px]:px-8 py-3 min-[721px]:py-3.5 grid-cols-[auto_1fr_auto] min-[721px]:grid-cols-[1fr_minmax(0,540px)_1fr]"
         style={{
-          background: 'rgba(255, 255, 255, 0.86)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(229, 229, 229, 0.55)',
+          background: 'rgba(255,255,255,0.82)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          borderBottom: '1px solid rgba(0,0,0,0.06)',
         }}
       >
-        <div className="flex items-center gap-1.5 text-sm text-[#AEAEB8]">
-          <ChevronLeft className="w-4 h-4" />
-          <span>Back</span>
+        <div className="justify-self-start">
+          <Logo width={120} />
         </div>
-        <div className="flex-1 flex justify-center">
-          <Logo width={100} />
-        </div>
-        <div className="w-14" aria-hidden="true" />
+        <div className="h-[42px] rounded-full bg-[#F0F0F2] animate-pulse" />
+        <div className="justify-self-end h-9 w-[120px] rounded-full bg-[#F0F0F2] animate-pulse" />
       </header>
 
-      <div className="relative z-10 flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-8 pb-16">
-        <div className="grid grid-cols-1 md:grid-cols-[2fr_3fr] gap-6 md:gap-10 mb-10">
-          {/* Poster skeleton */}
-          <div className="w-full max-w-[280px] mx-auto md:mx-0">
-            <div
-              className="w-full rounded-2xl bg-[#F0F0F2] animate-pulse"
-              style={{ aspectRatio: '2/3' }}
-            />
+      {/* Hero skeleton */}
+      <section
+        className="relative"
+        style={{ background: 'linear-gradient(135deg,#1f2a44 0%,#2d3b5e 45%,#3a4a72 100%)' }}
+      >
+        <div className="relative max-w-[1080px] mx-auto px-4 min-[721px]:px-8 pt-10 min-[721px]:pt-14 pb-8 min-[721px]:pb-10 flex flex-col min-[721px]:flex-row gap-6 min-[721px]:gap-10 items-start min-[721px]:items-end">
+          <div
+            className="flex-shrink-0 w-[150px] min-[721px]:w-[230px] rounded-[16px] bg-white/10 animate-pulse"
+            style={{ aspectRatio: '2/3' }}
+          />
+          <div className="flex-1 w-full space-y-4 pb-1.5">
+            <div className="h-12 w-2/3 bg-white/15 rounded-lg animate-pulse" />
+            <div className="h-4 w-1/2 bg-white/10 rounded-full animate-pulse" />
+            <div className="space-y-2">
+              <div className="h-3.5 bg-white/10 rounded-full animate-pulse" />
+              <div className="h-3.5 w-5/6 bg-white/10 rounded-full animate-pulse" />
+            </div>
           </div>
+        </div>
+      </section>
 
-          {/* Info skeleton */}
-          <div className="flex flex-col gap-3 pt-2">
-            <div className="flex gap-2">
-              <div className="h-5 w-14 bg-[#F0F0F2] rounded-full animate-pulse" />
-              <div className="h-5 w-10 bg-[#F0F0F2] rounded-full animate-pulse" />
-              <div className="h-5 w-16 bg-[#F0F0F2] rounded-full animate-pulse" />
-            </div>
-            <div className="h-9 w-3/4 bg-[#F0F0F2] rounded-lg animate-pulse" />
-            <div className="flex gap-1.5">
-              <div className="h-5 w-16 bg-[#F0F0F2] rounded-full animate-pulse" />
-              <div className="h-5 w-20 bg-[#F0F0F2] rounded-full animate-pulse" />
-            </div>
-            <div className="space-y-2 mt-1">
-              <div className="h-3.5 bg-[#F0F0F2] rounded-full animate-pulse" />
-              <div className="h-3.5 bg-[#F0F0F2] rounded-full animate-pulse w-5/6" />
-              <div className="h-3.5 bg-[#F0F0F2] rounded-full animate-pulse w-4/6" />
-            </div>
-            {/* Tab skeletons */}
-            <div className="hidden md:flex gap-2 mt-4">
-              {[60, 52, 64, 56, 52].map((w, i) => (
-                <div key={i} className="h-8 bg-[#F0F0F2] rounded-full animate-pulse" style={{ width: w }} />
-              ))}
-            </div>
-          </div>
+      {/* Content skeletons */}
+      <div className="max-w-[1080px] mx-auto w-full px-4 min-[721px]:px-8 pt-2 pb-16 space-y-10">
+        <div className="mt-10 space-y-3.5">
+          <div className="h-3 w-40 bg-[#F0F0F2] rounded-full animate-pulse" />
+          <div className="h-24 bg-[#F0F0F2] rounded-[18px] animate-pulse" />
+        </div>
+        <div className="space-y-3.5">
+          <div className="h-3 w-48 bg-[#F0F0F2] rounded-full animate-pulse" />
+          <div className="h-56 bg-[#F0F0F2] rounded-[18px] animate-pulse" />
+        </div>
+        <div className="grid grid-cols-1 min-[861px]:grid-cols-2 gap-5">
+          <div className="h-64 bg-[#F0F0F2] rounded-[18px] animate-pulse" />
+          <div className="h-64 bg-[#F0F0F2] rounded-[18px] animate-pulse" />
         </div>
       </div>
     </main>

@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\Allen\\\\Documents\\\\Claude\\\\Apps\\\\wherecaniwatchit\" -Recurse -Depth 3)",
+      "Bash(Select-Object FullName)",
+      "Read(//c/Users/Allen/.claude/skills/ui-ux-pro-max-skill-main/.claude/skills/ui-ux-pro-max/**)",
+      "Bash(python scripts/search.py \"streaming entertainment search results card grid minimal glassmorphism\" --design-system -p \"WhereCanIWatchIt\" -f markdown)",
+      "Read(//c/Users/Allen/.claude/skills/ui-ux-pro-max-skill-main/**)",
+      "Bash(python \"src/ui-ux-pro-max/scripts/search.py\" \"streaming entertainment search results card grid minimal glassmorphism\" --design-system -p \"WhereCanIWatchIt\" -f markdown)",
+      "Bash(python \"src/ui-ux-pro-max/scripts/search.py\" \"search results page sticky header card grid streaming\" --domain ux)",
+      "Bash(python \"src/ui-ux-pro-max/scripts/search.py\" \"glassmorphism minimal white card hover\" --domain style)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\({k:d.get\\(k\\) for k in ['scripts','devDependencies','dependencies']}, indent=2\\)\\)\")",
+      "Bash(npm run *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/search?q=test)",
+      "Bash(echo \"Started PID $!\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"http://localhost:3000/search?q=Severance&country=PH\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"http://localhost:3000/search?q=xyznotarealshow123&country=US\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"http://localhost:3000/search\")",
+      "Bash(node -e \"const p = require\\('playwright'\\); console.log\\('playwright available'\\)\")",
+      "Bash(npx playwright *)",
+      "Bash(node -e ' *)",
+      "Read(//c/Users/Allen/AppData/Local/Temp/**)",
+      "Bash(curl -s \"http://localhost:3000/api/search?q=Severance\")",
+      "Read(//c/Users/Allen/.claude/plugins/cache/superpowers-dev/superpowers/5.1.0/skills/subagent-driven-development/**)",
+      "Bash(npm test *)",
+      "Bash(git diff *)",
+      "Bash(git show *)",
+      "Bash(grep -E \"\\\\.\\(ts|tsx\\)$\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(d['results'][0]['title']['id']\\)\")",
+      "WebFetch(domain:api.anthropic.com)",
+      "Bash(mkdir -p design_extract)",
+      "Bash(tar -tzf webfetch-1780546445868-bc6f0d.bin)",
+      "Bash(tar -xzf webfetch-1780546445868-bc6f0d.bin -C design_extract)",
+      "Bash(git checkout *)",
+      "Bash(git rm *)"
+    ]
+  }
+}
