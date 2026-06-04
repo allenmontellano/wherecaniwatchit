@@ -7,7 +7,7 @@ vi.stubGlobal('fetch', mockFetch)
 // Set env var before importing
 process.env.TMDB_API_KEY = 'test-api-key'
 
-import { searchTMDB, fetchMovieDetail, fetchTVDetail, posterUrl } from './client'
+import { searchTMDB, fetchMovieDetail, fetchTVDetail, fetchPopular, fetchDiscover, posterUrl } from './client'
 import type { TMDBSearchResult, TMDBMovieDetail, TMDBTVDetail } from './types'
 
 beforeEach(() => {
@@ -61,6 +61,75 @@ describe('searchTMDB', () => {
     mockFetch.mockResolvedValueOnce({ ok: false, status: 401 })
 
     await expect(searchTMDB('test')).rejects.toThrow('TMDB search failed with status 401')
+  })
+})
+
+describe('fetchPopular', () => {
+  it('fetches a page of popular movies and injects media_type', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        results: [
+          { id: 1, title: 'A Movie', overview: '', poster_path: null, vote_average: 7, genre_ids: [] },
+        ],
+      }),
+    })
+
+    const found = await fetchPopular('movie', 3)
+
+    const calledUrl = mockFetch.mock.calls[0][0] as string
+    expect(calledUrl).toContain('/movie/popular')
+    expect(calledUrl).toContain('page=3')
+    expect(found[0].media_type).toBe('movie')
+    expect(found[0].id).toBe(1)
+  })
+
+  it('fetches a page of popular tv and injects media_type', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        results: [
+          { id: 5, name: 'A Show', overview: '', poster_path: null, vote_average: 8, genre_ids: [] },
+        ],
+      }),
+    })
+
+    const found = await fetchPopular('tv', 1)
+
+    const calledUrl = mockFetch.mock.calls[0][0] as string
+    expect(calledUrl).toContain('/tv/popular')
+    expect(found[0].media_type).toBe('tv')
+  })
+
+  it('throws on a non-ok response', async () => {
+    mockFetch.mockResolvedValueOnce({ ok: false, status: 500 })
+    await expect(fetchPopular('movie', 1)).rejects.toThrow(/500/)
+  })
+})
+
+describe('fetchDiscover', () => {
+  it('builds a discover query with genre and origin country and injects media_type', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        results: [{ id: 9, name: 'Anime', overview: '', poster_path: null, vote_average: 8, genre_ids: [16] }],
+      }),
+    })
+
+    const found = await fetchDiscover('tv', 2, { with_genres: '16', with_origin_country: 'JP' })
+
+    const calledUrl = mockFetch.mock.calls[0][0] as string
+    expect(calledUrl).toContain('/discover/tv')
+    expect(calledUrl).toContain('with_genres=16')
+    expect(calledUrl).toContain('with_origin_country=JP')
+    expect(calledUrl).toContain('page=2')
+    expect(calledUrl).toContain('sort_by=popularity.desc')
+    expect(found[0].media_type).toBe('tv')
+  })
+
+  it('throws on a non-ok response', async () => {
+    mockFetch.mockResolvedValueOnce({ ok: false, status: 422 })
+    await expect(fetchDiscover('movie', 1, { with_genres: '28' })).rejects.toThrow(/422/)
   })
 })
 
