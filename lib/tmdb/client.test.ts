@@ -28,7 +28,7 @@ describe('searchTMDB', () => {
   it('calls TMDB multi-search with the query and api_key', async () => {
     const results: TMDBSearchResult[] = [
       { id: 27205, media_type: 'movie', title: 'Inception', overview: '', poster_path: null, vote_average: 8.4, genre_ids: [28] },
-      { id: 999, media_type: 'person', title: 'Someone', overview: '', poster_path: null, vote_average: 0, genre_ids: [] } as any,
+      { id: 999, media_type: 'person', title: 'Someone', overview: '', poster_path: null, vote_average: 0, genre_ids: [] } as unknown as TMDBSearchResult,
     ]
     mockFetch.mockResolvedValueOnce({
       ok: true,
@@ -46,7 +46,7 @@ describe('searchTMDB', () => {
   it('filters out non-movie and non-tv results', async () => {
     const results: TMDBSearchResult[] = [
       { id: 1, media_type: 'movie', title: 'A Movie', overview: '', poster_path: null, vote_average: 7, genre_ids: [] },
-      { id: 2, media_type: 'person', title: 'A Person', overview: '', poster_path: null, vote_average: 0, genre_ids: [] } as any,
+      { id: 2, media_type: 'person', title: 'A Person', overview: '', poster_path: null, vote_average: 0, genre_ids: [] } as unknown as TMDBSearchResult,
       { id: 3, media_type: 'tv', name: 'A Show', overview: '', poster_path: null, vote_average: 8, genre_ids: [] },
     ]
     mockFetch.mockResolvedValueOnce({ ok: true, json: async () => ({ results }) })
