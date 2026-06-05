@@ -3,6 +3,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { fetchShowByTMDBId, LAUNCH_REGIONS } from '@/lib/streaming/client'
 import { hasRemainingQuota, resetQuota } from '@/lib/quota'
 import { selectTitlesToRefresh, type RefreshTitle } from '@/lib/cron-select'
+import { delCached, titleCacheKey } from '@/lib/cache'
 import type { Platform } from '@/types/database'
 
 const SA_TO_DB: Record<string, string> = {
@@ -96,6 +97,9 @@ export async function GET(req: NextRequest) {
         )
       }
     }
+
+    // Availability changed — drop the title's detail cache so it re-fetches.
+    await delCached(titleCacheKey(title.id))
     refreshed++
   }
 

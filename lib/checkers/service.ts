@@ -1,4 +1,5 @@
 import { createAdminClient } from '@/lib/supabase/admin'
+import { captureMessage } from '@/lib/observability'
 import type { PlatformCheckerConfig, AvailabilityStrategy } from './config'
 
 export interface TitleInfo {
@@ -142,6 +143,7 @@ export async function runCheckerBatch(
 
     if (errorRate > CIRCUIT_BREAKER_THRESHOLD) {
       stopped = true
+      captureMessage('checker circuit breaker tripped', { regionCode, errorRate, processed, errors })
       onCircuitBreak(regionCode, errorRate)
       break
     }

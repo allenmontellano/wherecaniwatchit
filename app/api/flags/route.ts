@@ -7,6 +7,7 @@ import {
   composeNotes,
   type IssueType,
 } from '@/lib/flags'
+import { captureException } from '@/lib/observability'
 
 interface FlagBody {
   title_id: string
@@ -65,7 +66,7 @@ export async function POST(req: NextRequest) {
   })
 
   if (error) {
-    console.error('Flag insert error:', error)
+    captureException(error, { op: 'flags.insert', title_id, region_code, issue_type })
     return NextResponse.json({ error: 'Failed to submit flag' }, { status: 500 })
   }
 

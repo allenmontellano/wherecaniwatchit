@@ -7,12 +7,19 @@ vi.mock('@/lib/search-db', () => ({ searchLocalTitles: vi.fn() }))
 vi.mock('@/lib/tmdb/client', () => ({ searchTMDB: vi.fn() }))
 vi.mock('@/lib/sync', () => ({ syncTitle: vi.fn() }))
 vi.mock('@/lib/quota', () => ({ hasRemainingQuota: vi.fn() }))
+vi.mock('@/lib/cache', () => ({
+  getCached: vi.fn().mockResolvedValue(null),
+  setCached: vi.fn().mockResolvedValue(undefined),
+  searchCacheKey: (q: string) => `search:${q}`,
+  SEARCH_TTL: 3600,
+}))
 
 import { performSearch } from './search'
 import { searchLocalTitles } from '@/lib/search-db'
 import { searchTMDB } from '@/lib/tmdb/client'
 import { syncTitle } from '@/lib/sync'
 import { hasRemainingQuota } from '@/lib/quota'
+import { getCached, setCached } from '@/lib/cache'
 
 function makeTitle(over: Partial<Title> = {}): Title {
   return {
@@ -79,5 +86,29 @@ describe('performSearch', () => {
     const res = await performSearch('inception')
     expect(res.results).toEqual([])
     expect(res.notice).toMatch(/trouble/i)
+  })
+
+  it('returns the cached response without hitting DB/TMDB on a cache hit', async () => {
+    vi.mocked(getCached).mockResolvedValueOnce({
+      results: [synced(makeTitle())],
+      query: 'inception',
+      source: 'db',
+    })
+    const res = await performSearch('inception')
+    expect(res.results).toHaveLength(1)
+    expect(searchLocalTitles).not.toHaveBeenCalled()
+    expect(searchTMDB).not.toHaveBeenCalled()
+  })
+
+  it('caches non-empty results but never caches empty results', async () => {
+    vi.mocked(searchLocalTitles).mockResolvedValueOnce([synced(makeTitle())])
+    await performSearch('inception')
+    expect(setCached).toHaveBeenCalledTimes(1)
+
+    vi.mocked(setCached).mockClear()
+    vi.mocked(searchLocalTitles).mockResolvedValueOnce([])
+    vi.mocked(searchTMDB).mockResolvedValueOnce([])
+    await performSearch('zzznope')
+    expect(setCached).not.toHaveBeenCalled()
   })
 })

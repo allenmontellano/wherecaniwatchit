@@ -5,8 +5,15 @@ const mockFrom = vi.fn()
 vi.mock('@/lib/supabase/admin', () => ({
   createAdminClient: () => ({ from: mockFrom }),
 }))
+vi.mock('@/lib/cache', () => ({
+  getCached: vi.fn().mockResolvedValue(null),
+  setCached: vi.fn().mockResolvedValue(undefined),
+  titleCacheKey: (id: string) => `title:${id}`,
+  DETAIL_TTL: 21600,
+}))
 
 import { GET } from './route'
+import { getCached } from '@/lib/cache'
 
 describe('GET /api/titles/[id]', () => {
   it('returns 404 when title is not found', async () => {
@@ -62,5 +69,19 @@ describe('GET /api/titles/[id]', () => {
     const body = await res.json()
     expect(body.title.title).toBe('Inception')
     expect(body.availability).toHaveLength(1)
+  })
+
+  it('returns the cached payload without querying the DB on a cache hit', async () => {
+    vi.mocked(getCached).mockResolvedValueOnce({ title: { title: 'Cached' }, availability: [] })
+    mockFrom.mockImplementation(() => {
+      throw new Error('DB should not be queried on a cache hit')
+    })
+
+    const req = new NextRequest('http://localhost:3000/api/titles/uuid')
+    const res = await GET(req, { params: Promise.resolve({ id: 'uuid' }) })
+
+    expect(res.status).toBe(200)
+    const body = await res.json()
+    expect(body.title.title).toBe('Cached')
   })
 })

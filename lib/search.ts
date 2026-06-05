@@ -3,6 +3,8 @@ import { searchTMDB } from '@/lib/tmdb/client'
 import { syncTitle } from '@/lib/sync'
 import { hasRemainingQuota } from '@/lib/quota'
 import { searchLocalTitles } from '@/lib/search-db'
+import { getCached, setCached, searchCacheKey, SEARCH_TTL } from '@/lib/cache'
+import { captureException } from '@/lib/observability'
 import type { SyncedResult } from '@/types/search'
 
 export const MIN_QUERY = 2
@@ -19,12 +21,26 @@ export interface SearchResponse {
 }
 
 // Shared search logic used by both the API route and the search page (called
-// directly, server-side — no HTTP self-fetch). DB-first, then quota-gated
-// on-demand seeding, with graceful fallbacks. Never throws.
+// directly, server-side — no HTTP self-fetch). Cache-first, then DB-first,
+// then quota-gated on-demand seeding, with graceful fallbacks. Never throws.
 export async function performSearch(rawQuery: string): Promise<SearchResponse> {
   const query = rawQuery.trim()
   if (query.length < MIN_QUERY) return { results: [], query, source: 'db' }
 
+  const cacheKey = searchCacheKey(query)
+  const cached = await getCached<SearchResponse>(cacheKey)
+  if (cached) return cached
+
+  const result = await computeSearch(query)
+
+  // Never cache empty, notice (quota/slow), or error responses.
+  if (result.results.length > 0 && !result.notice && result.source !== 'error') {
+    await setCached(cacheKey, result, SEARCH_TTL)
+  }
+  return result
+}
+
+async function computeSearch(query: string): Promise<SearchResponse> {
   try {
     // 1. DB-first — zero MOTN calls when we already have the title.
     const local = await searchLocalTitles(query, MAX_RESULTS)
@@ -69,7 +85,7 @@ export async function performSearch(rawQuery: string): Promise<SearchResponse> {
       source: 'on-demand',
     }
   } catch (err) {
-    console.error('Search error:', err)
+    captureException(err, { op: 'search', query })
     return {
       results: [],
       query,
