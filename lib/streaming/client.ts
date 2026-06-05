@@ -1,5 +1,6 @@
 import type { SAShow } from './types'
 import { incrementQuota } from '@/lib/quota'
+import { captureException } from '@/lib/observability'
 
 const BASE = 'https://api.movieofthenight.com/v4'
 
@@ -28,7 +29,11 @@ export async function fetchShowByTMDBId(
   await incrementQuota('motn')
 
   if (res.status === 404) return null
-  if (!res.ok) throw new Error(`Streaming Availability API failed: ${res.status}`)
+  if (!res.ok) {
+    const error = new Error(`Streaming Availability API failed: ${res.status}`)
+    captureException(error, { op: 'motn.fetch', tmdbId, mediaType, status: res.status })
+    throw error
+  }
 
   return res.json()
 }

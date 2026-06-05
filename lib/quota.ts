@@ -1,4 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/admin'
+import { captureMessage } from '@/lib/observability'
+
+const LOW_QUOTA_THRESHOLD = 50
 
 export const DEFAULT_LIMIT = 25_000
 export const DEFAULT_BUFFER = 500
@@ -57,7 +60,13 @@ export async function incrementQuota(service = DEFAULT_SERVICE, n = 1): Promise<
   })
 
   if (error) throw new Error(`Failed to increment quota: ${error.message}`)
-  return data as number
+
+  const newUsed = data as number
+  const remaining = DEFAULT_LIMIT - newUsed
+  if (remaining < LOW_QUOTA_THRESHOLD) {
+    captureMessage('MOTN quota low', { service, callsUsed: newUsed, remaining })
+  }
+  return newUsed
 }
 
 export async function resetQuota(service = DEFAULT_SERVICE): Promise<void> {
