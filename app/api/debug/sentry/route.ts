@@ -53,6 +53,42 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  if (check === 'enforce') {
+    const { clientIp, hashIp } = await import('@/lib/ip')
+    const { Ratelimit } = await import('@upstash/ratelimit')
+    const { getRedis } = await import('@/lib/redis')
+    try {
+      const limiter = new Ratelimit({
+        redis: getRedis(),
+        limiter: Ratelimit.slidingWindow(30, '60 s'),
+        prefix: `rate-limit:search-debug-${Date.now()}`,
+      })
+      const id = hashIp(clientIp(req))
+      const results: boolean[] = []
+      for (let i = 0; i < 35; i++) {
+        const r = await limiter.limit(id)
+        results.push(r.success)
+      }
+      const blocked = results.filter((x) => !x).length
+      return NextResponse.json({ id, blocked, allowed: 35 - blocked })
+    } catch (err) {
+      return NextResponse.json({
+        error: err instanceof Error ? err.message : String(err),
+        stack: err instanceof Error ? err.stack?.split('\n').slice(0, 5) : undefined,
+      })
+    }
+  }
+
+  if (check === 'enforce-real') {
+    const { enforceRateLimit } = await import('@/lib/rate-limit')
+    const results: Array<string | number> = []
+    for (let i = 0; i < 35; i++) {
+      const r = await enforceRateLimit(req, 'search')
+      results.push(r === null ? 'ok' : r.status)
+    }
+    return NextResponse.json({ blocked: results.filter((x) => x === 429).length, last5: results.slice(-5) })
+  }
+
   if (check === 'redis') {
     try {
       const { getRedis } = await import('@/lib/redis')
