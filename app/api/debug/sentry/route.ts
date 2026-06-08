@@ -29,6 +29,30 @@ export async function GET(req: NextRequest) {
     })
   }
 
+  if (check === 'ratelimit') {
+    try {
+      const { Ratelimit } = await import('@upstash/ratelimit')
+      const { getRedis } = await import('@/lib/redis')
+      const rl = new Ratelimit({
+        redis: getRedis(),
+        limiter: Ratelimit.slidingWindow(3, '60 s'),
+        prefix: `debug-rl-${Date.now()}`,
+      })
+      const results: boolean[] = []
+      for (let i = 0; i < 5; i++) {
+        const r = await rl.limit('debugkey')
+        results.push(r.success)
+      }
+      // Expect [true, true, true, false, false]
+      return NextResponse.json({ results })
+    } catch (err) {
+      return NextResponse.json({
+        error: err instanceof Error ? err.message : String(err),
+        stack: err instanceof Error ? err.stack?.split('\n').slice(0, 4) : undefined,
+      })
+    }
+  }
+
   if (check === 'redis') {
     try {
       const { getRedis } = await import('@/lib/redis')
