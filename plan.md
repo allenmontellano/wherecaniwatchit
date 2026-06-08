@@ -85,16 +85,69 @@ Report results; stop if any key errors.
 
 ---
 
-## Phase D — Upstash Redis cache (needs your account)
-- I provide step-by-step Upstash signup; you add `UPSTASH_REDIS_REST_URL` + `_TOKEN` to Vercel + `.env.local`. Add `@upstash/redis`.
-- `lib/cache.ts`: `normalizeQuery()` (lowercase, trim, strip specials except hyphen, spaces→hyphen, expand P&R/GoT/HIMYM/TBBT/AoT). Key = `search:<normalized>-<cc>`; detail = `title:<id>`. TTL search 1h, detail 6h.
-- Search/detail: cache hit → return (0 DB/0 MOTN). Miss → query → store. Never cache empty/error/flags.
-- Invalidation: cron + verified-flag updates clear keys for the affected title. Cache fails open (Redis down ⇒ proceed, log).
+## Phase D — Upstash Redis cache (creds READY in .env.local + Vercel)
+- Add `@upstash/redis`. `lib/redis.ts` = `Redis.fromEnv()` + fail-open wrapper.
+- `lib/cache.ts`: `normalizeQuery()` (lowercase, trim, strip specials except hyphen, spaces→hyphen, expand P&R/GoT/HIMYM/TBBT/AoT). TTL search 1h, detail 6h.
+- Search/detail: cache hit → return (0 DB/0 MOTN). Miss → query → store. Never cache empty/error/flags. Fails open (Redis down ⇒ proceed, log).
+- Integrate search cache in `lib/search.ts::performSearch`; detail cache in `app/api/titles/[id]/route.ts`.
+- **CONFIRMED DECISIONS (2026-06-05):**
+  - **Cache key = normalized query ONLY (country-agnostic)** → `search:<normalized>`. Payload already includes all 5 regions, so per-country keys are redundant. (Intentional deviation from brief's `-<cc>`.) Detail key = `title:<id>`.
+  - **Invalidation = 1h search TTL + targeted detail invalidation.** Cron/verified-flag updates delete `title:<id>`; search relies on the 1h TTL (no key SCAN). (Intentional deviation from brief's name-match SCAN.)
 
-## Phase E — Sentry (needs your account)
-- `@sentry/nextjs`, wizard config; you add `SENTRY_DSN` to Vercel. Capture unhandled client/server, API route context (endpoint/query/country/ip-hash), seed failures, MOTN errors (status/endpoint/title), cache errors, checker circuit-breaker events, quota-low (<50 remaining) warning. One alert: >10 errors/5min → email. Test with a deliberate error.
+## Phase E — Sentry (creds READY: SENTRY_DSN in .env.local + Vercel)
+- `@sentry/nextjs`, wizard config. NOTE: client capture likely needs `NEXT_PUBLIC_SENTRY_DSN` too (currently only `SENTRY_DSN` is set) — add it to Vercel or reuse the same value in the client config.
+- Capture unhandled client/server, API route context (endpoint/query/country/ip-hash), seed failures, MOTN errors (status/endpoint/title), cache errors, checker circuit-breaker events, quota-low (<50 remaining) warning. One alert: >10 errors/5min → email. Test with a deliberate error.
+- Build a `lib/observability.ts` shim (captureMessage/captureException) so Phase F rate-limit logging routes through it.
 
 ---
+
+## Phase F — Production-grade rate limiting (PLAN — do not implement yet)
+
+Uses the already-configured Upstash Redis (creds in `.env.local` + Vercel). **F is unblocked now** — independent of Phase D's caching. Only the "log to Sentry" requirement depends on E; handled via an observability shim until then.
+
+### Research findings (grounding)
+- **Cron auth already done:** `sync-availability` + all 5 checker crons already 401 on missing `Bearer CRON_SECRET`. F's cron requirement = verify only, no new code. (Checkers are `runtime = 'edge'`.)
+- **IP + hashing already exists** in `app/api/flags/route.ts`: IP = `x-forwarded-for`[0] → `x-real-ip` → `'unknown'`; hash = `sha256(ip + CRON_SECRET).slice(0,32)`. Next 16 has no `req.ip`. → **Extract to `lib/ip.ts`** and reuse (no duplication); refactor flags route to use it.
+- Endpoints to limit (all default Node runtime, so `node:crypto` is fine): `GET /api/search` (30/min), `GET /api/titles/[id]` (60/min), `POST /api/flags` (10/min).
+
+### Design
+- **Approach: per-route helper, not middleware.** Limits vary per endpoint, need Sentry context + fail-open; a helper called at the top of each handler is explicit and testable. (Middleware noted as alternative but rejected — harder to vary/limit/test.)
+- **`lib/redis.ts`** — shared Upstash client `Redis.fromEnv()` (also used by Phase D later). New deps: `@upstash/redis`, `@upstash/ratelimit`.
+- **`lib/observability.ts`** — `captureMessage` / `captureException` shim. Console now; swapped to `@sentry/nextjs` in Phase E (one-file change). Decouples F from E.
+- **`lib/ip.ts`** — `clientIp(req)` + `hashIp(ip)` (moved from flags route).
+- **`lib/rate-limit.ts`**:
+  - `LIMITS = { search: 30, titles: 60, flags: 10 }` requests / `60 s`, **sliding window** via `Ratelimit.slidingWindow(limit, '60 s')`.
+  - One lazy-singleton `Ratelimit` per endpoint, `prefix: 'rate-limit:<endpoint>'`, `identifier = hashIp(ip)` → key `rate-limit:<endpoint>:<ip-hash>` (never raw IP). ✓ brief format.
+  - `enforceRateLimit(req, endpoint): Promise<NextResponse | null>`:
+    - extract+hash IP, run `limiter.limit(idHash)`.
+    - **exceeded** → `captureMessage('rate_limit_exceeded', { endpoint, ipHash, count })`, return `NextResponse.json({ error: 'Too many requests. Please wait a moment and try again.', retryAfter: 60 }, { status: 429, headers: { 'Retry-After': '60' } })`.
+    - **ok** → return `null`.
+    - **Redis throws** → `captureException(err, { endpoint })`, **fail open** (return `null`).
+- **Wire into routes** — at top of each handler:
+  ```ts
+  const limited = await enforceRateLimit(req, 'search'); if (limited) return limited
+  ```
+  search → `'search'`, titles → `'titles'`, flags → `'flags'`. Crons unchanged (verify CRON_SECRET 401 path).
+
+### Tests (TDD)
+- `lib/ip.test.ts` — IP precedence (xff → x-real-ip → unknown), hash stable/never raw.
+- `lib/rate-limit.test.ts` — inject/mock limiter: under-limit→null; over-limit→429 with `Retry-After: 60` + exact JSON body; Redis-throw→null (fail open) + `captureException` called; violation→`captureMessage` called with context.
+- Acceptance (manual / `scripts/test-ratelimit.ts`, needs real Redis + dev server): 35 rapid hits → 31st is 429 w/ Retry-After; resumes after 60 s; cron without secret → 401. Sentry appearance verified after Phase E.
+
+### Dependency / sequencing
+- Implementable **now** (creds exist). Violations log to console via shim until Phase E swaps in Sentry — at which point the brief's "appears in Sentry" check passes with no F changes.
+
+### TODO (Phase F)
+- [ ] add `@upstash/redis`, `@upstash/ratelimit`
+- [ ] `lib/redis.ts` (shared Upstash client)
+- [ ] `lib/observability.ts` (Sentry shim)
+- [ ] `lib/ip.ts` + refactor flags route to use it (TDD)
+- [ ] `lib/rate-limit.ts` `enforceRateLimit` (TDD)
+- [ ] wire search / titles / flags routes
+- [ ] verify cron 401s
+- [ ] `scripts/test-ratelimit.ts` + manual acceptance run
+
+**Don't implement Phase F yet** — this is the plan for review.
 
 ## Hard rules
 - Quota guard merged & tested **before** any MOTN spend beyond the 1-call Phase A test.
