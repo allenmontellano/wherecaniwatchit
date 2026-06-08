@@ -6,20 +6,7 @@ import { CountryProvider } from '@/components/country/country-context'
 import { SiteHeader } from '@/components/layout/site-header'
 import { TitleDetail } from '@/components/title/title-detail'
 import { resolveCountry } from '@/lib/country'
-import type { Title, AvailabilityWithPlatform } from '@/types/database'
-
-async function fetchTitle(
-  id: string
-): Promise<{ title: Title; availability: AvailabilityWithPlatform[] }> {
-  const base = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : 'http://localhost:3000'
-
-  const res = await fetch(`${base}/api/titles/${id}`, { cache: 'no-store' })
-  if (res.status === 404) notFound()
-  if (!res.ok) throw new Error('Failed to load title')
-  return res.json()
-}
+import { getTitleDetail } from '@/lib/title-detail'
 
 export async function generateMetadata({
   params,
@@ -27,14 +14,11 @@ export async function generateMetadata({
   params: Promise<{ id: string }>
 }): Promise<Metadata> {
   const { id } = await params
-  try {
-    const { title } = await fetchTitle(id)
-    return {
-      title: `${title.title} — Where Can I Watch It?`,
-      description: title.synopsis ?? `Find where to watch ${title.title} online.`,
-    }
-  } catch {
-    return { title: 'Title — Where Can I Watch It?' }
+  const detail = await getTitleDetail(id).catch(() => null)
+  if (!detail) return { title: 'Title — Where Can I Watch It?' }
+  return {
+    title: `${detail.title.title} — Where Can I Watch It?`,
+    description: detail.title.synopsis ?? `Find where to watch ${detail.title.title} online.`,
   }
 }
 
@@ -53,7 +37,9 @@ export default async function TitlePage({
 
   const savedCountry = cookieStore.get('selected-country')?.value
   const country = resolveCountry(countryParam, savedCountry)
-  const { title, availability } = await fetchTitle(id)
+  const detail = await getTitleDetail(id)
+  if (!detail) notFound()
+  const { title, availability } = detail
 
   return (
     <CountryProvider initial={country}>
