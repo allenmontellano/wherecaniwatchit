@@ -89,6 +89,19 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ blocked: results.filter((x) => x === 429).length, last5: results.slice(-5) })
   }
 
+  if (check === 'limitonce') {
+    const { Ratelimit } = await import('@upstash/ratelimit')
+    const { getRedis } = await import('@/lib/redis')
+    const run = req.nextUrl.searchParams.get('run') ?? 'x'
+    const rl = new Ratelimit({
+      redis: getRedis(),
+      limiter: Ratelimit.slidingWindow(3, '120 s'),
+      prefix: `debug-once-${run}`,
+    })
+    const r = await rl.limit('fixed')
+    return NextResponse.json({ success: r.success, remaining: r.remaining, limit: r.limit })
+  }
+
   if (check === 'set') {
     const { getRedis } = await import('@/lib/redis')
     const value = `HELLO-${Date.now()}`
