@@ -34,7 +34,7 @@ function getLimiter(endpoint: RateLimitedEndpoint): Ratelimit {
 }
 
 // Returns a 429 response if the caller is over the limit, otherwise null.
-// Key is `rate-limit:<endpoint>:<ip-hash>` (never a raw IP). Fails open if
+// Key is `<env>:rate-limit:<endpoint>:<ip-hash>` (never a raw IP). Fails open if
 // Redis is unavailable so a cache outage never blocks legitimate users.
 export async function enforceRateLimit(
   req: NextRequest,
