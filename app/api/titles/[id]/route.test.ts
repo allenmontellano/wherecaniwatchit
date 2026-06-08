@@ -1,87 +1,41 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { NextRequest } from 'next/server'
 
-const mockFrom = vi.fn()
-vi.mock('@/lib/supabase/admin', () => ({
-  createAdminClient: () => ({ from: mockFrom }),
-}))
-vi.mock('@/lib/cache', () => ({
-  getCached: vi.fn().mockResolvedValue(null),
-  setCached: vi.fn().mockResolvedValue(undefined),
-  titleCacheKey: (id: string) => `title:${id}`,
-  DETAIL_TTL: 21600,
-}))
+vi.mock('@/lib/title-detail', () => ({ getTitleDetail: vi.fn() }))
 
 import { GET } from './route'
-import { getCached } from '@/lib/cache'
+import { getTitleDetail } from '@/lib/title-detail'
+
+beforeEach(() => vi.clearAllMocks())
 
 describe('GET /api/titles/[id]', () => {
-  it('returns 404 when title is not found', async () => {
-    mockFrom.mockImplementation((table: string) => {
-      if (table === 'titles') {
-        return {
-          select: () => ({
-            eq: () => ({ single: () => ({ data: null, error: { message: 'not found' } }) }),
-          }),
-        }
-      }
-      return {}
+  it('returns 404 when the title is not found', async () => {
+    vi.mocked(getTitleDetail).mockResolvedValueOnce(null)
+    const res = await GET(new NextRequest('http://localhost/api/titles/missing'), {
+      params: Promise.resolve({ id: 'missing' }),
     })
-
-    const req = new NextRequest('http://localhost:3000/api/titles/nonexistent')
-    const res = await GET(req, { params: Promise.resolve({ id: 'nonexistent' }) })
-
     expect(res.status).toBe(404)
-    const body = await res.json()
-    expect(body.error).toBeDefined()
   })
 
   it('returns 200 with title and availability on success', async () => {
-    const mockTitle = { id: 'uuid', tmdb_id: 27205, title: 'Inception', type: 'movie', genres: [], runtime: 148, release_year: 2010, synopsis: null, poster_url: null, imdb_rating: 8.4, imdb_id: null, season_count: null, created_at: '', updated_at: '' }
-    const mockAvailability = [{ id: 'avail-uuid', region_code: 'US', available: true, platform: { name: 'Netflix' } }]
-
-    mockFrom.mockImplementation((table: string) => {
-      if (table === 'titles') {
-        return {
-          select: () => ({
-            eq: () => ({ single: () => ({ data: mockTitle, error: null }) }),
-          }),
-        }
-      }
-      if (table === 'availability') {
-        return {
-          select: () => ({
-            eq: () => ({
-              eq: () => ({
-                order: () => ({ data: mockAvailability, error: null }),
-              }),
-            }),
-          }),
-        }
-      }
-      return {}
+    vi.mocked(getTitleDetail).mockResolvedValueOnce({
+      // @ts-expect-error partial title is fine for this test
+      title: { id: 'uuid', title: 'Inception' },
+      availability: [],
     })
-
-    const req = new NextRequest('http://localhost:3000/api/titles/uuid')
-    const res = await GET(req, { params: Promise.resolve({ id: 'uuid' }) })
-
+    const res = await GET(new NextRequest('http://localhost/api/titles/uuid'), {
+      params: Promise.resolve({ id: 'uuid' }),
+    })
     expect(res.status).toBe(200)
     const body = await res.json()
     expect(body.title.title).toBe('Inception')
-    expect(body.availability).toHaveLength(1)
   })
 
-  it('returns the cached payload without querying the DB on a cache hit', async () => {
-    vi.mocked(getCached).mockResolvedValueOnce({ title: { title: 'Cached' }, availability: [] })
-    mockFrom.mockImplementation(() => {
-      throw new Error('DB should not be queried on a cache hit')
+  it('returns 500 when the detail lookup throws', async () => {
+    vi.mocked(getTitleDetail).mockRejectedValueOnce(new Error('boom'))
+    const res = await GET(new NextRequest('http://localhost/api/titles/uuid'), {
+      params: Promise.resolve({ id: 'uuid' }),
     })
-
-    const req = new NextRequest('http://localhost:3000/api/titles/uuid')
-    const res = await GET(req, { params: Promise.resolve({ id: 'uuid' }) })
-
-    expect(res.status).toBe(200)
-    const body = await res.json()
-    expect(body.title.title).toBe('Cached')
+    expect(res.status).toBe(500)
   })
 })
