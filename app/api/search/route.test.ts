@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { NextRequest } from 'next/server'
 
+vi.mock('@/lib/rate-limit', () => ({ enforceRateLimit: vi.fn().mockResolvedValue(null) }))
 vi.mock('@/lib/search', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@/lib/search')>()),
   performSearch: vi.fn(),
