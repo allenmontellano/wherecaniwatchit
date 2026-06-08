@@ -89,6 +89,18 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ blocked: results.filter((x) => x === 429).length, last5: results.slice(-5) })
   }
 
+  if (check === 'set') {
+    const { getRedis } = await import('@/lib/redis')
+    const value = `HELLO-${Date.now()}`
+    await getRedis().set('debug:persist', value, { ex: 300 })
+    return NextResponse.json({ set: value })
+  }
+
+  if (check === 'get') {
+    const { getRedis } = await import('@/lib/redis')
+    return NextResponse.json({ got: await getRedis().get('debug:persist') })
+  }
+
   if (check === 'redis') {
     try {
       const { getRedis } = await import('@/lib/redis')
