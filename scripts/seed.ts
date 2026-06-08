@@ -1,3 +1,4 @@
+import { basename } from 'node:path'
 import { fetchPopular } from '@/lib/tmdb/client'
 import type { TMDBSearchResult } from '@/lib/tmdb/types'
 
@@ -30,7 +31,7 @@ async function main() {
   await runSeed(await gatherCandidates())
 }
 
-if (process.argv[1] && process.argv[1].endsWith('seed.ts')) {
+if (process.argv[1] && basename(process.argv[1]) === 'seed.ts') {
   main().catch((err) => {
     console.error('\n❌ Seed failed:', err instanceof Error ? err.message : err)
     process.exit(1)
