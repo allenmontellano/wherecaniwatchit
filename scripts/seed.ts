@@ -1,8 +1,17 @@
+import { basename } from 'node:path'
 import { fetchPopular } from '@/lib/tmdb/client'
-import { runSeed } from './seed-common'
 import type { TMDBSearchResult } from '@/lib/tmdb/types'
 
-// TMDB returns 20 results per page → 100 pages = 2,000 titles per media type.
+export function parseLimit(argv: string[]): number | undefined {
+  const arg = argv.find((a) => a.startsWith('--limit='))
+  if (!arg) return undefined
+  const n = Number(arg.slice('--limit='.length))
+  return Number.isInteger(n) && n > 0 ? n : undefined
+}
+
+const limit = parseLimit(process.argv)
+if (limit !== undefined) process.env.SEED_MAX_TITLES = String(limit)
+
 const PAGES = Number(process.env.SEED_PAGES) || 100
 
 async function gatherCandidates(): Promise<TMDBSearchResult[]> {
@@ -17,9 +26,14 @@ async function gatherCandidates(): Promise<TMDBSearchResult[]> {
   return all
 }
 
-gatherCandidates()
-  .then(runSeed)
-  .catch((err) => {
+async function main() {
+  const { runSeed } = await import('./seed-common')
+  await runSeed(await gatherCandidates())
+}
+
+if (process.argv[1] && basename(process.argv[1]) === 'seed.ts') {
+  main().catch((err) => {
     console.error('\n❌ Seed failed:', err instanceof Error ? err.message : err)
     process.exit(1)
   })
+}
