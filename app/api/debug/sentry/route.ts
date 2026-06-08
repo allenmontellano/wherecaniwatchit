@@ -10,6 +10,30 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
 
+  const check = req.nextUrl.searchParams.get('check')
+
+  if (check === 'env') {
+    return NextResponse.json({
+      UPSTASH_REDIS_REST_URL: !!process.env.UPSTASH_REDIS_REST_URL,
+      UPSTASH_REDIS_REST_TOKEN: !!process.env.UPSTASH_REDIS_REST_TOKEN,
+      SENTRY_DSN: !!process.env.SENTRY_DSN,
+      NEXT_PUBLIC_SENTRY_DSN: !!process.env.NEXT_PUBLIC_SENTRY_DSN,
+    })
+  }
+
+  if (check === 'redis') {
+    try {
+      const { getRedis } = await import('@/lib/redis')
+      const redis = getRedis()
+      const token = Date.now()
+      await redis.set('debug:ping', token, { ex: 30 })
+      const value = await redis.get('debug:ping')
+      return NextResponse.json({ redis: 'ok', roundTrip: value === token })
+    } catch (err) {
+      return NextResponse.json({ redis: 'error', message: err instanceof Error ? err.message : String(err) })
+    }
+  }
+
   if (req.nextUrl.searchParams.get('mode') === 'throw') {
     throw new Error('Sentry test: deliberate unhandled error from /api/debug/sentry')
   }
