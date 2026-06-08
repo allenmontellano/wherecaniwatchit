@@ -6,12 +6,10 @@ import { captureMessage } from '@/lib/observability'
 //   /api/debug/sentry?secret=…            → sends a manual message event
 //   /api/debug/sentry?secret=…&mode=throw → throws an unhandled error (captured via onRequestError)
 export async function GET(req: NextRequest) {
-  if (req.nextUrl.searchParams.get('secret') !== process.env.CRON_SECRET) {
-    return NextResponse.json({ error: 'Not found' }, { status: 404 })
-  }
-
   const check = req.nextUrl.searchParams.get('check')
 
+  // Health checks expose only booleans / ok-status (no secrets), so they are
+  // ungated for diagnosis. Will be removed once prod config is confirmed.
   if (check === 'env') {
     return NextResponse.json({
       UPSTASH_REDIS_REST_URL: !!process.env.UPSTASH_REDIS_REST_URL,
@@ -32,6 +30,11 @@ export async function GET(req: NextRequest) {
     } catch (err) {
       return NextResponse.json({ redis: 'error', message: err instanceof Error ? err.message : String(err) })
     }
+  }
+
+  // Error-triggering paths stay gated behind CRON_SECRET.
+  if (req.nextUrl.searchParams.get('secret') !== process.env.CRON_SECRET) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
 
   if (req.nextUrl.searchParams.get('mode') === 'throw') {
