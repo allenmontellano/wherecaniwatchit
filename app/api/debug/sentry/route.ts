@@ -19,6 +19,16 @@ export async function GET(req: NextRequest) {
     })
   }
 
+  if (check === 'ip') {
+    const { clientIp, hashIp } = await import('@/lib/ip')
+    return NextResponse.json({
+      xForwardedFor: req.headers.get('x-forwarded-for'),
+      xRealIp: req.headers.get('x-real-ip'),
+      clientIp: clientIp(req),
+      ipHash: hashIp(clientIp(req)),
+    })
+  }
+
   if (check === 'redis') {
     try {
       const { getRedis } = await import('@/lib/redis')
