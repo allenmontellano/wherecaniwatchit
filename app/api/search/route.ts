@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { performSearch, MIN_QUERY, MAX_QUERY } from '@/lib/search'
+import { enforceRateLimit } from '@/lib/rate-limit'
 
 export async function GET(req: NextRequest) {
+  const limited = await enforceRateLimit(req, 'search')
+  if (limited) return limited
+
   const query = req.nextUrl.searchParams.get('q')?.trim() ?? ''
 
   if (query.length < MIN_QUERY) {

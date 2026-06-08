@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getTitleDetail } from '@/lib/title-detail'
+import { enforceRateLimit } from '@/lib/rate-limit'
 
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const limited = await enforceRateLimit(req, 'titles')
+  if (limited) return limited
+
   const { id } = await params
 
   try {

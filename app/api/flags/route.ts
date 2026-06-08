@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { createHash } from 'crypto'
 import {
   ISSUE_TYPES,
   issueToFlagType,
@@ -8,6 +7,8 @@ import {
   type IssueType,
 } from '@/lib/flags'
 import { captureException } from '@/lib/observability'
+import { clientIp, hashIp } from '@/lib/ip'
+import { enforceRateLimit } from '@/lib/rate-limit'
 
 interface FlagBody {
   title_id: string
@@ -17,14 +18,10 @@ interface FlagBody {
   notes?: string
 }
 
-function hashIp(ip: string): string {
-  return createHash('sha256')
-    .update(ip + process.env.CRON_SECRET!)
-    .digest('hex')
-    .slice(0, 32)
-}
-
 export async function POST(req: NextRequest) {
+  const limited = await enforceRateLimit(req, 'flags')
+  if (limited) return limited
+
   let body: FlagBody
   try {
     body = await req.json()
@@ -45,11 +42,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid issue_type' }, { status: 400 })
   }
 
-  const ip =
-    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
-    req.headers.get('x-real-ip') ??
-    'unknown'
-
   const composed = composeNotes(issue_type, platform, notes)
 
   const supabase = createAdminClient()
@@ -61,7 +53,7 @@ export async function POST(req: NextRequest) {
     issue_type,
     flag_type: issueToFlagType(issue_type),
     notes: composed ? composed.slice(0, 500) : null,
-    ip_hash: hashIp(ip),
+    ip_hash: hashIp(clientIp(req)),
     status: 'pending',
   })
 

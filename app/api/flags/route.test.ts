@@ -3,6 +3,8 @@ import { NextRequest } from 'next/server'
 
 process.env.CRON_SECRET = 'test-secret'
 
+vi.mock('@/lib/rate-limit', () => ({ enforceRateLimit: vi.fn().mockResolvedValue(null) }))
+
 const mockInsert = vi.fn()
 vi.mock('@/lib/supabase/admin', () => ({
   createAdminClient: () => ({
