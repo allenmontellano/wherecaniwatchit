@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { getRedis } from '@/lib/redis'
 import { clientIp, hashIp } from '@/lib/ip'
 import { captureMessage, captureException } from '@/lib/observability'
+import { appEnv } from '@/lib/env'
 
 export type RateLimitedEndpoint = 'search' | 'titles' | 'flags'
 
@@ -13,6 +14,10 @@ const LIMITS: Record<RateLimitedEndpoint, number> = {
   flags: 10,
 }
 
+export function limiterPrefix(endpoint: RateLimitedEndpoint): string {
+  return `${appEnv()}:rate-limit:${endpoint}`
+}
+
 const limiters: Partial<Record<RateLimitedEndpoint, Ratelimit>> = {}
 
 function getLimiter(endpoint: RateLimitedEndpoint): Ratelimit {
@@ -21,7 +26,7 @@ function getLimiter(endpoint: RateLimitedEndpoint): Ratelimit {
     limiter = new Ratelimit({
       redis: getRedis(),
       limiter: Ratelimit.slidingWindow(LIMITS[endpoint], '60 s'),
-      prefix: `rate-limit:${endpoint}`,
+      prefix: limiterPrefix(endpoint),
     })
     limiters[endpoint] = limiter
   }
