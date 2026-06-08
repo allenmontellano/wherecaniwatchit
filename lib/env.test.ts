@@ -10,8 +10,14 @@ describe('appEnv', () => {
     expect(isStaging()).toBe(true)
   })
 
-  it('returns production when NEXT_PUBLIC_ENV is unset', () => {
+  it('returns production when NEXT_PUBLIC_ENV is empty', () => {
     vi.stubEnv('NEXT_PUBLIC_ENV', '')
+    expect(appEnv()).toBe('production')
+    expect(isStaging()).toBe(false)
+  })
+
+  it('returns production when NEXT_PUBLIC_ENV is undefined', () => {
+    vi.stubEnv('NEXT_PUBLIC_ENV', undefined)
     expect(appEnv()).toBe('production')
     expect(isStaging()).toBe(false)
   })
