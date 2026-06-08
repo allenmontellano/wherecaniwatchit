@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { Space_Grotesk, DM_Sans, JetBrains_Mono } from 'next/font/google'
 import { cn } from '@/lib/utils'
+import { isStaging } from '@/lib/env'
+import { StagingBanner } from '@/components/layout/staging-banner'
 import './globals.css'
 
 const spaceGrotesk = Space_Grotesk({
@@ -25,11 +27,12 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 // Pre-launch toggle: keep false to block search engines (noindex, nofollow).
-// Flip to true on launch day to allow indexing. This is the only line to change.
+// Flip to true on launch day. Staging is ALWAYS noindex regardless of this toggle.
 const SITE_INDEXABLE = false
+const indexable = SITE_INDEXABLE && !isStaging()
 
 export const metadata: Metadata = {
-  robots: { index: SITE_INDEXABLE, follow: SITE_INDEXABLE },
+  robots: { index: indexable, follow: indexable },
   title: 'Where Can I Watch It? — Find streaming availability worldwide',
   description:
     "Search any movie or TV show and instantly see where it's streaming — Netflix, Disney+, Prime Video and more, across Philippines, US, UK, Australia, and Canada.",
@@ -49,7 +52,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
       className={cn(spaceGrotesk.variable, dmSans.variable, jetbrainsMono.variable)}
     >
-      <body className="font-sans antialiased">{children}</body>
+      <body className="font-sans antialiased">
+        <StagingBanner />
+        {children}
+      </body>
     </html>
   )
 }
