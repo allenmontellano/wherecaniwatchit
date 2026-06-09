@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { NextRequest } from 'next/server'
 
 const { mockLimit } = vi.hoisted(() => ({ mockLimit: vi.fn() }))
@@ -21,16 +21,26 @@ vi.mock('@/lib/observability', () => ({
   captureException: mockCaptureException,
 }))
 
-import { enforceRateLimit } from './rate-limit'
+import { enforceRateLimit, limiterPrefix } from './rate-limit'
 
 const req = () =>
   new NextRequest('http://localhost/api/search', { headers: { 'x-forwarded-for': '1.2.3.4' } })
+
+afterEach(() => vi.unstubAllEnvs())
 
 beforeEach(() => {
   process.env.CRON_SECRET = 'test-secret'
   mockLimit.mockReset()
   mockCaptureMessage.mockReset()
   mockCaptureException.mockReset()
+})
+
+describe('limiterPrefix', () => {
+  it('namespaces the limiter prefix by environment', () => {
+    expect(limiterPrefix('search')).toBe('production:rate-limit:search')
+    vi.stubEnv('NEXT_PUBLIC_ENV', 'staging')
+    expect(limiterPrefix('flags')).toBe('staging:rate-limit:flags')
+  })
 })
 
 describe('enforceRateLimit', () => {

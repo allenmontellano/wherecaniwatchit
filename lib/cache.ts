@@ -1,5 +1,6 @@
 import { getRedis } from './redis'
 import { captureException } from './observability'
+import { appEnv } from './env'
 
 export const SEARCH_TTL = 60 * 60 // 1 hour
 export const DETAIL_TTL = 6 * 60 * 60 // 6 hours
@@ -24,11 +25,11 @@ export function normalizeQuery(raw: string): string {
 }
 
 export function searchCacheKey(query: string): string {
-  return `search:${normalizeQuery(query)}`
+  return `${appEnv()}:search:${normalizeQuery(query)}`
 }
 
 export function titleCacheKey(id: string): string {
-  return `title:${id}`
+  return `${appEnv()}:title:${id}`
 }
 
 export async function getCached<T>(key: string): Promise<T | null> {

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
 const mockGet = vi.fn()
 const mockSet = vi.fn()
@@ -23,6 +23,8 @@ beforeEach(() => {
   mockSet.mockReset()
   mockDel.mockReset()
 })
+
+afterEach(() => vi.unstubAllEnvs())
 
 describe('normalizeQuery', () => {
   it('lowercases, trims, and hyphenates spaces', () => {
@@ -52,12 +54,18 @@ describe('normalizeQuery', () => {
 })
 
 describe('cache keys', () => {
-  it('builds a search key from the normalized query', () => {
-    expect(searchCacheKey('Parks and Recreation')).toBe('search:parks-and-recreation')
+  it('prefixes search keys with the environment', () => {
+    expect(searchCacheKey('Parks and Recreation')).toBe('production:search:parks-and-recreation')
   })
 
-  it('builds a title key from the id', () => {
-    expect(titleCacheKey('abc-123')).toBe('title:abc-123')
+  it('prefixes title keys with the environment', () => {
+    expect(titleCacheKey('abc-123')).toBe('production:title:abc-123')
+  })
+
+  it('isolates staging keys from production for the same input', () => {
+    vi.stubEnv('NEXT_PUBLIC_ENV', 'staging')
+    expect(searchCacheKey('severance')).toBe('staging:search:severance')
+    expect(titleCacheKey('abc-123')).toBe('staging:title:abc-123')
   })
 })
 
