@@ -57,8 +57,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="font-sans antialiased">
         <StagingBanner />
         {children}
-        <Analytics />
-        <SpeedInsights />
+        {!isStaging() && <Analytics />}
+        {!isStaging() && <SpeedInsights />}
       </body>
     </html>
   )
