@@ -9,7 +9,7 @@ import { captureException } from '@/lib/observability'
 import type { SyncedResult } from '@/types/search'
 
 export const MIN_QUERY = 2
-export const MAX_QUERY = 200
+export const MAX_QUERY = 100
 const MAX_RESULTS = 5
 const SYNC_TIMEOUT_MS = 3000
 const TIMED_OUT = Symbol('timed-out')
@@ -19,6 +19,10 @@ export interface SearchResponse {
   query: string
   source: 'db' | 'tmdb' | 'on-demand' | 'error'
   notice?: string
+}
+
+export function isSearchCacheable(result: SearchResponse): boolean {
+  return result.results.length > 0 && !result.notice && result.source !== 'error'
 }
 
 // Shared search logic used by both the API route and the search page (called
@@ -35,7 +39,7 @@ export async function performSearch(rawQuery: string): Promise<SearchResponse> {
   const result = await computeSearch(query, year)
 
   // Never cache empty, notice (quota/slow), or error responses.
-  if (result.results.length > 0 && !result.notice && result.source !== 'error') {
+  if (isSearchCacheable(result)) {
     await setCached(cacheKey, result, SEARCH_TTL)
   }
   return result
