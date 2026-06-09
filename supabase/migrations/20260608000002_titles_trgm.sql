@@ -10,7 +10,8 @@ stable
 as $$
   select t.*
   from titles t
-  where similarity(t.title, q) >= threshold
+  where t.title % q                             -- uses the GIN trigram index (default 0.3 threshold)
+    and similarity(t.title, q) >= threshold     -- explicit threshold for correctness
     and (y is null or t.release_year = y)
   order by similarity(t.title, q) desc, t.imdb_rating desc nulls last
   limit lim;
