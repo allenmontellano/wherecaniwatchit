@@ -5,27 +5,21 @@ import { appEnv } from './env'
 export const SEARCH_TTL = 60 * 60 // 1 hour
 export const DETAIL_TTL = 6 * 60 * 60 // 6 hours
 
-const ABBREVIATIONS: Record<string, string> = {
-  'p&r': 'parks and recreation',
-  got: 'game of thrones',
-  himym: 'how i met your mother',
-  tbbt: 'the big bang theory',
-  aot: 'attack on titan',
-}
-
-export function normalizeQuery(raw: string): string {
-  const lowered = raw.toLowerCase().trim()
-  const expanded = ABBREVIATIONS[lowered] ?? lowered
-  return expanded
-    .replace(/[^a-z0-9\s-]/g, '') // strip specials except space/hyphen
+function slugify(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
     .trim()
-    .replace(/\s+/g, '-') // spaces → hyphen
-    .replace(/-+/g, '-') // collapse hyphens
-    .replace(/^-|-$/g, '') // trim leading/trailing hyphen
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
 }
 
-export function searchCacheKey(query: string): string {
-  return `${appEnv()}:search:${normalizeQuery(query)}`
+export function searchCacheKey(query: string, year: number | null = null): string {
+  const slug = slugify(query)
+  // `:` (already stripped by slugify) separates the year so a plain query ending
+  // in digits can never collide with a year-scoped key.
+  return `${appEnv()}:search:${year !== null ? `${slug}:${year}` : slug}`
 }
 
 export function titleCacheKey(id: string): string {

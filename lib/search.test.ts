@@ -3,19 +3,19 @@ import type { Title } from '@/types/database'
 import type { SyncedResult } from '@/types/search'
 
 vi.mock('next/server', () => ({ after: vi.fn() }))
-vi.mock('@/lib/search-db', () => ({ searchLocalTitles: vi.fn() }))
+vi.mock('@/lib/search-db', () => ({ searchByFts: vi.fn(), searchByFuzzy: vi.fn() }))
 vi.mock('@/lib/tmdb/client', () => ({ searchTMDB: vi.fn() }))
 vi.mock('@/lib/sync', () => ({ syncTitle: vi.fn() }))
 vi.mock('@/lib/quota', () => ({ hasRemainingQuota: vi.fn() }))
 vi.mock('@/lib/cache', () => ({
   getCached: vi.fn().mockResolvedValue(null),
   setCached: vi.fn().mockResolvedValue(undefined),
-  searchCacheKey: (q: string) => `search:${q}`,
+  searchCacheKey: (q: string, y?: number | null) => `search:${q}:${y ?? ''}`,
   SEARCH_TTL: 3600,
 }))
 
 import { performSearch } from './search'
-import { searchLocalTitles } from '@/lib/search-db'
+import { searchByFts, searchByFuzzy } from '@/lib/search-db'
 import { searchTMDB } from '@/lib/tmdb/client'
 import { syncTitle } from '@/lib/sync'
 import { hasRemainingQuota } from '@/lib/quota'
@@ -39,12 +39,12 @@ describe('performSearch', () => {
   it('returns empty for a query shorter than 2 chars without hitting TMDB', async () => {
     const res = await performSearch('a')
     expect(res.results).toEqual([])
-    expect(searchLocalTitles).not.toHaveBeenCalled()
+    expect(searchByFts).not.toHaveBeenCalled()
     expect(searchTMDB).not.toHaveBeenCalled()
   })
 
   it('returns DB results without TMDB/MOTN when found locally', async () => {
-    vi.mocked(searchLocalTitles).mockResolvedValueOnce([synced(makeTitle())])
+    vi.mocked(searchByFts).mockResolvedValueOnce([synced(makeTitle())])
     const res = await performSearch('inception')
     expect(res.results).toHaveLength(1)
     expect(res.source).toBe('db')
@@ -53,7 +53,8 @@ describe('performSearch', () => {
   })
 
   it('returns empty when neither DB nor TMDB have the title', async () => {
-    vi.mocked(searchLocalTitles).mockResolvedValueOnce([])
+    vi.mocked(searchByFts).mockResolvedValueOnce([])
+    vi.mocked(searchByFuzzy).mockResolvedValueOnce([])
     vi.mocked(searchTMDB).mockResolvedValueOnce([])
     const res = await performSearch('zzznope')
     expect(res.results).toEqual([])
@@ -61,7 +62,8 @@ describe('performSearch', () => {
   })
 
   it('does not call MOTN when quota is exhausted, returns a notice', async () => {
-    vi.mocked(searchLocalTitles).mockResolvedValueOnce([])
+    vi.mocked(searchByFts).mockResolvedValueOnce([])
+    vi.mocked(searchByFuzzy).mockResolvedValueOnce([])
     vi.mocked(searchTMDB).mockResolvedValueOnce([tmdbHit])
     vi.mocked(hasRemainingQuota).mockResolvedValueOnce(false)
     const res = await performSearch('inception')
@@ -71,7 +73,8 @@ describe('performSearch', () => {
   })
 
   it('seeds on-demand via syncTitle when quota is available', async () => {
-    vi.mocked(searchLocalTitles).mockResolvedValueOnce([])
+    vi.mocked(searchByFts).mockResolvedValueOnce([])
+    vi.mocked(searchByFuzzy).mockResolvedValueOnce([])
     vi.mocked(searchTMDB).mockResolvedValueOnce([tmdbHit])
     vi.mocked(hasRemainingQuota).mockResolvedValueOnce(true)
     vi.mocked(syncTitle).mockResolvedValueOnce(synced(makeTitle()))
@@ -82,7 +85,7 @@ describe('performSearch', () => {
   })
 
   it('returns a friendly notice (never throws) when the local lookup fails', async () => {
-    vi.mocked(searchLocalTitles).mockRejectedValueOnce(new Error('db down'))
+    vi.mocked(searchByFts).mockRejectedValueOnce(new Error('db down'))
     const res = await performSearch('inception')
     expect(res.results).toEqual([])
     expect(res.notice).toMatch(/trouble/i)
@@ -96,19 +99,29 @@ describe('performSearch', () => {
     })
     const res = await performSearch('inception')
     expect(res.results).toHaveLength(1)
-    expect(searchLocalTitles).not.toHaveBeenCalled()
+    expect(searchByFts).not.toHaveBeenCalled()
     expect(searchTMDB).not.toHaveBeenCalled()
   })
 
   it('caches non-empty results but never caches empty results', async () => {
-    vi.mocked(searchLocalTitles).mockResolvedValueOnce([synced(makeTitle())])
+    vi.mocked(searchByFts).mockResolvedValueOnce([synced(makeTitle())])
     await performSearch('inception')
     expect(setCached).toHaveBeenCalledTimes(1)
 
     vi.mocked(setCached).mockClear()
-    vi.mocked(searchLocalTitles).mockResolvedValueOnce([])
+    vi.mocked(searchByFts).mockResolvedValueOnce([])
+    vi.mocked(searchByFuzzy).mockResolvedValueOnce([])
     vi.mocked(searchTMDB).mockResolvedValueOnce([])
     await performSearch('zzznope')
     expect(setCached).not.toHaveBeenCalled()
+  })
+
+  it('falls back to fuzzy search when FTS finds nothing', async () => {
+    vi.mocked(searchByFts).mockResolvedValueOnce([])
+    vi.mocked(searchByFuzzy).mockResolvedValueOnce([synced(makeTitle())])
+    const res = await performSearch('incepton')
+    expect(res.results).toHaveLength(1)
+    expect(res.source).toBe('db')
+    expect(searchTMDB).not.toHaveBeenCalled()
   })
 })
