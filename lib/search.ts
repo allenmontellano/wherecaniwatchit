@@ -21,6 +21,10 @@ export interface SearchResponse {
   notice?: string
 }
 
+export function isSearchCacheable(result: SearchResponse): boolean {
+  return result.results.length > 0 && !result.notice && result.source !== 'error'
+}
+
 // Shared search logic used by both the API route and the search page (called
 // directly, server-side — no HTTP self-fetch). Cache-first, then DB-first,
 // then quota-gated on-demand seeding, with graceful fallbacks. Never throws.
@@ -35,7 +39,7 @@ export async function performSearch(rawQuery: string): Promise<SearchResponse> {
   const result = await computeSearch(query, year)
 
   // Never cache empty, notice (quota/slow), or error responses.
-  if (result.results.length > 0 && !result.notice && result.source !== 'error') {
+  if (isSearchCacheable(result)) {
     await setCached(cacheKey, result, SEARCH_TTL)
   }
   return result

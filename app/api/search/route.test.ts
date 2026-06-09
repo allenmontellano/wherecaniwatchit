@@ -82,6 +82,18 @@ describe('GET /api/search', () => {
     expect(res.headers.get('Cache-Control')).toBe('no-store')
   })
 
+  it('sets a cacheable Cache-Control header for freshly-seeded on-demand results', async () => {
+    vi.mocked(performSearch).mockResolvedValueOnce({
+      results: [{ id: '1' }] as never,
+      query: 'dune',
+      source: 'on-demand',
+    })
+    const res = await GET(new NextRequest('http://localhost/api/search?q=dune'))
+    expect(res.headers.get('Cache-Control')).toBe(
+      'public, s-maxage=3600, stale-while-revalidate=3600',
+    )
+  })
+
   it('sets no-store on error source', async () => {
     vi.mocked(performSearch).mockResolvedValueOnce({
       results: [{ id: '1' }] as never,
