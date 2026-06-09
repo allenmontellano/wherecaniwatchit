@@ -24,32 +24,32 @@ export function groupAvailabilityByRegion(
   return byTitle
 }
 
-export async function searchLocalTitles(query: string, limit: number): Promise<SyncedResult[]> {
-  const supabase = createAdminClient()
-
-  const { data: titles, error } = await supabase
-    .from('titles')
-    .select('*')
-    .ilike('title', `%${query}%`)
-    .order('imdb_rating', { ascending: false, nullsFirst: false })
-    .limit(limit)
-
-  if (error) throw new Error(`Local title search failed: ${error.message}`)
-  if (!titles?.length) return []
-
+async function assembleResults(
+  supabase: ReturnType<typeof createAdminClient>,
+  titles: Title[]
+): Promise<SyncedResult[]> {
+  if (titles.length === 0) return []
   const ids = titles.map((t) => t.id)
-  const { data: avail, error: availError } = await supabase
+  const { data: avail, error } = await supabase
     .from('availability')
     .select('title_id, region_code, platform:platforms(slug)')
     .in('title_id', ids)
     .eq('available', true)
-
-  if (availError) throw new Error(`Local availability load failed: ${availError.message}`)
-
+  if (error) throw new Error(`Local availability load failed: ${error.message}`)
   const grouped = groupAvailabilityByRegion((avail ?? []) as AvailabilityJoinRow[])
+  return titles.map((title) => ({ title, availabilityByRegion: grouped.get(title.id) ?? {} }))
+}
 
-  return (titles as Title[]).map((title) => ({
-    title,
-    availabilityByRegion: grouped.get(title.id) ?? {},
-  }))
+export async function searchByFts(query: string, year: number | null, limit: number): Promise<SyncedResult[]> {
+  const supabase = createAdminClient()
+  const { data, error } = await supabase.rpc('search_titles_fts', { q: query, y: year, lim: limit })
+  if (error) throw new Error(`FTS search failed: ${error.message}`)
+  return assembleResults(supabase, (data ?? []) as Title[])
+}
+
+export async function searchByFuzzy(query: string, year: number | null, limit: number): Promise<SyncedResult[]> {
+  const supabase = createAdminClient()
+  const { data, error } = await supabase.rpc('search_titles_fuzzy', { q: query, y: year, lim: limit, threshold: 0.3 })
+  if (error) throw new Error(`Fuzzy search failed: ${error.message}`)
+  return assembleResults(supabase, (data ?? []) as Title[])
 }
