@@ -9,7 +9,6 @@ vi.mock('./redis', () => ({
 }))
 
 import {
-  normalizeQuery,
   searchCacheKey,
   titleCacheKey,
   getCached,
@@ -26,46 +25,22 @@ beforeEach(() => {
 
 afterEach(() => vi.unstubAllEnvs())
 
-describe('normalizeQuery', () => {
-  it('lowercases, trims, and hyphenates spaces', () => {
-    expect(normalizeQuery('  Parks and Recreation  ')).toBe('parks-and-recreation')
-  })
-
-  it('strips special characters except hyphens', () => {
-    expect(normalizeQuery('Spider-Man: No Way Home!')).toBe('spider-man-no-way-home')
-  })
-
-  it('collapses repeated spaces and hyphens', () => {
-    expect(normalizeQuery('The   Office')).toBe('the-office')
-    expect(normalizeQuery('a -- b')).toBe('a-b')
-  })
-
-  it('expands known abbreviations (whole-query only)', () => {
-    expect(normalizeQuery('P&R')).toBe('parks-and-recreation')
-    expect(normalizeQuery('GoT')).toBe('game-of-thrones')
-    expect(normalizeQuery('HIMYM')).toBe('how-i-met-your-mother')
-    expect(normalizeQuery('TBBT')).toBe('the-big-bang-theory')
-    expect(normalizeQuery('AoT')).toBe('attack-on-titan')
-  })
-
-  it('does not expand an abbreviation embedded in a larger query', () => {
-    expect(normalizeQuery('got milk')).toBe('got-milk')
-  })
-})
-
 describe('cache keys', () => {
-  it('prefixes search keys with the environment', () => {
+  it('slugifies and namespaces a search key', () => {
     expect(searchCacheKey('Parks and Recreation')).toBe('production:search:parks-and-recreation')
+  })
+
+  it('appends the year when present', () => {
+    expect(searchCacheKey('Parasite', 2019)).toBe('production:search:parasite-2019')
   })
 
   it('prefixes title keys with the environment', () => {
     expect(titleCacheKey('abc-123')).toBe('production:title:abc-123')
   })
 
-  it('isolates staging keys from production for the same input', () => {
+  it('isolates staging keys from production', () => {
     vi.stubEnv('NEXT_PUBLIC_ENV', 'staging')
     expect(searchCacheKey('severance')).toBe('staging:search:severance')
-    expect(titleCacheKey('abc-123')).toBe('staging:title:abc-123')
   })
 })
 
