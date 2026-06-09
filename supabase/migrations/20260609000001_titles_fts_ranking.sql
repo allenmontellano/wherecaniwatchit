@@ -14,7 +14,7 @@ as $$
     and (y is null or t.release_year = y)
   order by
     (lower(t.title) = lower(q)) desc,
-    (t.title ~* '(behind the scenes|making of|paleyfest|featurette|deleted scene|bloopers?|gag reel|\mextras?\M|\mclips?\M|sneak peek|first look|red carpet|press conference|panel|\mreunions?\M|\mspecials?\M)') asc,
+    (t.title ~* '(behind the scenes|making of|paleyfest|featurette|deleted scene|bloopers?|gag reel|\mextras?\M|\mclips?\M|sneak peek|first look|red carpet|press conference|\mpanel\M|\mreunions?\M|\mspecials?\M)') asc,
     ts_rank(t.search_vector, websearch_to_tsquery('english', q)) desc,
     t.imdb_rating desc nulls last
   limit lim;

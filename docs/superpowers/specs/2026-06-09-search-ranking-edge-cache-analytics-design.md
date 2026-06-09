@@ -49,10 +49,10 @@ order by
 Case-insensitive regex against `t.title` (word-boundaried where a substring would over-match):
 
 ```
-(behind the scenes|making of|paleyfest|featurette|deleted scene|bloopers?|gag reel|\mextras?\M|\mclips?\M|sneak peek|first look|red carpet|press conference|panel|\mreunions?\M|\mspecials?\M)
+(behind the scenes|making of|paleyfest|featurette|deleted scene|bloopers?|gag reel|\mextras?\M|\mclips?\M|sneak peek|first look|red carpet|press conference|\mpanel\M|\mreunions?\M|\mspecials?\M)
 ```
 
-- `clip`/`clips`, `extra`/`extras`, `reunion`/`reunions`, and `special`/`specials` are word-boundaried (`\m…\M`) so "Extraction", "Eclipse", or "Specialist" don't match. `reunion`/`special` catch "Friends: The Reunion" / "… Holiday Special" type entries ranking above the canonical show.
+- `clip`/`clips`, `extra`/`extras`, `panel`, `reunion`/`reunions`, and `special`/`specials` are word-boundaried (`\m…\M`) so "Extraction", "Eclipse", "Campanella", or "Specialist" don't match. `reunion`/`special` catch "Friends: The Reunion" / "… Holiday Special" type entries ranking above the canonical show.
 - The list is intentionally conservative; it can be extended later via a follow-up migration. The penalty only *re-orders* — it never filters a row out, so a false positive at worst demotes within the result set, never hides a title.
 
 ### Edge cases
