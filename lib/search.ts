@@ -2,7 +2,8 @@ import { after } from 'next/server'
 import { searchTMDB } from '@/lib/tmdb/client'
 import { syncTitle } from '@/lib/sync'
 import { hasRemainingQuota } from '@/lib/quota'
-import { searchLocalTitles } from '@/lib/search-db'
+import { searchByFts, searchByFuzzy } from '@/lib/search-db'
+import { normalizeSearch } from '@/lib/query-normalizer'
 import { getCached, setCached, searchCacheKey, SEARCH_TTL } from '@/lib/cache'
 import { captureException } from '@/lib/observability'
 import type { SyncedResult } from '@/types/search'
@@ -24,14 +25,14 @@ export interface SearchResponse {
 // directly, server-side — no HTTP self-fetch). Cache-first, then DB-first,
 // then quota-gated on-demand seeding, with graceful fallbacks. Never throws.
 export async function performSearch(rawQuery: string): Promise<SearchResponse> {
-  const query = rawQuery.trim()
+  const { query, year } = normalizeSearch(rawQuery)
   if (query.length < MIN_QUERY) return { results: [], query, source: 'db' }
 
-  const cacheKey = searchCacheKey(query)
+  const cacheKey = searchCacheKey(query, year)
   const cached = await getCached<SearchResponse>(cacheKey)
   if (cached) return cached
 
-  const result = await computeSearch(query)
+  const result = await computeSearch(query, year)
 
   // Never cache empty, notice (quota/slow), or error responses.
   if (result.results.length > 0 && !result.notice && result.source !== 'error') {
@@ -40,11 +41,14 @@ export async function performSearch(rawQuery: string): Promise<SearchResponse> {
   return result
 }
 
-async function computeSearch(query: string): Promise<SearchResponse> {
+async function computeSearch(query: string, year: number | null): Promise<SearchResponse> {
   try {
-    // 1. DB-first — zero MOTN calls when we already have the title.
-    const local = await searchLocalTitles(query, MAX_RESULTS)
-    if (local.length > 0) return { results: local, query, source: 'db' }
+    // 1. Local relevance search: FTS first, then fuzzy fallback. Zero MOTN calls.
+    const fts = await searchByFts(query, year, MAX_RESULTS)
+    if (fts.length > 0) return { results: fts, query, source: 'db' }
+
+    const fuzzy = await searchByFuzzy(query, year, MAX_RESULTS)
+    if (fuzzy.length > 0) return { results: fuzzy, query, source: 'db' }
 
     // 2. Not in DB — check TMDB (free, unlimited).
     const tmdbResults = await searchTMDB(query)
