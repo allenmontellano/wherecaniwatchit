@@ -9,7 +9,7 @@ import { captureException } from '@/lib/observability'
 import type { SyncedResult } from '@/types/search'
 
 export const MIN_QUERY = 2
-export const MAX_QUERY = 200
+export const MAX_QUERY = 100
 const MAX_RESULTS = 5
 const SYNC_TIMEOUT_MS = 3000
 const TIMED_OUT = Symbol('timed-out')

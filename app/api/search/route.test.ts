@@ -24,9 +24,17 @@ describe('GET /api/search', () => {
     expect(res.status).toBe(400)
   })
 
-  it('returns 400 when q exceeds 200 characters', async () => {
-    const res = await GET(new NextRequest(`http://localhost/api/search?q=${'a'.repeat(201)}`))
+  it('returns 400 when q exceeds 100 characters', async () => {
+    const res = await GET(new NextRequest(`http://localhost/api/search?q=${'a'.repeat(101)}`))
     expect(res.status).toBe(400)
+    expect(performSearch).not.toHaveBeenCalled()
+  })
+
+  it('processes a query at exactly 100 characters', async () => {
+    vi.mocked(performSearch).mockResolvedValueOnce({ results: [], query: 'x', source: 'db' })
+    const res = await GET(new NextRequest(`http://localhost/api/search?q=${'a'.repeat(100)}`))
+    expect(res.status).toBe(200)
+    expect(performSearch).toHaveBeenCalled()
   })
 
   it('delegates to performSearch and returns its result as JSON', async () => {
