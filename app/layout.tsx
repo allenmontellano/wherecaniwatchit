@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { Space_Grotesk, DM_Sans, JetBrains_Mono } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import { cn } from '@/lib/utils'
 import { isStaging } from '@/lib/env'
 import { StagingBanner } from '@/components/layout/staging-banner'
@@ -55,6 +57,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="font-sans antialiased">
         <StagingBanner />
         {children}
+        {!isStaging() && <Analytics />}
+        {!isStaging() && <SpeedInsights />}
       </body>
     </html>
   )

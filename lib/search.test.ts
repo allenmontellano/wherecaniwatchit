@@ -14,7 +14,7 @@ vi.mock('@/lib/cache', () => ({
   SEARCH_TTL: 3600,
 }))
 
-import { performSearch } from './search'
+import { performSearch, isSearchCacheable } from './search'
 import { searchByFts, searchByFuzzy } from '@/lib/search-db'
 import { searchTMDB } from '@/lib/tmdb/client'
 import { syncTitle } from '@/lib/sync'
@@ -34,6 +34,21 @@ const synced = (t: Title): SyncedResult => ({ title: t, availabilityByRegion: { 
 const tmdbHit = { id: 1, media_type: 'movie' as const, title: 'Inception', overview: '', poster_path: null, vote_average: 8, genre_ids: [] }
 
 beforeEach(() => vi.clearAllMocks())
+
+describe('isSearchCacheable', () => {
+  it('is true for non-empty results with no notice and non-error source', () => {
+    expect(isSearchCacheable({ results: [{}] as never, query: 'x', source: 'db' })).toBe(true)
+  })
+  it('is false for empty results', () => {
+    expect(isSearchCacheable({ results: [], query: 'x', source: 'db' })).toBe(false)
+  })
+  it('is false when a notice is present', () => {
+    expect(isSearchCacheable({ results: [{}] as never, query: 'x', source: 'tmdb', notice: 'soon' })).toBe(false)
+  })
+  it('is false for error source', () => {
+    expect(isSearchCacheable({ results: [{}] as never, query: 'x', source: 'error' })).toBe(false)
+  })
+})
 
 describe('performSearch', () => {
   it('returns empty for a query shorter than 2 chars without hitting TMDB', async () => {

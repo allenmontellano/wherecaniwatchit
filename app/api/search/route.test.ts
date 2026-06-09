@@ -24,9 +24,17 @@ describe('GET /api/search', () => {
     expect(res.status).toBe(400)
   })
 
-  it('returns 400 when q exceeds 200 characters', async () => {
-    const res = await GET(new NextRequest(`http://localhost/api/search?q=${'a'.repeat(201)}`))
+  it('returns 400 when q exceeds 100 characters', async () => {
+    const res = await GET(new NextRequest(`http://localhost/api/search?q=${'a'.repeat(101)}`))
     expect(res.status).toBe(400)
+    expect(performSearch).not.toHaveBeenCalled()
+  })
+
+  it('processes a query at exactly 100 characters', async () => {
+    vi.mocked(performSearch).mockResolvedValueOnce({ results: [], query: 'x', source: 'db' })
+    const res = await GET(new NextRequest(`http://localhost/api/search?q=${'a'.repeat(100)}`))
+    expect(res.status).toBe(200)
+    expect(performSearch).toHaveBeenCalled()
   })
 
   it('delegates to performSearch and returns its result as JSON', async () => {
@@ -43,5 +51,56 @@ describe('GET /api/search', () => {
     expect(performSearch).toHaveBeenCalledWith('inception')
     expect(body.query).toBe('inception')
     expect(body.source).toBe('db')
+  })
+
+  it('sets a cacheable Cache-Control header for good results', async () => {
+    vi.mocked(performSearch).mockResolvedValueOnce({
+      results: [{ id: '1' }] as never,
+      query: 'inception',
+      source: 'db',
+    })
+    const res = await GET(new NextRequest('http://localhost/api/search?q=inception'))
+    expect(res.headers.get('Cache-Control')).toBe(
+      'public, s-maxage=3600, stale-while-revalidate=3600',
+    )
+  })
+
+  it('sets no-store when results are empty', async () => {
+    vi.mocked(performSearch).mockResolvedValueOnce({ results: [], query: 'zzz', source: 'db' })
+    const res = await GET(new NextRequest('http://localhost/api/search?q=zzz'))
+    expect(res.headers.get('Cache-Control')).toBe('no-store')
+  })
+
+  it('sets no-store when the response carries a notice', async () => {
+    vi.mocked(performSearch).mockResolvedValueOnce({
+      results: [{ id: '1' }] as never,
+      query: 'dune',
+      source: 'tmdb',
+      notice: 'Finding streaming availability — refresh in a moment.',
+    })
+    const res = await GET(new NextRequest('http://localhost/api/search?q=dune'))
+    expect(res.headers.get('Cache-Control')).toBe('no-store')
+  })
+
+  it('sets a cacheable Cache-Control header for freshly-seeded on-demand results', async () => {
+    vi.mocked(performSearch).mockResolvedValueOnce({
+      results: [{ id: '1' }] as never,
+      query: 'dune',
+      source: 'on-demand',
+    })
+    const res = await GET(new NextRequest('http://localhost/api/search?q=dune'))
+    expect(res.headers.get('Cache-Control')).toBe(
+      'public, s-maxage=3600, stale-while-revalidate=3600',
+    )
+  })
+
+  it('sets no-store on error source', async () => {
+    vi.mocked(performSearch).mockResolvedValueOnce({
+      results: [{ id: '1' }] as never,
+      query: 'dune',
+      source: 'error',
+    })
+    const res = await GET(new NextRequest('http://localhost/api/search?q=dune'))
+    expect(res.headers.get('Cache-Control')).toBe('no-store')
   })
 })
