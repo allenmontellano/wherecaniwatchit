@@ -35,7 +35,7 @@ async function assembleResults(
     .select('title_id, region_code, platform:platforms(slug)')
     .in('title_id', ids)
     .eq('available', true)
-  if (error) throw new Error(`Local availability load failed: ${error.message}`)
+  if (error) throw new Error(`Availability load failed: ${error.message}`)
   const grouped = groupAvailabilityByRegion((avail ?? []) as AvailabilityJoinRow[])
   return titles.map((title) => ({ title, availabilityByRegion: grouped.get(title.id) ?? {} }))
 }
