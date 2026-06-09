@@ -16,6 +16,13 @@
 - **Migrations always staging-first**, verified, then a **separate explicit approval** before production. Never prod before staging.
 - Account for Vercel propagation lag — verify against the actually-live deployment, not just a green build. Beware cache-masking: clear the relevant Redis key before a verification probe.
 
+### Applying migrations safely (project refs + targeting)
+- **Project refs:** staging = `hunvbflchgjphnhdjmws`, production = `ahgmszdrhndcycvairmn`.
+- **DANGER — `supabase db push --db-url` can silently hit the WRONG project.** Supabase direct hosts (`db.<ref>.supabase.co`) no longer resolve — only the pooler does. When `--db-url` can't connect, the authenticated push falls back to the **CLI-linked project**, ignoring `--db-url`. On 2026-06-09 this applied the SP3 ranking migration to **prod instead of staging** because the CLI was linked to prod.
+- **Preferred method — Management API with EXPLICIT ref** (no linking/DNS ambiguity): `POST https://api.supabase.com/v1/projects/<ref>/database/query` with `{ "query": "<sql>" }` and `Authorization: Bearer $SUPABASE_ACCESS_TOKEN`. Run the migration SQL, then record it: `insert into supabase_migrations.schema_migrations (version,name,statements) select '<version>','<name>',ARRAY[$mig$<sql>$mig$] where not exists (select 1 from supabase_migrations.schema_migrations where version='<version>')`.
+- **Keep the CLI linked to STAGING** (`supabase link --project-ref hunvbflchgjphnhdjmws`) so any accidental `db push` targets staging, never prod.
+- **Always verify the target after applying**: introspect the function/object on the intended ref (e.g. `select pg_get_functiondef('<fn>(...)'::regprocedure)`) AND confirm the OTHER ref is unchanged.
+
 ## Security
 - **Never commit secrets, `.env` files, or credentials.** Secrets live only in gitignored `.env.local` / `.env.staging.local` and in Vercel env vars.
 - **Rotate any DB token/password** shared into a session immediately after it has been used.
