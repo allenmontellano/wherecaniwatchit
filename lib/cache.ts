@@ -17,7 +17,9 @@ function slugify(s: string): string {
 
 export function searchCacheKey(query: string, year: number | null = null): string {
   const slug = slugify(query)
-  return `${appEnv()}:search:${year ? `${slug}-${year}` : slug}`
+  // `:` (already stripped by slugify) separates the year so a plain query ending
+  // in digits can never collide with a year-scoped key.
+  return `${appEnv()}:search:${year !== null ? `${slug}:${year}` : slug}`
 }
 
 export function titleCacheKey(id: string): string {

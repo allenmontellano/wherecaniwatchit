@@ -30,8 +30,14 @@ describe('cache keys', () => {
     expect(searchCacheKey('Parks and Recreation')).toBe('production:search:parks-and-recreation')
   })
 
-  it('appends the year when present', () => {
-    expect(searchCacheKey('Parasite', 2019)).toBe('production:search:parasite-2019')
+  it('appends the year (colon-separated) when present', () => {
+    expect(searchCacheKey('Parasite', 2019)).toBe('production:search:parasite:2019')
+  })
+
+  it('a plain query ending in digits does not collide with a year-scoped key', () => {
+    expect(searchCacheKey('blade runner 2049')).toBe('production:search:blade-runner-2049')
+    expect(searchCacheKey('blade runner', 2049)).toBe('production:search:blade-runner:2049')
+    expect(searchCacheKey('blade runner 2049')).not.toBe(searchCacheKey('blade runner', 2049))
   })
 
   it('prefixes title keys with the environment', () => {
