@@ -52,4 +52,43 @@ describe('GET /api/search', () => {
     expect(body.query).toBe('inception')
     expect(body.source).toBe('db')
   })
+
+  it('sets a cacheable Cache-Control header for good results', async () => {
+    vi.mocked(performSearch).mockResolvedValueOnce({
+      results: [{ id: '1' }] as never,
+      query: 'inception',
+      source: 'db',
+    })
+    const res = await GET(new NextRequest('http://localhost/api/search?q=inception'))
+    expect(res.headers.get('Cache-Control')).toBe(
+      'public, s-maxage=3600, stale-while-revalidate=3600',
+    )
+  })
+
+  it('sets no-store when results are empty', async () => {
+    vi.mocked(performSearch).mockResolvedValueOnce({ results: [], query: 'zzz', source: 'db' })
+    const res = await GET(new NextRequest('http://localhost/api/search?q=zzz'))
+    expect(res.headers.get('Cache-Control')).toBe('no-store')
+  })
+
+  it('sets no-store when the response carries a notice', async () => {
+    vi.mocked(performSearch).mockResolvedValueOnce({
+      results: [{ id: '1' }] as never,
+      query: 'dune',
+      source: 'tmdb',
+      notice: 'Finding streaming availability — refresh in a moment.',
+    })
+    const res = await GET(new NextRequest('http://localhost/api/search?q=dune'))
+    expect(res.headers.get('Cache-Control')).toBe('no-store')
+  })
+
+  it('sets no-store on error source', async () => {
+    vi.mocked(performSearch).mockResolvedValueOnce({
+      results: [{ id: '1' }] as never,
+      query: 'dune',
+      source: 'error',
+    })
+    const res = await GET(new NextRequest('http://localhost/api/search?q=dune'))
+    expect(res.headers.get('Cache-Control')).toBe('no-store')
+  })
 })
