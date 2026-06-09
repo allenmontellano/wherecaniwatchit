@@ -121,16 +121,17 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 // …
 <StagingBanner />
 {children}
-<Analytics />
-<SpeedInsights />
+{!isStaging() && <Analytics />}
+{!isStaging() && <SpeedInsights />}
 ```
 
 - Both are cookieless and collect no PII (aggregated page + Web Vitals only). This matches the architecture decision already recorded in CLAUDE.md.
+- **Gated off staging** via the existing `isStaging()` util (same precedent as the noindex gate): staging and production share one Vercel project, so analytics scripts only render in production to keep QA/dev traffic out of the dashboard and the billed event quota.
 - **Privacy Policy (SP9) dependency:** must disclose cookieless/aggregated/no-PII analytics — do **not** claim "zero tracking." Flagged here; implemented in SP9.
 
 ### Verification
-- Build succeeds; both scripts load on staging.
-- Vercel dashboard shows Analytics + Speed Insights data after a few staging hits.
+- Build succeeds; both scripts load in **production** and are **absent on staging** (verify no `/_vercel/insights` script on the staging deployment).
+- Vercel dashboard shows Analytics + Speed Insights data after a few production hits.
 
 ---
 

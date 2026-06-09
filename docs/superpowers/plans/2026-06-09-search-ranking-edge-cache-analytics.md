@@ -257,14 +257,14 @@ import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 ```
 
-And inside `<body>`, after `{children}`:
+And inside `<body>`, after `{children}` — gated off staging via the already-imported `isStaging()` (staging shares the prod Vercel project, so keep its traffic out of analytics):
 
 ```tsx
       <body className="font-sans antialiased">
         <StagingBanner />
         {children}
-        <Analytics />
-        <SpeedInsights />
+        {!isStaging() && <Analytics />}
+        {!isStaging() && <SpeedInsights />}
       </body>
 ```
 
