@@ -36,3 +36,5 @@
 ## SP5 — MOTN Philippines data-gap finding (2026-06-08)
 - MOTN has a **systematic Disney+ PH gap**: 0/8 Disney+ PH titles returned availability (Netflix/Apple TV = 5/5 correct). Viu PH, iWantTFC, Vivamax, and WeTV PH are **entirely absent** from MOTN's PH service registry (MOTN indexes only 9 PH services).
 - **Action: seed PH availability aggressively before launch** — priority Disney+ PH → Viu PH → iWantTFC → Vivamax. Full report: `docs/superpowers/research/2026-06-08-motn-ph-data-gap.md`.
+- HIMYM is **confirmed on Disney+ PH** (personally verified 2026-06-09); the MOTN Disney+ PH gap is real and systematic, not a per-title fluke.
+- **SP7 rule**: in the verification queue, any availability row where `platform = Disney+ PH` **and** `source = motn` defaults to a **very low confidence score** (MOTN is known-unreliable for this platform/region).
