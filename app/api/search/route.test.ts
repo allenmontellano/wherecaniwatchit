@@ -103,4 +103,22 @@ describe('GET /api/search', () => {
     const res = await GET(new NextRequest('http://localhost/api/search?q=dune'))
     expect(res.headers.get('Cache-Control')).toBe('no-store')
   })
+
+  it('sets a Server-Timing header with the search compute duration', async () => {
+    vi.mocked(performSearch).mockResolvedValueOnce({
+      results: [{ id: '1' }] as never,
+      query: 'inception',
+      source: 'db',
+    })
+    const res = await GET(new NextRequest('http://localhost/api/search?q=inception'))
+    const st = res.headers.get('Server-Timing')
+    expect(st).toMatch(/^search;dur=\d+(\.\d+)?$/)
+  })
+
+  it('sets a Server-Timing header even when results are empty', async () => {
+    vi.mocked(performSearch).mockResolvedValueOnce({ results: [], query: 'zzz', source: 'db' })
+    const res = await GET(new NextRequest('http://localhost/api/search?q=zzz'))
+    const st = res.headers.get('Server-Timing')
+    expect(st).toMatch(/^search;dur=\d+(\.\d+)?$/)
+  })
 })
