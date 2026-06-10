@@ -5,6 +5,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 import { cn } from '@/lib/utils'
 import { isStaging } from '@/lib/env'
 import { StagingBanner } from '@/components/layout/staging-banner'
+import { SiteFooter } from '@/components/layout/site-footer'
 import './globals.css'
 
 const spaceGrotesk = Space_Grotesk({
@@ -57,6 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="font-sans antialiased">
         <StagingBanner />
         {children}
+        <SiteFooter />
         {!isStaging() && <Analytics />}
         {!isStaging() && <SpeedInsights />}
       </body>
