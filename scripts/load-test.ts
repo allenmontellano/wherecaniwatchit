@@ -63,6 +63,7 @@ interface CohortReport {
   serverLatency: LatencySummary
   endToEndLatency: LatencySummary
   errorRate: number
+  hasServerData: boolean
   pass: boolean
 }
 
@@ -239,7 +240,8 @@ function buildCohortReport(cohort: Cohort, results: RequestResult[], threshold: 
   const serverLatency = summarize(serverValues)
   const endToEndLatency = summarize(endToEndValues)
 
-  const pass = withinThreshold(serverLatency.p95, threshold) && cohortErrorRate <= MAX_ERROR_RATE
+  const hasServerData = serverValues.length > 0
+  const pass = hasServerData && withinThreshold(serverLatency.p95, threshold) && cohortErrorRate <= MAX_ERROR_RATE
 
   return {
     cohort,
@@ -248,6 +250,7 @@ function buildCohortReport(cohort: Cohort, results: RequestResult[], threshold: 
     serverLatency,
     endToEndLatency,
     errorRate: cohortErrorRate,
+    hasServerData,
     pass,
   }
 }
@@ -256,7 +259,11 @@ function printCohortTable(reports: CohortReport[]): void {
   console.log('\nCohort   | Count | Server p50 | Server p95 | Server p99 | E2E p95 | Error Rate | Result')
   console.log('---------|-------|------------|------------|------------|---------|------------|-------')
   for (const r of reports) {
-    const status = r.pass ? 'PASS' : 'FAIL'
+    const status = !r.hasServerData
+      ? 'FAIL (no Server-Timing data)'
+      : r.pass
+        ? 'PASS'
+        : 'FAIL'
     console.log(
       `${r.cohort.padEnd(8)} | ${String(r.count).padEnd(5)} | ` +
         `${r.serverLatency.p50.toFixed(1).padEnd(10)} | ${r.serverLatency.p95.toFixed(1).padEnd(10)} | ` +
@@ -318,12 +325,19 @@ async function main() {
   const totalErrors = results.filter((r) => !r.ok).length
   const overallErrorRate = errorRate(results.length, totalErrors)
   const missingServerTiming = results.filter((r) => r.serverMs === null).length
-  const overallPass = cohortReports.every((r) => r.pass) && overallErrorRate <= MAX_ERROR_RATE
+  const overallPass =
+    cohortReports.every((r) => r.pass) && overallErrorRate <= MAX_ERROR_RATE && missingServerTiming === 0
 
   console.log(`\nTotal requests: ${results.length}`)
   console.log(`Total duration: ${(totalDurationMs / 1000).toFixed(2)}s`)
   console.log(`Overall error rate: ${(overallErrorRate * 100).toFixed(2)}%`)
   console.log(`Missing Server-Timing header: ${missingServerTiming}`)
+  if (missingServerTiming > 0) {
+    console.log(
+      `⚠️  ${missingServerTiming} request(s) had no Server-Timing data — this run cannot be trusted. ` +
+        `The Server-Timing header is likely not deployed on the target.`
+    )
+  }
   console.log(`Overall result: ${overallPass ? 'PASS' : 'FAIL'}\n`)
 
   if (!smoke) {
