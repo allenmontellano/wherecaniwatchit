@@ -30,5 +30,6 @@ export async function GET(req: NextRequest) {
       : 'no-store',
   )
   res.headers.set('Server-Timing', `search;dur=${durMs}`)
+  res.headers.set('X-Search-Compute-Ms', String(durMs))
   return res
 }

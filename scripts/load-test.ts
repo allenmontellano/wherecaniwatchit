@@ -84,6 +84,17 @@ function parseServerTiming(header: string | null): number | null {
   return Number.isFinite(value) ? value : null
 }
 
+// Server compute time. Prefer the custom X-Search-Compute-Ms header (a plain
+// number) because some platform layers strip the standard Server-Timing header;
+// fall back to Server-Timing's dur= when the custom header is absent.
+function parseComputeMs(customHeader: string | null, serverTiming: string | null): number | null {
+  if (customHeader !== null) {
+    const value = Number(customHeader)
+    if (Number.isFinite(value)) return value
+  }
+  return parseServerTiming(serverTiming)
+}
+
 function fail(message: string): never {
   console.error(`\n❌ ${message}`)
   process.exit(1)
@@ -129,7 +140,10 @@ async function runRequest(spec: RequestSpec): Promise<RequestResult> {
   try {
     const res = await fetch(url)
     const endToEndMs = performance.now() - start
-    const serverMs = parseServerTiming(res.headers.get('Server-Timing'))
+    const serverMs = parseComputeMs(
+      res.headers.get('X-Search-Compute-Ms'),
+      res.headers.get('Server-Timing'),
+    )
 
     let source: string | null = null
     try {
