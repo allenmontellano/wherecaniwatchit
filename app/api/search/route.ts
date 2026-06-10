@@ -16,7 +16,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Query too long' }, { status: 400 })
   }
 
+  const start = performance.now()
   const result = await performSearch(query)
+  const durMs = Math.round((performance.now() - start) * 1000) / 1000
 
   const cacheable = isSearchCacheable(result)
 
@@ -27,5 +29,6 @@ export async function GET(req: NextRequest) {
       ? `public, s-maxage=${SEARCH_TTL}, stale-while-revalidate=${SEARCH_TTL}`
       : 'no-store',
   )
+  res.headers.set('Server-Timing', `search;dur=${durMs}`)
   return res
 }
