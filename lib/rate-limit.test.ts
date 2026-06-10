@@ -21,7 +21,7 @@ vi.mock('@/lib/observability', () => ({
   captureException: mockCaptureException,
 }))
 
-import { enforceRateLimit, limiterPrefix } from './rate-limit'
+import { enforceRateLimit, limiterPrefix, limitFor } from './rate-limit'
 
 const req = () =>
   new NextRequest('http://localhost/api/search', { headers: { 'x-forwarded-for': '1.2.3.4' } })
@@ -40,6 +40,51 @@ describe('limiterPrefix', () => {
     expect(limiterPrefix('search')).toBe('production:rate-limit:search')
     vi.stubEnv('NEXT_PUBLIC_ENV', 'staging')
     expect(limiterPrefix('flags')).toBe('staging:rate-limit:flags')
+  })
+})
+
+describe('limitFor', () => {
+  const ENV_KEYS = ['RATE_LIMIT_SEARCH', 'RATE_LIMIT_TITLES', 'RATE_LIMIT_FLAGS'] as const
+  const saved: Partial<Record<(typeof ENV_KEYS)[number], string | undefined>> = {}
+
+  beforeEach(() => {
+    for (const key of ENV_KEYS) {
+      saved[key] = process.env[key]
+      delete process.env[key]
+    }
+  })
+
+  afterEach(() => {
+    for (const key of ENV_KEYS) {
+      if (saved[key] === undefined) delete process.env[key]
+      else process.env[key] = saved[key]
+    }
+  })
+
+  it('returns the default when the env var is unset', () => {
+    expect(limitFor('search')).toBe(30)
+    expect(limitFor('titles')).toBe(60)
+    expect(limitFor('flags')).toBe(10)
+  })
+
+  it('returns the overridden numeric value when the env var is set', () => {
+    process.env.RATE_LIMIT_SEARCH = '5000'
+    expect(limitFor('search')).toBe(5000)
+  })
+
+  it('falls back to the default when the env var is non-numeric', () => {
+    process.env.RATE_LIMIT_SEARCH = 'not-a-number'
+    expect(limitFor('search')).toBe(30)
+  })
+
+  it('falls back to the default when the env var is zero', () => {
+    process.env.RATE_LIMIT_SEARCH = '0'
+    expect(limitFor('search')).toBe(30)
+  })
+
+  it('falls back to the default when the env var is negative', () => {
+    process.env.RATE_LIMIT_SEARCH = '-5'
+    expect(limitFor('search')).toBe(30)
   })
 })
 

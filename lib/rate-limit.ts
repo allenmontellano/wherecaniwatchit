@@ -8,10 +8,18 @@ import { appEnv } from '@/lib/env'
 export type RateLimitedEndpoint = 'search' | 'titles' | 'flags'
 
 // Requests per 60s per IP (sliding window).
-const LIMITS: Record<RateLimitedEndpoint, number> = {
+const DEFAULT_LIMITS: Record<RateLimitedEndpoint, number> = {
   search: 30,
   titles: 60,
   flags: 10,
+}
+
+// Allows per-endpoint overrides via RATE_LIMIT_<ENDPOINT> env vars (e.g. for
+// load testing on staging), falling back to defaults when unset/invalid.
+export function limitFor(endpoint: RateLimitedEndpoint): number {
+  const raw = process.env[`RATE_LIMIT_${endpoint.toUpperCase()}`]
+  const parsed = raw === undefined ? NaN : Number(raw)
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : DEFAULT_LIMITS[endpoint]
 }
 
 export function limiterPrefix(endpoint: RateLimitedEndpoint): string {
@@ -25,7 +33,7 @@ function getLimiter(endpoint: RateLimitedEndpoint): Ratelimit {
   if (!limiter) {
     limiter = new Ratelimit({
       redis: getRedis(),
-      limiter: Ratelimit.slidingWindow(LIMITS[endpoint], '60 s'),
+      limiter: Ratelimit.slidingWindow(limitFor(endpoint), '60 s'),
       prefix: limiterPrefix(endpoint),
     })
     limiters[endpoint] = limiter
