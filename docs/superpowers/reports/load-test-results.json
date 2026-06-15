@@ -1,0 +1,4610 @@
+{
+  "timestamp": "2026-06-10T13:12:55.022Z",
+  "config": {
+    "baseUrl": "https://wherecaniwatchit-git-staging-where-can-i-watch-it-s-projects.vercel.app",
+    "concurrency": 50,
+    "perWorker": 10,
+    "smoke": false,
+    "thresholds": {
+      "cached": 100,
+      "db": 500,
+      "tmdb": 3000
+    },
+    "maxErrorRate": 0.01
+  },
+  "cohorts": [
+    {
+      "cohort": "cached",
+      "count": 409,
+      "thresholdMs": 100,
+      "serverLatency": {
+        "count": 409,
+        "min": 2.047,
+        "max": 78.195,
+        "mean": 8.520777506112468,
+        "p50": 3.85,
+        "p90": 19.535,
+        "p95": 32.01,
+        "p99": 41.615
+      },
+      "endToEndLatency": {
+        "count": 409,
+        "min": 54.64849999999933,
+        "max": 1507.1710000000003,
+        "mean": 209.48017726161387,
+        "p50": 74.86579999999958,
+        "p90": 515.5167000000001,
+        "p95": 1305.2637999999997,
+        "p99": 1466.2962000000007
+      },
+      "errorRate": 0,
+      "hasServerData": true,
+      "pass": true
+    },
+    {
+      "cohort": "db",
+      "count": 83,
+      "thresholdMs": 500,
+      "serverLatency": {
+        "count": 83,
+        "min": 2.565,
+        "max": 604.511,
+        "mean": 112.68233734939761,
+        "p50": 90.273,
+        "p90": 198.267,
+        "p95": 231.646,
+        "p99": 604.511
+      },
+      "endToEndLatency": {
+        "count": 83,
+        "min": 57.16960000000017,
+        "max": 1700.3406999999997,
+        "mean": 298.7621072289157,
+        "p50": 168.64300000000003,
+        "p90": 603.3258999999998,
+        "p95": 1341.6333999999997,
+        "p99": 1700.3406999999997
+      },
+      "errorRate": 0,
+      "hasServerData": true,
+      "pass": true
+    },
+    {
+      "cohort": "tmdb",
+      "count": 8,
+      "thresholdMs": 3000,
+      "serverLatency": {
+        "count": 8,
+        "min": 2.936,
+        "max": 3525.313,
+        "mean": 481.07387499999993,
+        "p50": 3.371,
+        "p90": 3525.313,
+        "p95": 3525.313,
+        "p99": 3525.313
+      },
+      "endToEndLatency": {
+        "count": 8,
+        "min": 53.71439999999984,
+        "max": 3617.5324,
+        "mean": 700.6630500000001,
+        "p50": 77.92039999999997,
+        "p90": 3617.5324,
+        "p95": 3617.5324,
+        "p99": 3617.5324
+      },
+      "errorRate": 0,
+      "hasServerData": true,
+      "pass": false
+    }
+  ],
+  "overall": {
+    "totalRequests": 500,
+    "totalDurationMs": 5835.776699999999,
+    "errorRate": 0,
+    "missingServerTiming": 0,
+    "pass": false
+  },
+  "results": [
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 1327.2923,
+      "serverMs": 20.657,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 161.20949999999993,
+      "serverMs": 15.464,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 95.12419999999929,
+      "serverMs": 13.296,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "The Punisher: One Last Kill",
+      "endToEndMs": 233.34099999999944,
+      "serverMs": 103.807,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Office Romance",
+      "endToEndMs": 184.6801999999998,
+      "serverMs": 120.121,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 63.2525999999998,
+      "serverMs": 3.414,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 63.196899999999914,
+      "serverMs": 2.106,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 59.22070000000076,
+      "serverMs": 2.788,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "The Vanishing",
+      "endToEndMs": 119.41249999999945,
+      "serverMs": 61.263,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Chand Mera Dil",
+      "endToEndMs": 126.38450000000012,
+      "serverMs": 70.643,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Parks and Recreation: Cast and Creators Live at PALEYFEST 2014",
+      "endToEndMs": 336.3869000000004,
+      "serverMs": 60.612,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 1179.0590999999995,
+      "serverMs": 18.109,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 83.04269999999997,
+      "serverMs": 4.809,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 99.83030000000053,
+      "serverMs": 18.961,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 79.4996999999994,
+      "serverMs": 12.221,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 65.51080000000002,
+      "serverMs": 2.843,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 72.03489999999965,
+      "serverMs": 4.034,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Infiltrate",
+      "endToEndMs": 143.40119999999933,
+      "serverMs": 83.698,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 74.52039999999943,
+      "serverMs": 4.051,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 63.87950000000001,
+      "serverMs": 3.048,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 197.07940000000053,
+      "serverMs": 4.012,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 1360.7953000000007,
+      "serverMs": 38.097,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 66.04599999999937,
+      "serverMs": 3.362,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Severance",
+      "endToEndMs": 91.97069999999985,
+      "serverMs": 5.968,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 86.2488000000003,
+      "serverMs": 2.556,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 65.98310000000038,
+      "serverMs": 2.696,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 68.71779999999944,
+      "serverMs": 3.21,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 96.46259999999984,
+      "serverMs": 3.728,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 61.330699999999524,
+      "serverMs": 3.338,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 58.31919999999991,
+      "serverMs": 2.825,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 509.10350000000017,
+      "serverMs": 4.89,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 126.10519999999997,
+      "serverMs": 3.434,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 91.24330000000009,
+      "serverMs": 3.432,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 82.55380000000059,
+      "serverMs": 3.168,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 146.0634999999993,
+      "serverMs": 3.34,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 71.45200000000023,
+      "serverMs": 3.646,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 77.08820000000014,
+      "serverMs": 3.175,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 69.61949999999979,
+      "serverMs": 2.606,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 85.96909999999934,
+      "serverMs": 4.303,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Masters of the Universe",
+      "endToEndMs": 242.85069999999996,
+      "serverMs": 162.964,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 1354.6957999999995,
+      "serverMs": 37.903,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 86.22659999999996,
+      "serverMs": 16.374,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 93.61259999999947,
+      "serverMs": 8.199,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 110.99409999999989,
+      "serverMs": 12.995,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 132.7507000000005,
+      "serverMs": 5.721,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 69.22019999999975,
+      "serverMs": 3.73,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 55.957000000000335,
+      "serverMs": 2.763,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 61.25489999999991,
+      "serverMs": 3.305,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 74.09670000000006,
+      "serverMs": 10.932,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 62.743900000000394,
+      "serverMs": 2.66,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 1398.1917999999996,
+      "serverMs": 31.295,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 89.4363000000003,
+      "serverMs": 6.268,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 102.38060000000041,
+      "serverMs": 18.547,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 78.74060000000009,
+      "serverMs": 4.729,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 61.41610000000037,
+      "serverMs": 3.429,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 69.02230000000054,
+      "serverMs": 4.82,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 70.59149999999954,
+      "serverMs": 3.197,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 60.61729999999989,
+      "serverMs": 3.149,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 66.90790000000015,
+      "serverMs": 3.485,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 67.84360000000015,
+      "serverMs": 3.592,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Mortal Kombat II",
+      "endToEndMs": 1700.3406999999997,
+      "serverMs": 262.188,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Pati Patni Aur Woh Do",
+      "endToEndMs": 168.68139999999948,
+      "serverMs": 83.749,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 63.98779999999988,
+      "serverMs": 3.53,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 65.45870000000014,
+      "serverMs": 3.152,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Breaking Bad Fortune Teller",
+      "endToEndMs": 139.53849999999966,
+      "serverMs": 64,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 64.78650000000016,
+      "serverMs": 2.133,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 74.64800000000014,
+      "serverMs": 3.57,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 73.11000000000058,
+      "serverMs": 3.412,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 71.22829999999976,
+      "serverMs": 2.947,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 73.90320000000065,
+      "serverMs": 2.414,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 1487.6310000000003,
+      "serverMs": 27.141,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Possession",
+      "endToEndMs": 231.11659999999938,
+      "serverMs": 125.483,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 73.09390000000076,
+      "serverMs": 4.163,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 72.26389999999992,
+      "serverMs": 3.233,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 75.05670000000009,
+      "serverMs": 2.941,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 95.18319999999949,
+      "serverMs": 3.271,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 59.73329999999987,
+      "serverMs": 2.047,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 58.04830000000038,
+      "serverMs": 4.591,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 74.47449999999935,
+      "serverMs": 3.108,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 66.03030000000035,
+      "serverMs": 3.093,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 1439.3583999999992,
+      "serverMs": 39.768,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Wild Awakening",
+      "endToEndMs": 268.84419999999955,
+      "serverMs": 200.303,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "The Paley Center Salutes Parks and Recreation",
+      "endToEndMs": 150.3126999999995,
+      "serverMs": 81.611,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Obsession",
+      "endToEndMs": 151.01450000000023,
+      "serverMs": 91.705,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 62.25340000000051,
+      "serverMs": 7.592,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Parks and Recreation",
+      "endToEndMs": 664.5429000000004,
+      "serverMs": 604.511,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "The Shadow's Edge",
+      "endToEndMs": 149.47280000000046,
+      "serverMs": 79.889,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 60.729599999999664,
+      "serverMs": 2.847,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 70.32250000000022,
+      "serverMs": 3.073,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 58.831600000000435,
+      "serverMs": 2.347,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 1461.7376999999997,
+      "serverMs": 28.938,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 96.41149999999925,
+      "serverMs": 5.133,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 151.0079999999998,
+      "serverMs": 17.343,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 69.83230000000003,
+      "serverMs": 3.788,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 82.95470000000023,
+      "serverMs": 3.497,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 83.18279999999959,
+      "serverMs": 17.932,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 102.89819999999963,
+      "serverMs": 3.906,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "WWA The Inception",
+      "endToEndMs": 154.63619999999992,
+      "serverMs": 89.198,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 65.1227000000008,
+      "serverMs": 3.236,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 161.65560000000005,
+      "serverMs": 3.85,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 1466.2962000000007,
+      "serverMs": 35.495,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 244.08600000000024,
+      "serverMs": 3.567,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "The Vanishing Man",
+      "endToEndMs": 196.3128999999999,
+      "serverMs": 85.951,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 76.26080000000002,
+      "serverMs": 3.361,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Picnic at Hanging Rock",
+      "endToEndMs": 74.02730000000065,
+      "serverMs": 2.565,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "KD – The Devil",
+      "endToEndMs": 133.6226000000006,
+      "serverMs": 71.008,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 60.55409999999938,
+      "serverMs": 2.876,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 72.38479999999981,
+      "serverMs": 3.073,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 60.34439999999995,
+      "serverMs": 3.293,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 79.94700000000012,
+      "serverMs": 3.276,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 1305.2637999999997,
+      "serverMs": 41.615,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 100.45479999999952,
+      "serverMs": 14.052,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 70.5626000000002,
+      "serverMs": 3.351,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "The Wages of Fear",
+      "endToEndMs": 160.3092999999999,
+      "serverMs": 73.617,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Karuppu",
+      "endToEndMs": 129.47779999999966,
+      "serverMs": 60.201,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 71.63569999999982,
+      "serverMs": 2.855,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Rita",
+      "endToEndMs": 204.53769999999986,
+      "serverMs": 140.367,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 68.6877000000004,
+      "serverMs": 3.29,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 59.05439999999999,
+      "serverMs": 3.19,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 64.58100000000013,
+      "serverMs": 4.039,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 1222.2033000000001,
+      "serverMs": 21.582,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "El Camino: A Breaking Bad Movie",
+      "endToEndMs": 249.9938000000002,
+      "serverMs": 176.75,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 107.52210000000014,
+      "serverMs": 5.065,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Breaking Bad",
+      "endToEndMs": 65.82459999999992,
+      "serverMs": 3.697,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 67.96820000000025,
+      "serverMs": 3.432,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 69.47339999999986,
+      "serverMs": 3.335,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 79.65409999999974,
+      "serverMs": 17.232,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 76.40089999999964,
+      "serverMs": 3.226,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 87.84900000000016,
+      "serverMs": 3.605,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 64.32020000000011,
+      "serverMs": 3.85,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 1374.6714000000002,
+      "serverMs": 17.444,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 105.60720000000038,
+      "serverMs": 12.826,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 73.77619999999933,
+      "serverMs": 4.856,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 101.82020000000011,
+      "serverMs": 19.925,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "The Matrix",
+      "endToEndMs": 79.27600000000075,
+      "serverMs": 7.214,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 73.86469999999917,
+      "serverMs": 3.705,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 60.4985999999999,
+      "serverMs": 2.709,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Demon Slayer: Kimetsu no Yaiba Infinity Castle",
+      "endToEndMs": 190.17489999999998,
+      "serverMs": 131.47,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 60.037999999999556,
+      "serverMs": 3.069,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 70.10819999999967,
+      "serverMs": 3.193,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Hanging at Picnic Rock",
+      "endToEndMs": 501.2642999999998,
+      "serverMs": 76.884,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "The Mandalorian and Grogu",
+      "endToEndMs": 1233.8609999999999,
+      "serverMs": 239.063,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 182.6781000000001,
+      "serverMs": 7.754,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 74.10989999999947,
+      "serverMs": 3.214,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Bikini Inception",
+      "endToEndMs": 157.21259999999984,
+      "serverMs": 79.29,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 59.69790000000012,
+      "serverMs": 3.296,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 62.82719999999972,
+      "serverMs": 4.032,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 61.990599999999176,
+      "serverMs": 3.064,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 63.79280000000017,
+      "serverMs": 4.205,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 71.67500000000018,
+      "serverMs": 3.228,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 300.1841999999997,
+      "serverMs": 3.851,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 1163.2245999999996,
+      "serverMs": 28.478,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 88.40639999999985,
+      "serverMs": 15.299,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 71.51059999999961,
+      "serverMs": 3.415,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 79.15740000000005,
+      "serverMs": 4.599,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 71.99549999999999,
+      "serverMs": 3.206,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 66.51029999999992,
+      "serverMs": 3.513,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 105.33179999999993,
+      "serverMs": 19.485,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 79.42489999999998,
+      "serverMs": 2.973,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Dhurandhar: The Revenge",
+      "endToEndMs": 169.97069999999985,
+      "serverMs": 104.374,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 210.48180000000048,
+      "serverMs": 5.895,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 56.969200000000455,
+      "serverMs": 3.222,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Rape of Love",
+      "endToEndMs": 1341.6333999999997,
+      "serverMs": 196.71,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 74.11389999999938,
+      "serverMs": 3.455,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 101.59070000000065,
+      "serverMs": 28.9,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 67.44400000000041,
+      "serverMs": 9.26,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "tmdb",
+      "query": "The Wages of Fear",
+      "endToEndMs": 58.40300000000025,
+      "serverMs": 3.091,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 73.7559999999994,
+      "serverMs": 2.586,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 71.20289999999932,
+      "serverMs": 2.355,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 68.0622999999996,
+      "serverMs": 3.176,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Project Hail Mary",
+      "endToEndMs": 603.3258999999998,
+      "serverMs": 55.162,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 92.29190000000017,
+      "serverMs": 3.262,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 204.04939999999988,
+      "serverMs": 3.617,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 855.3990999999996,
+      "serverMs": 33.316,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 79.41139999999996,
+      "serverMs": 5.68,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 82.3773000000001,
+      "serverMs": 8.386,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 67.54140000000007,
+      "serverMs": 3.401,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 65.32350000000042,
+      "serverMs": 4.468,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 82.1876000000002,
+      "serverMs": 3.278,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 87.92069999999967,
+      "serverMs": 14.992,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 1315.2748000000001,
+      "serverMs": 35.362,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 123.9331000000002,
+      "serverMs": 4.732,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 91.45350000000053,
+      "serverMs": 3.133,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 107.81640000000061,
+      "serverMs": 14.134,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 66.03829999999925,
+      "serverMs": 11,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 104.23030000000017,
+      "serverMs": 3.58,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 64.38370000000032,
+      "serverMs": 3.716,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Kara",
+      "endToEndMs": 149.5001999999995,
+      "serverMs": 85.979,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 75.49139999999989,
+      "serverMs": 3.682,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 75.60369999999966,
+      "serverMs": 5.062,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 1486.7173000000003,
+      "serverMs": 15.867,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 105.16119999999955,
+      "serverMs": 14.442,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 74.77989999999954,
+      "serverMs": 4.041,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 84.62039999999979,
+      "serverMs": 3.528,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 140.59209999999985,
+      "serverMs": 5.741,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 76.09659999999985,
+      "serverMs": 4.511,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 66.21640000000025,
+      "serverMs": 3.945,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 57.128999999999905,
+      "serverMs": 4.059,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 55.8135999999995,
+      "serverMs": 3.563,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Hai Jawani Toh Ishq Hona Hai",
+      "endToEndMs": 124.09789999999975,
+      "serverMs": 66.964,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "tmdb",
+      "query": "Picnic at Hanging Rock",
+      "endToEndMs": 1464.9674000000005,
+      "serverMs": 178.184,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 85.83889999999974,
+      "serverMs": 8.19,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 78.78769999999986,
+      "serverMs": 4.987,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 66.70960000000014,
+      "serverMs": 3.639,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 65.3786,
+      "serverMs": 5.535,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 67.82480000000032,
+      "serverMs": 2.79,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "tmdb",
+      "query": "A Brighter Summer Day",
+      "endToEndMs": 62.652000000000044,
+      "serverMs": 2.936,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 60.48870000000079,
+      "serverMs": 3.022,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 78.51319999999942,
+      "serverMs": 2.549,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "The Taking of Pelham 1 2 3",
+      "endToEndMs": 156.60059999999976,
+      "serverMs": 86.696,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 1277.7567,
+      "serverMs": 14.318,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 229.2554,
+      "serverMs": 78.195,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 73.72910000000047,
+      "serverMs": 5.003,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 88.39589999999953,
+      "serverMs": 3.071,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 66.95709999999963,
+      "serverMs": 2.366,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 61.35620000000017,
+      "serverMs": 4.308,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Breaking Bad Wolf",
+      "endToEndMs": 126.0047999999997,
+      "serverMs": 67.263,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 96.45089999999982,
+      "serverMs": 3.333,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 79.85729999999967,
+      "serverMs": 2.705,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Scary Movie",
+      "endToEndMs": 203.34589999999935,
+      "serverMs": 138.379,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 1246.1565999999993,
+      "serverMs": 30.798,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 89.21680000000015,
+      "serverMs": 5.463,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 95.88400000000001,
+      "serverMs": 16.627,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Mortal Kombat",
+      "endToEndMs": 297.5559000000003,
+      "serverMs": 198.267,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "The Taking of Pelham One Two Three",
+      "endToEndMs": 141.28520000000026,
+      "serverMs": 90.273,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 54.64849999999933,
+      "serverMs": 2.848,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 87.95679999999993,
+      "serverMs": 5.975,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "tmdb",
+      "query": "The Friends of Eddie Coyle",
+      "endToEndMs": 53.71439999999984,
+      "serverMs": 3.371,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 55.817299999999705,
+      "serverMs": 2.628,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 62.154099999999744,
+      "serverMs": 4.775,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 226.4449999999997,
+      "serverMs": 3.565,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 1231.0169999999998,
+      "serverMs": 26.638,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Hoppers",
+      "endToEndMs": 271.5509000000002,
+      "serverMs": 169.12,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Apex",
+      "endToEndMs": 163.95170000000053,
+      "serverMs": 106.471,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 71.72569999999996,
+      "serverMs": 3.053,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 68.15120000000024,
+      "serverMs": 7.611,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Maa Behen",
+      "endToEndMs": 125.56760000000031,
+      "serverMs": 61.064,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 70.96440000000075,
+      "serverMs": 4.742,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 65.00759999999991,
+      "serverMs": 5.119,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Parasite",
+      "endToEndMs": 57.16960000000017,
+      "serverMs": 3.279,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 326.21299999999974,
+      "serverMs": 2.923,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 1163.9785000000002,
+      "serverMs": 15.33,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Kattalan",
+      "endToEndMs": 269.84540000000015,
+      "serverMs": 196.072,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 57.99170000000049,
+      "serverMs": 3.608,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 58.05619999999999,
+      "serverMs": 3.333,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 63.298499999999876,
+      "serverMs": 3.711,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 71.05709999999999,
+      "serverMs": 3.452,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 73.17570000000069,
+      "serverMs": 2.125,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Sorcerer",
+      "endToEndMs": 140.5663000000004,
+      "serverMs": 64.884,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 217.98070000000007,
+      "serverMs": 2.83,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 1250.1576999999997,
+      "serverMs": 23.754,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 86.08500000000004,
+      "serverMs": 11.084,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 94.96200000000044,
+      "serverMs": 3.265,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 90.36639999999989,
+      "serverMs": 17.694,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 123.22099999999955,
+      "serverMs": 34.69,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 74.18040000000019,
+      "serverMs": 5.913,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 61.776700000000346,
+      "serverMs": 2.364,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Parasite Dolls",
+      "endToEndMs": 130.09979999999996,
+      "serverMs": 62.092,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 65.94920000000002,
+      "serverMs": 3.469,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 60.16010000000006,
+      "serverMs": 3.54,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 1287.3081000000002,
+      "serverMs": 34.883,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 91.58280000000013,
+      "serverMs": 19.535,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 156.13900000000012,
+      "serverMs": 4.028,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 73.46839999999975,
+      "serverMs": 5.026,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "In the Grey",
+      "endToEndMs": 184.95100000000002,
+      "serverMs": 125.041,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 59.72469999999976,
+      "serverMs": 3.654,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Poppea's Hot Nights",
+      "endToEndMs": 141.73300000000017,
+      "serverMs": 77.782,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 87.33089999999993,
+      "serverMs": 2.828,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 93.52059999999983,
+      "serverMs": 12.692,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "tmdb",
+      "query": "The Vanishing 1988",
+      "endToEndMs": 3617.5324,
+      "serverMs": 3525.313,
+      "status": 200,
+      "ok": true,
+      "source": "on-demand"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 1259.6378000000004,
+      "serverMs": 24.468,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 221.41629999999986,
+      "serverMs": 33.614,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 145.39289999999983,
+      "serverMs": 11.554,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 70.51000000000022,
+      "serverMs": 3.141,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 85.5680999999995,
+      "serverMs": 2.95,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 64.92399999999998,
+      "serverMs": 3.201,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "tmdb",
+      "query": "Withnail and I",
+      "endToEndMs": 133.61499999999978,
+      "serverMs": 73.227,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 72.0661,
+      "serverMs": 3.966,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 56.634900000000016,
+      "serverMs": 2.717,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 58.84990000000016,
+      "serverMs": 2.979,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 1300.5485000000008,
+      "serverMs": 16.968,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 91.34450000000015,
+      "serverMs": 4.455,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 185.27410000000054,
+      "serverMs": 75.581,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 93.55289999999968,
+      "serverMs": 3.77,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 55.91809999999987,
+      "serverMs": 3.245,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 72.11470000000008,
+      "serverMs": 2.888,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 61.489300000000185,
+      "serverMs": 5.384,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Madness",
+      "endToEndMs": 181.10789999999997,
+      "serverMs": 107.194,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 71.14350000000013,
+      "serverMs": 5.015,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 65.19459999999981,
+      "serverMs": 4.113,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 1409.4298,
+      "serverMs": 28.113,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 99.38949999999932,
+      "serverMs": 15.481,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Inception: The Cobol Job",
+      "endToEndMs": 219.23759999999947,
+      "serverMs": 112.481,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 63.09029999999984,
+      "serverMs": 5.22,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "The Vanishing Triangle",
+      "endToEndMs": 168.53970000000027,
+      "serverMs": 80.442,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 79.90259999999944,
+      "serverMs": 4.123,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 73.96399999999994,
+      "serverMs": 3.668,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 57.949500000000626,
+      "serverMs": 2.843,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 68.8132999999998,
+      "serverMs": 3.267,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 60.175500000000284,
+      "serverMs": 3.815,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 1288.1392999999998,
+      "serverMs": 37.873,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 82.15909999999985,
+      "serverMs": 5.976,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 68.89370000000054,
+      "serverMs": 5.053,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 102.6825000000008,
+      "serverMs": 15.822,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 86.40670000000046,
+      "serverMs": 9.669,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 66.1943999999994,
+      "serverMs": 5.592,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 134.53679999999986,
+      "serverMs": 26.165,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 55.9380000000001,
+      "serverMs": 3.365,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 62.85390000000007,
+      "serverMs": 3.189,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 76.05040000000008,
+      "serverMs": 4.894,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 1242.4325,
+      "serverMs": 36.042,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 126.21349999999984,
+      "serverMs": 24.647,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 95.60910000000058,
+      "serverMs": 6.02,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 130.52819999999974,
+      "serverMs": 12.686,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 126.4373999999998,
+      "serverMs": 21.298,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Inception",
+      "endToEndMs": 67.03539999999975,
+      "serverMs": 3.075,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 81.3732,
+      "serverMs": 3.213,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 66.92540000000008,
+      "serverMs": 4.74,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 89.91939999999977,
+      "serverMs": 3.823,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "A Brighter Summer Day for the Lady Avengers",
+      "endToEndMs": 131.8086000000003,
+      "serverMs": 60.629,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 515.5167000000001,
+      "serverMs": 2.995,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 65.67649999999958,
+      "serverMs": 3.163,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 99.40650000000005,
+      "serverMs": 3.256,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 100.03710000000046,
+      "serverMs": 3.468,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 101.7427000000007,
+      "serverMs": 3.174,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 72.73019999999997,
+      "serverMs": 3.479,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 80.5666999999994,
+      "serverMs": 3.134,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 85.19619999999941,
+      "serverMs": 3.394,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 68.88830000000053,
+      "serverMs": 3.063,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 98.89010000000053,
+      "serverMs": 13.86,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Avatar: Fire and Ash",
+      "endToEndMs": 1692.8050000000003,
+      "serverMs": 231.646,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "The Devil Wears Prada",
+      "endToEndMs": 168.64300000000003,
+      "serverMs": 95.844,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 63.42910000000029,
+      "serverMs": 3.101,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Your Heart Will Be Broken",
+      "endToEndMs": 118.75410000000011,
+      "serverMs": 65.153,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 72.03240000000005,
+      "serverMs": 3.385,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 87.61840000000029,
+      "serverMs": 4.523,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 59.1891999999998,
+      "serverMs": 3.326,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 71.08489999999983,
+      "serverMs": 2.523,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 71.8738999999996,
+      "serverMs": 3.132,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 68.3101999999999,
+      "serverMs": 3.099,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 1325.7509,
+      "serverMs": 32.209,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 104.88699999999972,
+      "serverMs": 22.305,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 79.76099999999951,
+      "serverMs": 8.315,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 165.52319999999963,
+      "serverMs": 75.347,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 109.8723,
+      "serverMs": 16.503,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 95.98259999999937,
+      "serverMs": 16.182,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 75.09169999999995,
+      "serverMs": 5.605,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 72.86660000000029,
+      "serverMs": 3.282,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 101.53580000000056,
+      "serverMs": 15.492,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 112.22900000000027,
+      "serverMs": 8.599,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 1474.9723000000004,
+      "serverMs": 19.48,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 129.98369999999977,
+      "serverMs": 19.196,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 96.97249999999985,
+      "serverMs": 18.75,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 90.9362000000001,
+      "serverMs": 11.592,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 59.98409999999967,
+      "serverMs": 4.126,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 58.70179999999982,
+      "serverMs": 5.628,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 73.57880000000023,
+      "serverMs": 3.117,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 65.97779999999966,
+      "serverMs": 7.893,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 63.264000000000124,
+      "serverMs": 3.665,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 75.6844000000001,
+      "serverMs": 4.799,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 1266.3014000000003,
+      "serverMs": 18.558,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 142.34069999999974,
+      "serverMs": 46.101,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "The Friends of Eddie Coyle",
+      "endToEndMs": 255.15619999999944,
+      "serverMs": 174.933,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 90.60960000000068,
+      "serverMs": 14.63,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 59.82580000000053,
+      "serverMs": 3.445,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 63.054299999999785,
+      "serverMs": 4.644,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 77.35699999999997,
+      "serverMs": 2.937,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 69.69909999999982,
+      "serverMs": 3.18,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 59.88100000000031,
+      "serverMs": 3.694,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 71.82990000000063,
+      "serverMs": 3.135,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 1293.4866000000002,
+      "serverMs": 17.75,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 80.79320000000007,
+      "serverMs": 5.462,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 132.07979999999952,
+      "serverMs": 24.506,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 117.84370000000035,
+      "serverMs": 4.071,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 95.53909999999996,
+      "serverMs": 6.376,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 72.67630000000008,
+      "serverMs": 5.176,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Lee Cronin's The Mummy",
+      "endToEndMs": 165.60360000000037,
+      "serverMs": 94.968,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 55.403699999999844,
+      "serverMs": 2.287,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 76.61290000000008,
+      "serverMs": 4.465,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 69.88629999999921,
+      "serverMs": 4.226,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 1284.6970999999994,
+      "serverMs": 12.514,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 122.21050000000014,
+      "serverMs": 6.934,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 111.38800000000083,
+      "serverMs": 4.615,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 107.17419999999947,
+      "serverMs": 14.034,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Peddi",
+      "endToEndMs": 219.64799999999923,
+      "serverMs": 136.969,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 295.6201999999994,
+      "serverMs": 2.976,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 88.71059999999943,
+      "serverMs": 5.7,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 62.34479999999985,
+      "serverMs": 6.128,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 67.90180000000055,
+      "serverMs": 3.021,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 66.61410000000069,
+      "serverMs": 2.71,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 1317.0092000000004,
+      "serverMs": 16.631,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "The Super Mario Galaxy Movie",
+      "endToEndMs": 320.6817999999994,
+      "serverMs": 198.001,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 67.91870000000017,
+      "serverMs": 3.031,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 73.6229000000003,
+      "serverMs": 3.402,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Hokum",
+      "endToEndMs": 146.51260000000002,
+      "serverMs": 72.462,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 87.94909999999982,
+      "serverMs": 2.955,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 70.5654999999997,
+      "serverMs": 3.488,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 71.02919999999995,
+      "serverMs": 4.492,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 86.69499999999971,
+      "serverMs": 5.434,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 55.98539999999957,
+      "serverMs": 2.758,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 333.90129999999954,
+      "serverMs": 3.681,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 137.02189999999973,
+      "serverMs": 3.682,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 97.78139999999985,
+      "serverMs": 3.532,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Zero Woman 2",
+      "endToEndMs": 1169.8859000000002,
+      "serverMs": 182.248,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 62.8140999999996,
+      "serverMs": 3.277,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Tom Clancy's Jack Ryan: Ghost War",
+      "endToEndMs": 139.97730000000047,
+      "serverMs": 82.117,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 75.8771999999999,
+      "serverMs": 3.109,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 65.81620000000021,
+      "serverMs": 3.003,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 70.28879999999936,
+      "serverMs": 3.685,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 86.45519999999942,
+      "serverMs": 3.837,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "A Brighter Summer Day",
+      "endToEndMs": 1605.6238000000003,
+      "serverMs": 212.603,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 73.30090000000018,
+      "serverMs": 3.533,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 63.477600000000166,
+      "serverMs": 3.998,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Backrooms",
+      "endToEndMs": 145.60339999999997,
+      "serverMs": 71.286,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 67.26599999999962,
+      "serverMs": 3.9,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 60.1917999999996,
+      "serverMs": 3.306,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 78.72860000000037,
+      "serverMs": 5.649,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 296.6266999999998,
+      "serverMs": 3.559,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 67.00759999999991,
+      "serverMs": 2.885,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 74.86579999999958,
+      "serverMs": 2.82,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 1507.1710000000003,
+      "serverMs": 32.01,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 81.02040000000034,
+      "serverMs": 9.314,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 57.24199999999928,
+      "serverMs": 3.296,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 93.94650000000001,
+      "serverMs": 5.439,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 68.5650999999998,
+      "serverMs": 3.814,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 74.79829999999947,
+      "serverMs": 4.321,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 69.27640000000065,
+      "serverMs": 3.131,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 72.0033999999996,
+      "serverMs": 3.401,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 62.82390000000032,
+      "serverMs": 7.471,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 58.26769999999942,
+      "serverMs": 3.26,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 1259.9206999999997,
+      "serverMs": 14.261,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 104.89040000000023,
+      "serverMs": 16.031,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Damage",
+      "endToEndMs": 196.6291000000001,
+      "serverMs": 121.001,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 73.01489999999922,
+      "serverMs": 4.999,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Swapped",
+      "endToEndMs": 225.09699999999975,
+      "serverMs": 152.818,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 84.61180000000058,
+      "serverMs": 6.113,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 67.28850000000057,
+      "serverMs": 6.82,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 67.04170000000067,
+      "serverMs": 3.343,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 64.28560000000016,
+      "serverMs": 3.94,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Breaking Bad: Original Minisodes",
+      "endToEndMs": 125.60409999999956,
+      "serverMs": 64.668,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 1438.7486,
+      "serverMs": 36.627,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 118.84229999999934,
+      "serverMs": 35.397,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 117.3168999999998,
+      "serverMs": 12.035,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 73.8717999999999,
+      "serverMs": 13.009,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "A Dream Within a Dream: The Making of 'Picnic at Hanging Rock'",
+      "endToEndMs": 171.04309999999987,
+      "serverMs": 103.987,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 94.0016999999998,
+      "serverMs": 4.804,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 69.00579999999991,
+      "serverMs": 3.15,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "tmdb",
+      "query": "The Taking of Pelham One Two Three",
+      "endToEndMs": 77.92039999999997,
+      "serverMs": 3.008,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 72.27639999999974,
+      "serverMs": 2.785,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "tmdb",
+      "query": "Possession 1981",
+      "endToEndMs": 136.4998000000005,
+      "serverMs": 59.461,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 1413.8723,
+      "serverMs": 31.379,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Mark",
+      "endToEndMs": 312.3269999999993,
+      "serverMs": 220.119,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Goosebumps: The Vanishing",
+      "endToEndMs": 213.53740000000016,
+      "serverMs": 103.982,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 71.69190000000071,
+      "serverMs": 3.258,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 71.8052000000007,
+      "serverMs": 3.169,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 72.15909999999985,
+      "serverMs": 2.923,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 65.30569999999989,
+      "serverMs": 3.85,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 71.48750000000018,
+      "serverMs": 5.379,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 72.61500000000069,
+      "serverMs": 3.571,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 70.5555000000004,
+      "serverMs": 3.633,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 1344.8145000000004,
+      "serverMs": 37.512,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 101.27749999999924,
+      "serverMs": 17.786,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 95.86879999999928,
+      "serverMs": 16.128,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 80.19740000000002,
+      "serverMs": 3.325,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "The Possession",
+      "endToEndMs": 192.27049999999963,
+      "serverMs": 115.97,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 68.91960000000017,
+      "serverMs": 3.165,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Door II: Tokyo Diary",
+      "endToEndMs": 158.4384,
+      "serverMs": 78.083,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Addicted",
+      "endToEndMs": 149.77469999999994,
+      "serverMs": 89.088,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 55.70979999999963,
+      "serverMs": 3.134,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 65.52629999999954,
+      "serverMs": 2.868,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 1444.0407999999998,
+      "serverMs": 11.899,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 87.14030000000002,
+      "serverMs": 5.502,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Withnail & I",
+      "endToEndMs": 211.0638000000008,
+      "serverMs": 131.759,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 62.132300000000214,
+      "serverMs": 8.645,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Iron Lung",
+      "endToEndMs": 201.3185000000003,
+      "serverMs": 127.897,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Graphic Desires",
+      "endToEndMs": 138.7508000000007,
+      "serverMs": 74.875,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Nymphomaniac: Vol. II",
+      "endToEndMs": 179.27049999999963,
+      "serverMs": 124.243,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 90.58500000000004,
+      "serverMs": 5.456,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 67.26540000000023,
+      "serverMs": 3.272,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 64.14340000000084,
+      "serverMs": 2.859,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 466.71780000000035,
+      "serverMs": 3.054,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 1132.1145999999999,
+      "serverMs": 15.034,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 89.05469999999968,
+      "serverMs": 8.172,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 83.86409999999978,
+      "serverMs": 6.965,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 72.1310999999996,
+      "serverMs": 5.632,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 60.722999999999956,
+      "serverMs": 3.978,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 93.15859999999975,
+      "serverMs": 3.185,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 70.17889999999989,
+      "serverMs": 2.698,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "Michael",
+      "endToEndMs": 161.1211999999996,
+      "serverMs": 106.529,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 71.07470000000012,
+      "serverMs": 3.145,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "GOAT",
+      "endToEndMs": 1667.1080000000002,
+      "serverMs": 237.076,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 68.47800000000007,
+      "serverMs": 2.797,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 99.39570000000003,
+      "serverMs": 13.84,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "parasite",
+      "endToEndMs": 73.72659999999996,
+      "serverMs": 4.831,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "db",
+      "query": "A Parks and Recreation Special",
+      "endToEndMs": 145.69810000000052,
+      "serverMs": 62.826,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "inception",
+      "endToEndMs": 58.21220000000085,
+      "serverMs": 3.101,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 56.302200000000084,
+      "serverMs": 3.062,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "breaking bad",
+      "endToEndMs": 75.1837000000005,
+      "serverMs": 3.597,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "severance",
+      "endToEndMs": 70.91690000000017,
+      "serverMs": 3.566,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    },
+    {
+      "cohort": "cached",
+      "query": "the matrix",
+      "endToEndMs": 72.90160000000014,
+      "serverMs": 3.531,
+      "status": 200,
+      "ok": true,
+      "source": "db"
+    }
+  ]
+}
