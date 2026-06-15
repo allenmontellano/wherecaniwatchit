@@ -2,7 +2,18 @@
 
 # Working Agreements & Persistent Decisions
 
-> Loaded every session. Last updated 2026-06-08 (Phase 3/4 pre-launch).
+> Loaded every session. Last updated 2026-06-10 (Phase 3 done; SP4 complete, prod deploy pending).
+
+## Auto mode (working agreement)
+- **Claude Code may write, edit, run tests, and commit to FEATURE BRANCHES without asking** for per-action approval. Work to completion, then report.
+- **Still pause for explicit go-ahead on:** merges to `staging` or `master`, database migrations, and any decision requiring product/architecture judgment.
+- Spec and plan approval gates still apply (brainstorm → spec → plan → build) — auto mode covers the *build* loop, not the design gates.
+
+## Current state (2026-06-10)
+- **SP4 (load test) COMPLETE.** Load test passed after the region fix: **cached p95 32ms ✅, DB p95 231ms ✅**, TMDB cold-seed path advisory/accepted (~3.5s, inherent to the 3s seed timeout + external API; rare, self-healing). Root cause was cross-region (functions `iad1` / data Singapore); fixed by pinning Vercel functions to **`sin1`** (`vercel.json` `regions`). Phase 3 report committed as **GO** (`docs/superpowers/reports/2026-06-10-phase-3-report.md`).
+- **Branch state: `staging` is 11 commits ahead of `master`.** All SP4 tooling + the `sin1` region pin + Phase 3 report live on `staging`, **not yet on `master`**. **PENDING: prod deploy — merge `staging` → `master`** (this is what ships the `sin1` fix to production, which still runs in `iad1` and is slow until then).
+- **`RATE_LIMIT_SEARCH` was deleted from the Vercel Preview env** (it was raised to 100000 for the load test). **Staging needs a redeploy** to restore the default 30/min search rate limit.
+- **Next up:** **SP6 (Auth & roles, invite-only)** and **SP8 (expanded reporting form)** in parallel, *after* the prod deploy. Both go through the full **spec → plan → build** process (SP4's spec/plan exemption was one-time).
 
 ## Process (non-negotiable)
 - **TDD throughout**: write the failing test first → run it and watch it fail → minimal implementation → green → commit. One logical change per commit.
