@@ -26,11 +26,13 @@ Stand up invite-only authentication and a three-role authorization model so that
 
 ## 4. Architecture
 
-Supabase Auth is the identity provider. `@supabase/ssr` supplies three things:
+Supabase Auth is the identity provider. `@supabase/ssr@0.10.3` supplies three things:
 
 1. A **browser client** (`createBrowserClient`) for client-component sign-in / sign-out.
-2. A **cookie-aware server client** (`createServerClient`) for Server Components, server actions, and route handlers.
-3. A root **`middleware.ts`** that calls `updateSession` on every matched request to refresh the auth cookie (required by `@supabase/ssr` so Server Components see a fresh session).
+2. A **cookie-aware server client** (`createServerClient`) for Server Components, server actions, and route handlers. **Already implemented** in `lib/supabase/server.ts` with the correct async `cookies()` + `getAll`/`setAll` pattern — reused as-is.
+3. A root **`proxy.ts`** that calls `updateSession` on every matched request to refresh the auth cookie (required by `@supabase/ssr` so Server Components see a fresh session). **Next 16 renamed the `middleware` file convention to `proxy`** (`v16.0.0`); the file exports a `proxy` function + `config.matcher` and defaults to the Node.js runtime.
+
+**Authorization is not done in `proxy.ts`.** Per the Next 16 auth guidance, proxy is for optimistic session-cookie refresh only — "always verify authentication and authorization inside each Server Function." Real authz lives in the `requireUser()`/`requireRole()` guards invoked by Server Components / route handlers.
 
 Roles live as a Postgres enum column on `profiles` (source of truth) and are enforced in the **application layer** via server-side guards, matching the codebase's existing pattern (writes go through service-role API routes; authorization stays in one place). The intended role is set at invite time in the auth user's `app_metadata` (admin-controlled, not user-editable) and copied to `profiles.role` when the invite is accepted.
 
@@ -79,9 +81,9 @@ Notes:
 | File | Responsibility |
 |---|---|
 | `lib/supabase/client.ts` (new) | Browser client via `createBrowserClient`. |
-| `lib/supabase/server.ts` (update) | Confirm/upgrade to the `@supabase/ssr` `createServerClient` cookie pattern used by Server Components & route handlers. |
-| `lib/supabase/middleware.ts` (new) | `updateSession(request)` helper that refreshes the session cookie. |
-| `middleware.ts` (new, repo root) | Next middleware delegating to `updateSession`, with a matcher excluding static assets / images / favicon. |
+| `lib/supabase/server.ts` (exists, reuse) | Already implements the `@supabase/ssr` `createServerClient` cookie pattern (async `cookies()`, `getAll`/`setAll`). No change needed. |
+| `lib/supabase/proxy-session.ts` (new) | `updateSession(request)` helper that builds the SSR client over the request/response cookies and refreshes the session. |
+| `proxy.ts` (new, repo root) | Next 16 proxy delegating to `updateSession`, with a matcher excluding `api`, `_next/static`, `_next/image`, and metadata files. Exports a `proxy` function + `config.matcher`. |
 | `lib/auth/guards.ts` (new) | `getSessionUser()` → `{ user, profile }` or null; `requireUser()` → redirects to `/login` if unauthenticated; `requireRole(role \| role[])` → 403/redirect if role not permitted. |
 | `app/login/page.tsx` (+ client form) | Email+password sign-in via the browser client; redirect to `/account` on success; inline error on failure. |
 | `app/accept-invite/page.tsx` (+ client form) | Consumes the invite-link session; user sets password + username (+ optional region); server action sets the password and creates the `profiles` row. |
@@ -104,7 +106,7 @@ Notes:
 1. `/login` → email+password → `signInWithPassword` → redirect to `/account`. Invalid credentials render an inline error.
 
 **Protected request**
-1. `middleware.ts` refreshes the session cookie.
+1. `proxy.ts` refreshes the session cookie (optimistic only — no authz here).
 2. A Server Component / route handler calls `requireUser()` or `requireRole('admin')`.
 3. The guard loads the session and the caller's `profiles.role`, then allows the request or redirects (`/login`) / returns 403.
 
@@ -134,6 +136,6 @@ Notes:
 
 ## 11. Open risks / notes
 
-- `@supabase/ssr` cookie handling in Next 16 must follow the current `node_modules/next/dist/docs/` + `@supabase/ssr` guidance (App Router middleware + Server Component patterns may differ from older examples) — verify against installed-version docs before implementing.
+- **Verified against installed versions (2026-06-16):** Next.js **16.2.7**, React **19.2.4**, `@supabase/ssr` **0.10.3** (`createBrowserClient` + `createServerClient` both exported). Next 16 renamed the `middleware` file convention to **`proxy`** (`proxy.ts`, Node.js runtime default); the existing `lib/supabase/server.ts` already uses the correct SSR cookie pattern. The handoff's "Next 14" reference is stale.
 - `profiles.username` is `NOT NULL UNIQUE`; the accept-invite form must handle a username-collision error gracefully (re-prompt) rather than 500.
 - `inviteUserByEmail` requires a configured redirect URL allowlist in Supabase Auth settings for `/accept-invite` on each environment (staging + prod).
