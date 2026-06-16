@@ -2,18 +2,22 @@
 
 # Working Agreements & Persistent Decisions
 
-> Loaded every session. Last updated 2026-06-10 (Phase 3 done; SP4 complete, prod deploy pending).
+> Loaded every session. Last updated 2026-06-15 (SP4 shipped to prod; SP6 brainstorming in progress).
 
 ## Auto mode (working agreement)
 - **Claude Code may write, edit, run tests, and commit to FEATURE BRANCHES without asking** for per-action approval. Work to completion, then report.
 - **Still pause for explicit go-ahead on:** merges to `staging` or `master`, database migrations, and any decision requiring product/architecture judgment.
 - Spec and plan approval gates still apply (brainstorm → spec → plan → build) — auto mode covers the *build* loop, not the design gates.
 
-## Current state (2026-06-10)
-- **SP4 (load test) COMPLETE.** Load test passed after the region fix: **cached p95 32ms ✅, DB p95 231ms ✅**, TMDB cold-seed path advisory/accepted (~3.5s, inherent to the 3s seed timeout + external API; rare, self-healing). Root cause was cross-region (functions `iad1` / data Singapore); fixed by pinning Vercel functions to **`sin1`** (`vercel.json` `regions`). Phase 3 report committed as **GO** (`docs/superpowers/reports/2026-06-10-phase-3-report.md`).
-- **Branch state: `staging` is 11 commits ahead of `master`.** All SP4 tooling + the `sin1` region pin + Phase 3 report live on `staging`, **not yet on `master`**. **PENDING: prod deploy — merge `staging` → `master`** (this is what ships the `sin1` fix to production, which still runs in `iad1` and is slow until then).
-- **`RATE_LIMIT_SEARCH` was deleted from the Vercel Preview env** (it was raised to 100000 for the load test). **Staging needs a redeploy** to restore the default 30/min search rate limit.
-- **Next up:** **SP6 (Auth & roles, invite-only)** and **SP8 (expanded reporting form)** in parallel, *after* the prod deploy. Both go through the full **spec → plan → build** process (SP4's spec/plan exemption was one-time).
+## Current state (2026-06-15)
+- **SP4 SHIPPED TO PROD.** Merged `staging` → `master` (`09eaef3`); production now runs functions in **`sin1`** co-located with Supabase + Upstash (verified `X-Vercel-Id: sin1::sin1`, search returns results, homepage 200, 227 tests green). The `sin1` fix, SP4 load-test tooling, and Phase 3 GO report are all live in prod. Load test (on staging): **cached p95 32ms ✅, DB p95 231ms ✅**, TMDB cold-seed advisory/accepted (~3.5s).
+- **Staging redeployed; rate limit restored.** `RATE_LIMIT_SEARCH` deletion is now live — staging search verified back at the default **30/min** (burst test: exactly 30×200 then 429).
+- **SP6 (Auth & roles, invite-only) — BUILD COMPLETE on `feat/sp6-auth`, PAUSED AT STAGING GATE (2026-06-16).** Spec `docs/superpowers/specs/2026-06-16-sp6-auth-roles-design.md`, plan `docs/superpowers/plans/2026-06-16-sp6-auth-roles.md`. All 9 impl tasks built TDD via subagents with spec+quality review each; final branch review = **READY FOR STAGING**. `npx tsc --noEmit` clean, **259 tests green**, eslint clean.
+  - **Decisions:** email+password with invite onboarding (`inviteUserByEmail`); invites via dashboard + `scripts/invite.ts` (no in-app admin UI → SP7); **Approach A** `profiles.role` enum (`contributor`|`reviewer`|`admin`) + app-layer `requireUser()`/`requireRole()`; password-reset deferred; profile row created in `/accept-invite` server action via admin client.
+  - **Built:** `lib/auth/roles.ts`, `lib/auth/guards.ts`, `lib/auth/accept-invite.ts`, `lib/supabase/client.ts`, `lib/supabase/proxy-session.ts` + root **`proxy.ts`** (Next 16 renamed `middleware`→`proxy`), `app/login`, `app/accept-invite` (+action), `app/account` (+logout), `scripts/invite.ts`, migration `supabase/migrations/20260616000001_profiles_role.sql` (role enum + anti-escalation trigger; **idempotent + JWT-claim-safe** after review).
+  - **GATED — needs explicit go-ahead (NOT yet done):** (1) apply migration to **staging** (`hunvbflchgjphnhdjmws`) via Management API + verify trigger; (2) Supabase staging Auth config — Site URL + redirect allowlist `…/accept-invite` + min password ≥ 8; (3) set `NEXT_PUBLIC_SITE_URL` in staging Vercel (Preview scope); (4) merge `feat/sp6-auth` → `staging`. Then manual checklist (invite→accept→login→/account→logout, assets load, escalation blocked). Prod = separate approval after staging.
+  - **Deferred follow-ups (non-blocking, logged):** (1) guards log auth-service errors (currently fails closed silently); (2) proxy-session unit test for `setAll` cookie propagation; (3) invite CLI partial-failure message should include user id. *(Region-validation + form autocomplete/aria-label already fixed pre-gate in `926f4df`.)*
+- **SP8 (expanded reporting form)** queued — full spec→plan→build; **no auth dependency**, can build in a parallel worktree. Scope: replace free-text `platform`/`notes` with structured `reported_platform` + `reported_watch_url` columns on `flags`.
 
 ## Process (non-negotiable)
 - **TDD throughout**: write the failing test first → run it and watch it fail → minimal implementation → green → commit. One logical change per commit.
