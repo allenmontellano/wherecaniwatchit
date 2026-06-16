@@ -18,7 +18,7 @@ export function parseAcceptInviteInput(input: {
   regionCode: string
 }): AcceptInviteParse {
   const username = input.username.trim()
-  const regionCode = input.regionCode.trim() === '' ? null : input.regionCode.trim()
+  const rawRegion = input.regionCode.trim()
 
   if (username.length < 3 || username.length > 30) {
     return { ok: false, error: 'Username must be 3–30 characters.' }
@@ -29,6 +29,15 @@ export function parseAcceptInviteInput(input: {
   if (input.password.length < 8) {
     return { ok: false, error: 'Password must be at least 8 characters.' }
   }
+
+  let regionCode: string | null = null
+  if (rawRegion !== '') {
+    if (!/^[A-Za-z]{2}$/.test(rawRegion)) {
+      return { ok: false, error: 'Region must be a 2-letter country code (e.g. PH).' }
+    }
+    regionCode = rawRegion.toUpperCase()
+  }
+
   return { ok: true, value: { username, password: input.password, regionCode } }
 }
 

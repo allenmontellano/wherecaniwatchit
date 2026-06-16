@@ -25,6 +25,8 @@ export function AcceptInviteForm() {
       <input
         name="username"
         required
+        autoComplete="username"
+        aria-label="Username"
         placeholder="Username"
         className="w-full rounded-xl border border-[#E5E5E5] bg-white px-3.5 py-2.5 text-[14px] text-[#171717] placeholder:text-[#AEAEB8] focus:outline-none focus:border-[#2B72E8] focus:shadow-[0_0_0_3px_rgba(43,114,232,0.12)] transition-all"
       />
@@ -32,13 +34,18 @@ export function AcceptInviteForm() {
         name="password"
         type="password"
         required
+        autoComplete="new-password"
+        aria-label="Password"
         placeholder="Password (8+ characters)"
         className="w-full rounded-xl border border-[#E5E5E5] bg-white px-3.5 py-2.5 text-[14px] text-[#171717] placeholder:text-[#AEAEB8] focus:outline-none focus:border-[#2B72E8] focus:shadow-[0_0_0_3px_rgba(43,114,232,0.12)] transition-all"
       />
       <input
         name="regionCode"
+        autoComplete="off"
+        aria-label="Region code"
+        maxLength={2}
         placeholder="Region code (optional, e.g. PH)"
-        className="w-full rounded-xl border border-[#E5E5E5] bg-white px-3.5 py-2.5 text-[14px] text-[#171717] placeholder:text-[#AEAEB8] focus:outline-none focus:border-[#2B72E8] focus:shadow-[0_0_0_3px_rgba(43,114,232,0.12)] transition-all"
+        className="w-full rounded-xl border border-[#E5E5E5] bg-white px-3.5 py-2.5 text-[14px] text-[#171717] placeholder:text-[#AEAEB8] focus:outline-none focus:border-[#2B72E8] focus:shadow-[0_0_0_3px_rgba(43,114,232,0.12)] transition-all uppercase"
       />
       {error && <p className="text-[13px] text-[#FF3B30]">{error}</p>}
       <button
