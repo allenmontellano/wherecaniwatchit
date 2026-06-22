@@ -40,6 +40,10 @@ describe('GET /auth/confirm', () => {
     await expect(GET(req('https://x.io/auth/confirm?token_hash=abc&type=invite&next=//evil.com')))
       .rejects.toThrow('REDIRECT:/account')
   })
+  it('rejects a backslash-relative next', async () => {
+    await expect(GET(req('https://x.io/auth/confirm?token_hash=abc&type=invite&next=/\\evil.com')))
+      .rejects.toThrow('REDIRECT:/account')
+  })
   it('redirects to /login on verify error', async () => {
     mockVerifyOtp.mockResolvedValue({ error: { message: 'bad' } })
     await expect(GET(req('https://x.io/auth/confirm?token_hash=abc&type=invite')))

@@ -7,7 +7,10 @@ export async function GET(request: Request) {
   const tokenHash = searchParams.get('token_hash')
   const type = searchParams.get('type') as EmailOtpType | null
   const nextParam = searchParams.get('next') ?? '/account'
-  const next = nextParam.startsWith('/') && !nextParam.startsWith('//') ? nextParam : '/account'
+  const next =
+    nextParam.startsWith('/') && !nextParam.startsWith('//') && !nextParam.startsWith('/\\')
+      ? nextParam
+      : '/account'
 
   if (tokenHash && type) {
     const supabase = await createClient()
