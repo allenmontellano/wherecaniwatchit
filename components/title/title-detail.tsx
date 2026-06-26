@@ -16,6 +16,7 @@ import { ReportModal } from '@/components/report/report-modal'
 interface TitleDetailProps {
   title: Title
   availability: AvailabilityWithPlatform[]
+  platformsByRegion: Record<string, { slug: string; name: string }[]>
 }
 
 function freshnessLabel(rows: AvailabilityWithPlatform[]): string {
@@ -33,7 +34,7 @@ function freshnessLabel(rows: AvailabilityWithPlatform[]): string {
     : latest.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
-export function TitleDetail({ title, availability }: TitleDetailProps) {
+export function TitleDetail({ title, availability, platformsByRegion }: TitleDetailProps) {
   const { country } = useCountry()
   const region = regionByCode[country]
   const [reportOpen, setReportOpen] = useState(false)
@@ -344,6 +345,7 @@ export function TitleDetail({ title, availability }: TitleDetailProps) {
           titleId={title.id}
           titleName={title.title}
           region={region}
+          platforms={platformsByRegion[country] ?? []}
         />
       )}
     </>

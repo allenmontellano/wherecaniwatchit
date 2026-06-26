@@ -7,6 +7,7 @@ import { SiteHeader } from '@/components/layout/site-header'
 import { TitleDetail } from '@/components/title/title-detail'
 import { resolveCountry } from '@/lib/country'
 import { getTitleDetail } from '@/lib/title-detail'
+import { getRegionPlatformsMap } from '@/lib/platforms-data'
 
 export async function generateMetadata({
   params,
@@ -37,7 +38,10 @@ export default async function TitlePage({
 
   const savedCountry = cookieStore.get('selected-country')?.value
   const country = resolveCountry(countryParam, savedCountry)
-  const detail = await getTitleDetail(id)
+  const [detail, platformsByRegion] = await Promise.all([
+    getTitleDetail(id),
+    getRegionPlatformsMap(),
+  ])
   if (!detail) notFound()
   const { title, availability } = detail
 
@@ -50,7 +54,7 @@ export default async function TitlePage({
         <AnimatedBackground />
         <SiteHeader initialQuery={title.title} />
         <div className="relative z-10 flex-1">
-          <TitleDetail title={title} availability={availability} />
+          <TitleDetail title={title} availability={availability} platformsByRegion={platformsByRegion} />
         </div>
       </main>
     </CountryProvider>

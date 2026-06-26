@@ -10,6 +10,7 @@ interface ReportModalProps {
   titleId: string
   titleName: string
   region: RegionMeta
+  platforms: { slug: string; name: string }[]
 }
 
 const ISSUE_LABELS: Record<IssueType, string> = {
@@ -20,9 +21,11 @@ const ISSUE_LABELS: Record<IssueType, string> = {
   other: 'Other',
 }
 
-export function ReportModal({ onClose, titleId, titleName, region }: ReportModalProps) {
+export function ReportModal({ onClose, titleId, titleName, region, platforms }: ReportModalProps) {
   const [issue, setIssue] = useState<IssueType>('not-here')
-  const [platform, setPlatform] = useState('')
+  const [platformValue, setPlatformValue] = useState('')
+  const [platformOther, setPlatformOther] = useState('')
+  const [watchUrl, setWatchUrl] = useState('')
   const [notes, setNotes] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [done, setDone] = useState(false)
@@ -48,7 +51,12 @@ export function ReportModal({ onClose, titleId, titleName, region }: ReportModal
           title_id: titleId,
           region_code: region.code,
           issue_type: issue,
-          platform: showPlatform ? platform : undefined,
+          reported_platform: showPlatform
+            ? platformValue === '__other__'
+              ? platformOther.trim() || undefined
+              : platformValue || undefined
+            : undefined,
+          reported_watch_url: showPlatform ? watchUrl.trim() || undefined : undefined,
           notes,
         }),
       })
@@ -136,19 +144,53 @@ export function ReportModal({ onClose, titleId, titleName, region }: ReportModal
             <div
               className="overflow-hidden transition-all duration-200"
               style={{
-                maxHeight: showPlatform ? 110 : 0,
+                maxHeight: showPlatform ? 320 : 0,
                 opacity: showPlatform ? 1 : 0,
                 marginBottom: showPlatform ? 16 : 0,
               }}
             >
-              <FieldLabel>Which platform is it actually on?</FieldLabel>
-              <input
-                type="text"
-                value={platform}
-                onChange={(e) => setPlatform(e.target.value)}
-                placeholder="e.g. Netflix, Vivamax, iWantTFC..."
-                className="w-full rounded-xl border border-[#E5E5E5] bg-white px-3.5 py-2.5 text-[14px] text-[#171717] placeholder:text-[#AEAEB8] font-sans focus:outline-none focus:border-[#2B72E8] focus:shadow-[0_0_0_3px_rgba(43,114,232,0.12)] transition-all"
-              />
+              <FieldLabel>Which platform?</FieldLabel>
+              <select
+                value={platformValue}
+                onChange={(e) => setPlatformValue(e.target.value)}
+                className="w-full appearance-none cursor-pointer rounded-xl border border-[#E5E5E5] bg-white px-3.5 py-2.5 pr-9 text-[14px] text-[#171717] font-sans focus:outline-none focus:border-[#2B72E8] focus:shadow-[0_0_0_3px_rgba(43,114,232,0.12)] transition-all"
+                style={{
+                  backgroundImage:
+                    "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23AEAEB8' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E\")",
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'right 14px center',
+                }}
+              >
+                <option value="">Select a platform…</option>
+                {platforms.map((p) => (
+                  <option key={p.slug} value={p.slug}>
+                    {p.name}
+                  </option>
+                ))}
+                <option value="__other__">Other — specify</option>
+              </select>
+
+              {platformValue === '__other__' && (
+                <input
+                  type="text"
+                  value={platformOther}
+                  onChange={(e) => setPlatformOther(e.target.value)}
+                  maxLength={100}
+                  placeholder="Platform name"
+                  className="mt-2 w-full rounded-xl border border-[#E5E5E5] bg-white px-3.5 py-2.5 text-[14px] text-[#171717] placeholder:text-[#AEAEB8] font-sans focus:outline-none focus:border-[#2B72E8] focus:shadow-[0_0_0_3px_rgba(43,114,232,0.12)] transition-all"
+                />
+              )}
+
+              <div className="mt-3">
+                <FieldLabel>Watch link (optional)</FieldLabel>
+                <input
+                  type="url"
+                  value={watchUrl}
+                  onChange={(e) => setWatchUrl(e.target.value)}
+                  placeholder="https://…"
+                  className="w-full rounded-xl border border-[#E5E5E5] bg-white px-3.5 py-2.5 text-[14px] text-[#171717] placeholder:text-[#AEAEB8] font-sans focus:outline-none focus:border-[#2B72E8] focus:shadow-[0_0_0_3px_rgba(43,114,232,0.12)] transition-all"
+                />
+              </div>
             </div>
 
             <Field label="Additional notes (optional)">

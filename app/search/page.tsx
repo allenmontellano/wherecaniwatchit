@@ -6,6 +6,7 @@ import { SiteHeader } from '@/components/layout/site-header'
 import { ResultsSection } from '@/components/search/results-section'
 import { resolveCountry } from '@/lib/country'
 import { performSearch, type SearchResponse } from '@/lib/search'
+import { getRegionPlatformsMap } from '@/lib/platforms-data'
 
 export default async function SearchPage({
   searchParams,
@@ -39,7 +40,8 @@ export default async function SearchPage({
     )
   }
 
-  const data: SearchResponse = await performSearch(q)
+  const [data, platformsByRegion]: [SearchResponse, Record<string, { slug: string; name: string }[]>] =
+    await Promise.all([performSearch(q), getRegionPlatformsMap()])
 
   return (
     <CountryProvider initial={country}>
@@ -58,7 +60,7 @@ export default async function SearchPage({
               {data.notice}
             </p>
           )}
-          <ResultsSection results={data.results} query={data.query} />
+          <ResultsSection results={data.results} query={data.query} platformsByRegion={platformsByRegion} />
         </div>
       </main>
     </CountryProvider>
