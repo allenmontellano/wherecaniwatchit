@@ -3,9 +3,11 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import {
   ISSUE_TYPES,
   issueToFlagType,
-  composeNotes,
+  sanitizeWatchUrl,
+  sanitizePlatform,
   type IssueType,
 } from '@/lib/flags'
+import { getRegionPlatformSlugs } from '@/lib/platforms-data'
 import { captureException } from '@/lib/observability'
 import { clientIp, hashIp } from '@/lib/ip'
 import { enforceRateLimit } from '@/lib/rate-limit'
@@ -14,9 +16,12 @@ interface FlagBody {
   title_id: string
   region_code: string
   issue_type: IssueType
-  platform?: string
+  reported_platform?: string
+  reported_watch_url?: string
   notes?: string
 }
+
+const PLATFORM_REQUIRED: IssueType[] = ['is-here', 'wrong-platform']
 
 export async function POST(req: NextRequest) {
   const limited = await enforceRateLimit(req, 'flags')
@@ -29,7 +34,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  const { title_id, region_code, issue_type, platform, notes } = body
+  const { title_id, region_code, issue_type, reported_platform, reported_watch_url, notes } = body
 
   if (!title_id || !region_code || !issue_type) {
     return NextResponse.json(
@@ -37,22 +42,33 @@ export async function POST(req: NextRequest) {
       { status: 400 }
     )
   }
-
   if (!ISSUE_TYPES.includes(issue_type)) {
     return NextResponse.json({ error: 'Invalid issue_type' }, { status: 400 })
   }
 
-  const composed = composeNotes(issue_type, platform, notes)
+  const url = sanitizeWatchUrl(reported_watch_url)
+  if (!url.ok) return NextResponse.json({ error: url.error }, { status: 400 })
+
+  const knownSlugs = await getRegionPlatformSlugs(region_code)
+  const platform = sanitizePlatform(reported_platform, knownSlugs)
+  if (!platform.ok) return NextResponse.json({ error: platform.error }, { status: 400 })
+
+  if (PLATFORM_REQUIRED.includes(issue_type) && platform.value === null) {
+    return NextResponse.json({ error: 'A platform is required for this report.' }, { status: 400 })
+  }
+
+  const details = notes?.trim() ? notes.trim().slice(0, 500) : null
 
   const supabase = createAdminClient()
-
   const { error } = await supabase.from('flags').insert({
     availability_id: null,
     title_id,
     region_code,
     issue_type,
     flag_type: issueToFlagType(issue_type),
-    notes: composed ? composed.slice(0, 500) : null,
+    reported_platform: platform.value,
+    reported_watch_url: url.value,
+    notes: details,
     ip_hash: hashIp(clientIp(req)),
     status: 'pending',
   })

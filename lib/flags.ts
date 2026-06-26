@@ -21,17 +21,6 @@ export function issueToFlagType(issue: IssueType): FlagType {
   return MAP[issue]
 }
 
-export function composeNotes(
-  issue: IssueType,
-  platform: string | undefined,
-  notes: string | undefined
-): string | null {
-  const parts: string[] = []
-  if (platform?.trim()) parts.push(`Platform: ${platform.trim()}`)
-  if (notes?.trim()) parts.push(notes.trim())
-  return parts.length ? parts.join('\n') : null
-}
-
 export type SanitizeResult =
   | { ok: true; value: string | null }
   | { ok: false; error: string }
