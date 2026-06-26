@@ -52,3 +52,21 @@ export function sanitizeWatchUrl(raw: string | undefined | null): SanitizeResult
   if (sanitized.length > 500) return { ok: false, error: 'Invalid watch URL.' }
   return { ok: true, value: sanitized }
 }
+
+const PLATFORM_NAME_RE = /^[A-Za-z0-9 +.\-&'()]+$/
+
+export function sanitizePlatform(
+  raw: string | undefined | null,
+  knownSlugs: Set<string>
+): SanitizeResult {
+  const trimmed = (raw ?? '').trim()
+  if (trimmed === '') return { ok: true, value: null }
+  if (knownSlugs.has(trimmed)) return { ok: true, value: trimmed }
+  if (trimmed.length > 100) {
+    return { ok: false, error: 'Platform name must be 1–100 characters.' }
+  }
+  if (!PLATFORM_NAME_RE.test(trimmed)) {
+    return { ok: false, error: 'Platform name contains invalid characters.' }
+  }
+  return { ok: true, value: trimmed }
+}

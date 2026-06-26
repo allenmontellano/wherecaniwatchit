@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { ISSUE_TYPES, issueToFlagType, composeNotes, sanitizeWatchUrl } from './flags'
+import { ISSUE_TYPES, issueToFlagType, composeNotes, sanitizeWatchUrl, sanitizePlatform } from './flags'
 
 describe('flags helpers', () => {
   it('maps issue → flag_type', () => {
@@ -35,5 +35,32 @@ describe('sanitizeWatchUrl', () => {
     expect(sanitizeWatchUrl('ftp://x.io/a')).toEqual({ ok: false, error: 'Invalid watch URL.' })
     expect(sanitizeWatchUrl('not a url')).toEqual({ ok: false, error: 'Invalid watch URL.' })
     expect(sanitizeWatchUrl('javascript:alert(1)')).toEqual({ ok: false, error: 'Invalid watch URL.' })
+  })
+})
+
+describe('sanitizePlatform', () => {
+  const known = new Set(['netflix', 'vivamax'])
+  it('returns null for empty', () => {
+    expect(sanitizePlatform('', known)).toEqual({ ok: true, value: null })
+    expect(sanitizePlatform(undefined, known)).toEqual({ ok: true, value: null })
+  })
+  it('passes a known slug through unchanged', () => {
+    expect(sanitizePlatform('netflix', known)).toEqual({ ok: true, value: 'netflix' })
+  })
+  it('accepts a valid "Other" name', () => {
+    expect(sanitizePlatform('Viu', known)).toEqual({ ok: true, value: 'Viu' })
+  })
+  it('treats a literal hyphen as a hyphen, not a regex range', () => {
+    expect(sanitizePlatform('iWant-TFC', new Set())).toEqual({ ok: true, value: 'iWant-TFC' })
+  })
+  it('rejects names over 100 characters', () => {
+    expect(sanitizePlatform('x'.repeat(101), known))
+      .toEqual({ ok: false, error: 'Platform name must be 1–100 characters.' })
+  })
+  it('rejects URLs and special characters', () => {
+    expect(sanitizePlatform('http://evil.com', known))
+      .toEqual({ ok: false, error: 'Platform name contains invalid characters.' })
+    expect(sanitizePlatform('Net<flix>', known))
+      .toEqual({ ok: false, error: 'Platform name contains invalid characters.' })
   })
 })
