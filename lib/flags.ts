@@ -31,3 +31,24 @@ export function composeNotes(
   if (notes?.trim()) parts.push(notes.trim())
   return parts.length ? parts.join('\n') : null
 }
+
+export type SanitizeResult =
+  | { ok: true; value: string | null }
+  | { ok: false; error: string }
+
+export function sanitizeWatchUrl(raw: string | undefined | null): SanitizeResult {
+  const trimmed = (raw ?? '').trim()
+  if (trimmed === '') return { ok: true, value: null }
+  let url: URL
+  try {
+    url = new URL(trimmed)
+  } catch {
+    return { ok: false, error: 'Invalid watch URL.' }
+  }
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+    return { ok: false, error: 'Invalid watch URL.' }
+  }
+  const sanitized = url.origin + url.pathname
+  if (sanitized.length > 500) return { ok: false, error: 'Invalid watch URL.' }
+  return { ok: true, value: sanitized }
+}
