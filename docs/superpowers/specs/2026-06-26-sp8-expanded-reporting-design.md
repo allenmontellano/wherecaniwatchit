@@ -55,7 +55,9 @@ Reveal logic stays keyed off `issue_type` (matches today's `showPlatform`):
 
 ## 6. Platforms data source
 
-The title detail page (Server Component) fetches the region's platforms — `select slug, name from platforms where <region> = any(supported_regions)` — and passes `platforms: { slug: string; name: string }[]` to `ReportModal` as a prop. No new public endpoint; the data is ready at page load and the list is small. If the region has no platforms seeded, the dropdown shows only "Other — specify".
+The region in `TitleDetail` comes from the **client-side** country context (`useCountry()`) and is switchable without a server round-trip, so a single server-resolved region's list would go stale on switch. Instead the title detail page (Server Component) fetches a **region→platforms map for all regions** — `select slug, name, supported_regions from platforms`, grouped by region — and passes `platformsByRegion: Record<string, { slug: string; name: string }[]>` down to `TitleDetail`, which indexes it by the live `country` and passes that region's `{slug,name}[]` to `ReportModal`. The payload is tiny (a handful of platforms × 5 regions); no new public endpoint. If a region has no platforms seeded, the dropdown shows only "Other — specify".
+
+The API validates a submitted known slug via a small server helper `getRegionPlatformSlugs(region): Promise<Set<string>>` (same `platforms` table, filtered to the region).
 
 ## 7. API (`/api/flags`) + validation
 
