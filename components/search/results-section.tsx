@@ -10,7 +10,15 @@ import { EmptyNoResults } from './empty-no-results'
 import { NotInRegion } from './not-in-region'
 import { ReportModal } from '@/components/report/report-modal'
 
-export function ResultsSection({ results, query }: { results: SyncedResult[]; query: string }) {
+export function ResultsSection({
+  results,
+  query,
+  platformsByRegion,
+}: {
+  results: SyncedResult[]
+  query: string
+  platformsByRegion: Record<string, { slug: string; name: string }[]>
+}) {
   const { country } = useCountry()
   const region = regionByCode[country]
   const [reportTitle, setReportTitle] = useState<Title | null>(null)
@@ -56,6 +64,7 @@ export function ResultsSection({ results, query }: { results: SyncedResult[]; qu
           titleId={reportTitle.id}
           titleName={reportTitle.title}
           region={region}
+          platforms={platformsByRegion[country] ?? []}
         />
       )}
     </div>

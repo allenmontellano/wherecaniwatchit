@@ -21,13 +21,41 @@ export function issueToFlagType(issue: IssueType): FlagType {
   return MAP[issue]
 }
 
-export function composeNotes(
-  issue: IssueType,
-  platform: string | undefined,
-  notes: string | undefined
-): string | null {
-  const parts: string[] = []
-  if (platform?.trim()) parts.push(`Platform: ${platform.trim()}`)
-  if (notes?.trim()) parts.push(notes.trim())
-  return parts.length ? parts.join('\n') : null
+export type SanitizeResult =
+  | { ok: true; value: string | null }
+  | { ok: false; error: string }
+
+export function sanitizeWatchUrl(raw: string | undefined | null): SanitizeResult {
+  const trimmed = (raw ?? '').trim()
+  if (trimmed === '') return { ok: true, value: null }
+  let url: URL
+  try {
+    url = new URL(trimmed)
+  } catch {
+    return { ok: false, error: 'Invalid watch URL.' }
+  }
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+    return { ok: false, error: 'Invalid watch URL.' }
+  }
+  const sanitized = url.origin + url.pathname
+  if (sanitized.length > 500) return { ok: false, error: 'Invalid watch URL.' }
+  return { ok: true, value: sanitized }
+}
+
+const PLATFORM_NAME_RE = /^[A-Za-z0-9 +.\-&'()]+$/
+
+export function sanitizePlatform(
+  raw: string | undefined | null,
+  knownSlugs: Set<string>
+): SanitizeResult {
+  const trimmed = (raw ?? '').trim()
+  if (trimmed === '') return { ok: true, value: null }
+  if (knownSlugs.has(trimmed)) return { ok: true, value: trimmed }
+  if (trimmed.length > 100) {
+    return { ok: false, error: 'Platform name must be 1–100 characters.' }
+  }
+  if (!PLATFORM_NAME_RE.test(trimmed)) {
+    return { ok: false, error: 'Platform name contains invalid characters.' }
+  }
+  return { ok: true, value: trimmed }
 }
