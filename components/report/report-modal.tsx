@@ -29,6 +29,7 @@ export function ReportModal({ onClose, titleId, titleName, region, platforms }: 
   const [notes, setNotes] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [done, setDone] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -43,8 +44,9 @@ export function ReportModal({ onClose, titleId, titleName, region, platforms }: 
 
   async function submit() {
     setSubmitting(true)
+    setError(null)
     try {
-      await fetch('/api/flags', {
+      const res = await fetch('/api/flags', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
@@ -60,12 +62,17 @@ export function ReportModal({ onClose, titleId, titleName, region, platforms }: 
           notes,
         }),
       })
+      if (!res.ok) {
+        const data = (await res.json().catch(() => null)) as { error?: string } | null
+        setError(data?.error ?? 'Could not submit your report. Please check your input.')
+        setSubmitting(false)
+        return
+      }
     } catch {
-      // Report submission is best-effort; still show confirmation.
-    } finally {
-      setDone(true)
-      setSubmitting(false)
+      // Network/transient failure — submission is best-effort; still confirm.
     }
+    setDone(true)
+    setSubmitting(false)
   }
 
   return (
@@ -210,6 +217,12 @@ export function ReportModal({ onClose, titleId, titleName, region, platforms }: 
                 </span>
               </div>
             </Field>
+
+            {error && (
+              <p className="text-[13px] text-[#FF3B30] leading-snug mt-1 mb-1" role="alert">
+                {error}
+              </p>
+            )}
 
             <div className="flex items-center gap-2.5 mt-[22px]">
               <span className="flex-1 text-[11.5px] text-[#AEAEB8] leading-tight">
