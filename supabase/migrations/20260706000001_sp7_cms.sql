@@ -33,3 +33,17 @@ alter table flags
   add column if not exists resolution text check (resolution in ('accepted','rejected'));
 
 create index if not exists idx_availability_confidence on availability(confidence);
+
+-- Atomic contribution increment (one per completed CMS data action)
+create or replace function increment_contribution(p_user_id uuid, p_n integer default 1)
+returns integer as $$
+declare
+  new_count integer;
+begin
+  update profiles
+  set contribution_count = contribution_count + p_n
+  where user_id = p_user_id
+  returning contribution_count into new_count;
+  return new_count;
+end;
+$$ language plpgsql;
