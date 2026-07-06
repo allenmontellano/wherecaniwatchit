@@ -15,7 +15,8 @@ const STALE_DAYS = 30
 
 function asRefreshTitle(raw: unknown): RefreshTitle | null {
   const t = (Array.isArray(raw) ? raw[0] : raw) as RefreshTitle | null
-  return t && t.id ? t : null
+  // Local titles (null tmdb_id) can't be refreshed via MOTN — skip them.
+  return t && t.id && t.tmdb_id != null ? t : null
 }
 
 export async function GET(req: NextRequest) {
