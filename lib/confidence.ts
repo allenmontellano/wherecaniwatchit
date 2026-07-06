@@ -1,4 +1,6 @@
-export type Confidence = 'high' | 'medium' | 'low'
+import type { AvailabilityConfidence } from '@/types/database'
+
+export type Confidence = AvailabilityConfidence
 
 export interface ConfidenceInput {
   source: string

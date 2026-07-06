@@ -42,6 +42,9 @@ describe('groupByRegion', () => {
     source: 'api',
     watch_url: `https://example.com/${platformName}`,
     consecutive_failures: 0,
+    confidence: 'medium',
+    reviewed_by: null,
+    reviewed_at: null,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     platform: {
