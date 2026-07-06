@@ -11,6 +11,7 @@ import { getRegionPlatformSlugs } from '@/lib/platforms-data'
 import { captureException } from '@/lib/observability'
 import { clientIp, hashIp } from '@/lib/ip'
 import { enforceRateLimit } from '@/lib/rate-limit'
+import { withTimeout, DB_TIMEOUT_MS } from '@/lib/with-timeout'
 
 interface FlagBody {
   title_id: string
@@ -60,21 +61,29 @@ export async function POST(req: NextRequest) {
   const details = notes?.trim() ? notes.trim().slice(0, 500) : null
 
   const supabase = createAdminClient()
-  const { error } = await supabase.from('flags').insert({
-    availability_id: null,
-    title_id,
-    region_code,
-    issue_type,
-    flag_type: issueToFlagType(issue_type),
-    reported_platform: platform.value,
-    reported_watch_url: url.value,
-    notes: details,
-    ip_hash: hashIp(clientIp(req)),
-    status: 'pending',
-  })
-
-  if (error) {
-    captureException(error, { op: 'flags.insert', title_id, region_code, issue_type })
+  try {
+    const { error } = await withTimeout(
+      supabase.from('flags').insert({
+        availability_id: null,
+        title_id,
+        region_code,
+        issue_type,
+        flag_type: issueToFlagType(issue_type),
+        reported_platform: platform.value,
+        reported_watch_url: url.value,
+        notes: details,
+        ip_hash: hashIp(clientIp(req)),
+        status: 'pending',
+      }),
+      DB_TIMEOUT_MS,
+      'flags.insert'
+    )
+    if (error) {
+      captureException(error, { op: 'flags.insert', title_id, region_code, issue_type })
+      return NextResponse.json({ error: 'Failed to submit flag' }, { status: 500 })
+    }
+  } catch (err) {
+    captureException(err, { op: 'flags.insert', title_id, region_code, issue_type })
     return NextResponse.json({ error: 'Failed to submit flag' }, { status: 500 })
   }
 
