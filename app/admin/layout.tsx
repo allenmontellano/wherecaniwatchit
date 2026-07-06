@@ -5,6 +5,8 @@ import { AdminNav, type AdminNavItem } from '@/components/admin/admin-nav'
 const NAV_ITEMS: AdminNavItem[] = [
   { href: '/admin', label: 'Overview', roles: ['contributor', 'reviewer', 'admin'] },
   { href: '/admin/queue', label: 'Review queue', roles: ['contributor', 'reviewer', 'admin'] },
+  { href: '/admin/availability', label: 'Availability', roles: ['contributor', 'reviewer', 'admin'] },
+  { href: '/admin/pending', label: 'Pending approval', roles: ['reviewer', 'admin'] },
 ]
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
