@@ -1,6 +1,8 @@
 export type TitleType = 'movie' | 'tv'
 export type FlagType = 'incorrect' | 'outdated' | 'missing'
 export type FlagStatus = 'pending' | 'reviewed' | 'resolved'
+export type FlagResolution = 'accepted' | 'rejected'
+export type AvailabilityConfidence = 'high' | 'medium' | 'low'
 
 export interface Region {
   id: string
@@ -21,7 +23,7 @@ export interface Platform {
 
 export interface Title {
   id: string
-  tmdb_id: number
+  tmdb_id: number | null
   title: string
   type: TitleType
   genres: string[]
@@ -40,6 +42,7 @@ export interface Title {
   status: string | null
   original_language: string | null
   content_rating: string | null
+  metadata_overrides: Record<string, unknown>
   created_at: string
   updated_at: string
 }
@@ -54,6 +57,9 @@ export interface Availability {
   source: string
   watch_url: string | null
   consecutive_failures: number
+  confidence: AvailabilityConfidence
+  reviewed_by: string | null
+  reviewed_at: string | null
   created_at: string
   updated_at: string
 }
@@ -82,6 +88,11 @@ export interface Flag {
   user_id: string | null
   ip_hash: string
   notes: string | null
+  reported_platform: string | null
+  reported_watch_url: string | null
+  reviewed_by: string | null
+  reviewed_at: string | null
+  resolution: FlagResolution | null
   created_at: string
   updated_at: string
 }

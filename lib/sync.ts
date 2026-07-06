@@ -13,6 +13,7 @@ import {
   languageName,
 } from '@/lib/tmdb/extract'
 import { fetchShowByTMDBId, LAUNCH_REGIONS } from '@/lib/streaming/client'
+import { stripOverriddenKeys } from '@/lib/admin/title-overrides'
 import type { TMDBSearchResult } from '@/lib/tmdb/types'
 import type { Title, Platform } from '@/types/database'
 
@@ -29,7 +30,7 @@ export async function syncTitle(result: TMDBSearchResult): Promise<SyncedTitle> 
   const supabase = createAdminClient()
 
   // 1. Fetch full TMDB metadata
-  type TitleInsert = Omit<Title, 'id' | 'created_at' | 'updated_at'>
+  type TitleInsert = Omit<Title, 'id' | 'created_at' | 'updated_at' | 'metadata_overrides'>
   let titleData: TitleInsert
 
   if (result.media_type === 'movie') {
@@ -80,10 +81,20 @@ export async function syncTitle(result: TMDBSearchResult): Promise<SyncedTitle> 
     }
   }
 
-  // 2. Upsert title
+  // 2. Upsert title — admin metadata overrides win over fresh TMDB data
+  const { data: existingTitle } = await supabase
+    .from('titles')
+    .select('metadata_overrides')
+    .eq('tmdb_id', result.id)
+    .maybeSingle()
+
+  const overrides =
+    (existingTitle?.metadata_overrides as Record<string, unknown> | null) ?? {}
+  const payload = { ...stripOverriddenKeys(titleData, overrides), tmdb_id: result.id }
+
   const { data: upsertedTitle, error: titleError } = await supabase
     .from('titles')
-    .upsert(titleData, { onConflict: 'tmdb_id' })
+    .upsert(payload, { onConflict: 'tmdb_id' })
     .select()
     .single()
 
