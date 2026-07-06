@@ -40,3 +40,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# SEC-08: local verification/session artifacts — never commit
+.playwright-mcp/
+*-375.png
+staging-*.png
+before-*.png
+after-*.png
+qa-*.png
+wherecaniwatchit.info — Project Han.md
