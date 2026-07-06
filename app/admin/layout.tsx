@@ -7,6 +7,7 @@ const NAV_ITEMS: AdminNavItem[] = [
   { href: '/admin/queue', label: 'Review queue', roles: ['contributor', 'reviewer', 'admin'] },
   { href: '/admin/availability', label: 'Availability', roles: ['contributor', 'reviewer', 'admin'] },
   { href: '/admin/pending', label: 'Pending approval', roles: ['reviewer', 'admin'] },
+  { href: '/admin/titles', label: 'Titles', roles: ['admin'] },
 ]
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
