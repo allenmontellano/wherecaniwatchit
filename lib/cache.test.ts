@@ -15,7 +15,10 @@ import {
   setCached,
   delCached,
   SEARCH_TTL,
+  CACHE_TIMEOUT_MS,
 } from './cache'
+
+const NEVER = () => new Promise<never>(() => {})
 
 beforeEach(() => {
   mockGet.mockReset()
@@ -90,5 +93,34 @@ describe('delCached', () => {
   it('fails open when Redis throws', async () => {
     mockDel.mockRejectedValueOnce(new Error('redis down'))
     await expect(delCached('k')).resolves.toBeUndefined()
+  })
+})
+
+describe('cache timeouts (fail-open when Redis hangs)', () => {
+  it('getCached returns null instead of hanging when Redis never responds', async () => {
+    vi.useFakeTimers()
+    mockGet.mockImplementationOnce(NEVER)
+    const p = getCached('k')
+    await vi.advanceTimersByTimeAsync(CACHE_TIMEOUT_MS)
+    await expect(p).resolves.toBeNull()
+    vi.useRealTimers()
+  })
+
+  it('setCached resolves (no-op) instead of hanging when Redis never responds', async () => {
+    vi.useFakeTimers()
+    mockSet.mockImplementationOnce(NEVER)
+    const p = setCached('k', { a: 1 }, SEARCH_TTL)
+    await vi.advanceTimersByTimeAsync(CACHE_TIMEOUT_MS)
+    await expect(p).resolves.toBeUndefined()
+    vi.useRealTimers()
+  })
+
+  it('delCached resolves instead of hanging when Redis never responds', async () => {
+    vi.useFakeTimers()
+    mockDel.mockImplementationOnce(NEVER)
+    const p = delCached('k')
+    await vi.advanceTimersByTimeAsync(CACHE_TIMEOUT_MS)
+    await expect(p).resolves.toBeUndefined()
+    vi.useRealTimers()
   })
 })

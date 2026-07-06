@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { NextRequest } from 'next/server'
+import { DB_TIMEOUT_MS } from '@/lib/with-timeout'
 
 process.env.CRON_SECRET = 'test-secret'
 
@@ -133,5 +134,27 @@ describe('POST /api/flags', () => {
       makeRequest({ title_id: 't', region_code: 'PH', issue_type: 'other', notes: 'x'.repeat(600) })
     )
     expect(mockInsert.mock.calls[0][0].notes.length).toBe(500)
+  })
+
+  it('returns a generic 500 (not a hang) when the DB insert never responds', async () => {
+    vi.useFakeTimers()
+    mockInsert.mockImplementationOnce(() => new Promise(() => {}))
+    const resPromise = POST(
+      makeRequest({ title_id: 't', region_code: 'PH', issue_type: 'other', notes: 'x' })
+    )
+    await vi.advanceTimersByTimeAsync(DB_TIMEOUT_MS)
+    const res = await resPromise
+    expect(res.status).toBe(500)
+    expect((await res.json()).error).toBe('Failed to submit flag')
+    vi.useRealTimers()
+  })
+
+  it('returns a generic 500 when the DB insert throws', async () => {
+    mockInsert.mockRejectedValueOnce(new Error('connection refused'))
+    const res = await POST(
+      makeRequest({ title_id: 't', region_code: 'PH', issue_type: 'other', notes: 'x' })
+    )
+    expect(res.status).toBe(500)
+    expect((await res.json()).error).toBe('Failed to submit flag')
   })
 })
