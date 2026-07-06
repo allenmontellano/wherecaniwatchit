@@ -2,7 +2,7 @@
 
 # Working Agreements & Persistent Decisions
 
-> Loaded every session. Last updated 2026-06-30 (SP6 + SP8 shipped to prod; SP7 is next/critical path).
+> Loaded every session. Last updated 2026-07-06 (SP6 + SP8 in prod; SP7 CMS in brainstorm — scope/role/build-tool decisions recorded below; SP11/SP12 backlog added; prod data snapshot + MOTN advice recorded).
 
 ## Auto mode (working agreement)
 - **Claude Code may write, edit, run tests, and commit to FEATURE BRANCHES without asking** for per-action approval. Work to completion, then report.
@@ -67,10 +67,21 @@
 - **Auth (SP6)**: invite-only for Contributors & Reviewers; Admin assigned manually; no self-registration.
 - **Expanded flags (SP8)**: add structured columns `reported_platform` + `reported_watch_url` to the `flags` table (not freeform notes).
 - **Contributor payments (SP7)**: ship the contribution counter + admin view first; the payment rate is deferred and set operationally later.
+- **SP7 build tooling (decided 2026-07-06)**: Allen will build SP7 with **Fable 5** (not Claude Design + Claude Code). The SP7 technical spec must therefore be **Fable-ready** — include the full design-system tokens so Fable can build directly from it. **Tokens:** primary blue `#2B72E8`, background `#FFFFFF`, text `#171717`, muted `#717177`, success `#34C759`, error `#FF3B30`; fonts **Space Grotesk** (display/headings) + **DM Sans** (body); component library **shadcn/ui**.
+- **SP7 scope (decided 2026-07-06)**: **Full CMS, all modules in one spec, built together** (Allen's call; higher risk flagged). Modules: (1) review queue + data-accuracy/confidence, (2) direct availability editor, (3) platform CRUD, (4) title management, (5) in-app user/invite management, (6) contribution counter + admin dashboard. **Role model = trust ladder:** contributor edits availability (writes land MEDIUM confidence / pending reviewer approval, earns contribution_count); reviewer = same tools but writes land HIGH confidence + can approve contributor writes; admin = everything + title metadata (admin-only) + platform CRUD + user/invite mgmt + all-user dashboard. **Flag-accept = pre-filled confirm** (opens availability row pre-filled from flag data, reviewer confirms → writes `source='reviewer'`, high confidence, resolves flag). **Confidence = enum high/medium/low** on availability. **Title mgmt = status-aware override:** add `titles.metadata_overrides jsonb` (store only overridden fields; re-sync merges non-overridden only), `titles.tmdb_id` → nullable (local PH content); warnings keyed off existing `titles.status` (ended/released = "edits persist" note; returning/in_production = "re-sync may overwrite" stronger warning).
 - **Staging is permanently `noindex`** (independent of the prod pre-launch `SITE_INDEXABLE` toggle). Launch = flip `SITE_INDEXABLE` → true (prod only).
 
 ## SP5 — MOTN Philippines data-gap finding (2026-06-08)
 - MOTN has a **systematic Disney+ PH gap**: 0/8 Disney+ PH titles returned availability (Netflix/Apple TV = 5/5 correct). Viu PH, iWantTFC, Vivamax, and WeTV PH are **entirely absent** from MOTN's PH service registry (MOTN indexes only 9 PH services).
 - **Action: seed PH availability aggressively before launch** — priority Disney+ PH → Viu PH → iWantTFC → Vivamax. Full report: `docs/superpowers/research/2026-06-08-motn-ph-data-gap.md`.
 - HIMYM is **confirmed on Disney+ PH** (personally verified 2026-06-09); the MOTN Disney+ PH gap is real and systematic, not a per-title fluke.
-- **SP7 rule**: in the verification queue, any availability row where `platform = Disney+ PH` **and** `source = motn` defaults to a **very low confidence score** (MOTN is known-unreliable for this platform/region).
+- **SP7 rule**: in the verification queue, any availability row where `platform = Disney+ PH` **and** the row came from the MOTN aggregator defaults to a **very low confidence score** (MOTN is known-unreliable for this platform/region). **IMPORTANT taxonomy correction (verified on prod 2026-07-06):** there is **no `source='motn'`** in the DB — MOTN-seeded rows are written `source='api'` ([lib/sync.ts:134](lib/sync.ts#L134)) and the daily cron writes `source='cron'` ([app/api/cron/sync-availability/route.ts:94](app/api/cron/sync-availability/route.ts#L94)). So the rule must key on **`source IN ('api','cron')` (aggregator) AND platform slug IN ('disney','disney-plus') AND `region_code='PH'`**, not a literal `motn` source. Human writes (`source IN ('reviewer','contributor','manual')`) always override to high confidence.
+
+## Backlog (post-SP7, documented 2026-07-06)
+- **SP11 — PH Platform Accuracy** (post-SP7 sub-project): (1) **Vivamax/VMX** and **iWantTFC/iWant** manual ingestion — not in MOTN at all; (2) **Disney+ PH = Hulu PH equivalence** — same catalog, system treats them separately causing missed matches; (3) **HBO Max + Viu PH partnership** — Max content available through Viu PH; Korean/Max catalogs overlap. Needs **both data ingestion AND a platform-equivalence mapping in the schema** (e.g. a `platform_equivalences` / alias table so equivalent platforms resolve to one catalog).
+- **SP12 — Search Quality Polish** (known issue): (1) *"The Big Bang Theory"* search returns **Young Sheldon** — TBBT likely not seeded; Young Sheldon metadata references TBBT heavily as spin-off. Fix = seed TBBT + improve ranking to **penalize spin-off metadata matches**. (2) **Search suggestions** (real-time as-you-type) — post-launch feature.
+
+## Data snapshot (prod `ahgmszdrhndcycvairmn`, 2026-07-06)
+- **Titles: 3,494 · Availability rows: 9,120** (8,870 `available=true`). Source breakdown: `api` 8,673 (MOTN bulk seed), `checker` 447 (direct HTTP), everything else 0.
+- **MOTN quota:** July 2026 = **43/25,000**, June = 3,487/25,000 — usage is trivial.
+- **MOTN renewal ($43/mo) advice:** defensible to pause, but the clean cut is **after SP7 ships** (once the manual availability editor exists). What breaks if paused: daily `sync-availability` cron refresh + search on-demand seeding; what survives: TMDB metadata, the 5 regional checker crons, all existing rows. **PH gaps are not MOTN-solvable** (SP5/SP11), so MOTN adds nothing to the biggest accuracy problem. Recommendation on record: **renew one more cycle, cancel at SP7 ship.**
