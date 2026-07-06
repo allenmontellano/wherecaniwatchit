@@ -62,12 +62,23 @@ const mockUpsertedTitle = {
 }
 
 let capturedTitleData: Record<string, unknown> | null = null
+let mockExistingOverrides: Record<string, unknown> | null = null
 
 function setupSupabaseMock() {
   capturedTitleData = null
   mockFrom.mockImplementation((table: string) => {
     if (table === 'titles') {
       return {
+        select: () => ({
+          eq: () => ({
+            maybeSingle: () => ({
+              data: mockExistingOverrides
+                ? { metadata_overrides: mockExistingOverrides }
+                : null,
+              error: null,
+            }),
+          }),
+        }),
         upsert: (data: Record<string, unknown>) => {
           capturedTitleData = data
           return {
@@ -97,9 +108,24 @@ beforeEach(() => {
   vi.mocked(fetchTVDetail).mockReset()
   vi.mocked(fetchShowByTMDBId).mockReset()
   mockFrom.mockReset()
+  mockExistingOverrides = null
 })
 
 describe('syncTitle', () => {
+  it('re-sync respects metadata overrides — overridden keys are excluded from the upsert', async () => {
+    vi.mocked(fetchMovieDetail).mockResolvedValueOnce(mockMovieDetail)
+    vi.mocked(fetchShowByTMDBId).mockResolvedValueOnce(mockSAShow)
+    mockExistingOverrides = { synopsis: 'hand-written synopsis' }
+    setupSupabaseMock()
+
+    await syncTitle(movieResult)
+
+    expect(capturedTitleData).not.toBeNull()
+    expect(capturedTitleData).not.toHaveProperty('synopsis')
+    expect(capturedTitleData).toHaveProperty('tmdb_id', 27205)
+    expect(capturedTitleData).toHaveProperty('title', 'Inception')
+  })
+
   it('calls fetchMovieDetail for a movie result', async () => {
     vi.mocked(fetchMovieDetail).mockResolvedValueOnce(mockMovieDetail)
     vi.mocked(fetchShowByTMDBId).mockResolvedValueOnce(mockSAShow)

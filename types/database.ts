@@ -23,7 +23,7 @@ export interface Platform {
 
 export interface Title {
   id: string
-  tmdb_id: number
+  tmdb_id: number | null
   title: string
   type: TitleType
   genres: string[]
@@ -42,6 +42,7 @@ export interface Title {
   status: string | null
   original_language: string | null
   content_rating: string | null
+  metadata_overrides: Record<string, unknown>
   created_at: string
   updated_at: string
 }

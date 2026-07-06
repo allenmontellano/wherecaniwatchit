@@ -27,7 +27,7 @@ function makeTitle(over: Partial<Title> = {}): Title {
     release_year: null, synopsis: null, poster_url: null, imdb_rating: null, imdb_id: null,
     season_count: null, network: null, cast: null, creators: null, origin_country: null,
     episode_count: null, status: null, original_language: null, content_rating: null,
-    created_at: '', updated_at: '', ...over,
+    metadata_overrides: {}, created_at: '', updated_at: '', ...over,
   }
 }
 const synced = (t: Title): SyncedResult => ({ title: t, availabilityByRegion: { US: ['netflix'] } })
