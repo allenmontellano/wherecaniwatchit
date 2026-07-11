@@ -20,8 +20,8 @@
 
 9. **Ops alert — MOTN dead-aggregator signature.** Log/alert when `sync-availability` cron hits `refreshed=0 && stoppedForQuota=false` (the "aggregator returned nothing" signal). Cheap; catches silent staleness (SEC-09 backlog note).
 10. **SEC-09-adjacent robustness sweep.** SEC-09 added timeouts to `getTitleDetail`/`/api/flags`/cache. Audit the *other* external calls for missing timeouts: TMDB client, search RPCs (`search-db`), sync/seed paths, other `createAdminClient` reads. Prevent hangs elsewhere.
-11. **Report-button prominence / coverage fix.** ⚠️ **UNCLEAR SCOPE — user-flagged, no written spec.** Surfaced from mobile (375px) QA (`qa-reportmodal-375.png`). Needs a one-line scoping: is it "make the report entry point more visible" and/or "ensure it appears on all surfaces (title + search results)"? Scope before building.
-12. **Favicon.** ⚠️ **UNCLEAR SCOPE — user-flagged.** `app/favicon.ico` exists; unclear whether it's a placeholder needing a real branded favicon set (apple-touch-icon, multiple sizes, `manifest`). Confirm intent.
+11. **Report-button prominence / coverage fix.** ✅ **SCOPED (2026-07-11):** add a **persistent per-region-row** report affordance **+ a report entry point on the zero-results view** (today it's only the per-title/search-result modal). Not yet built.
+12. **Favicon.** ✅ **SCOPED (2026-07-11):** replace the placeholder `app/favicon.ico` with a **real logo + apple-touch-icon + web manifest** icon set. Not yet built.
 
 ## Tier 3 — Small deferred follow-ups (low, batchable)
 
@@ -43,7 +43,7 @@
 
 - **STALE:** `Project Han.md` §11 "MOTN — renew for now, revisit once SP7 CMS live" is superseded (SP7 is live; current guidance = "cancel at SP7 ship"). Reconcile to one statement (see item 7).
 - **DUPLICATED:** SP11 + SP12 appear in both CLAUDE.md and `Project Han.md` (and again in Project Han's "Post-Launch Roadmap"); "search suggestions" logged 3×. Consolidated here.
-- **UNCLEAR SCOPE:** items 11 (report-button) and 12 (favicon) — user-flagged, no written spec. Scope before building.
+- **SCOPED 2026-07-11:** items 11 (report-button: persistent per-region-row + zero-results entry point) and 12 (favicon: real logo + apple-touch-icon + manifest) — now scoped, not yet built.
 - **AT-RISK SOURCE:** `Project Han.md` is **untracked** (now gitignored via SEC-08). Its unique content (post-launch roadmap, platform-coverage matrix, key-decisions table) lives nowhere version-controlled. **Recommend folding its unique sections into CLAUDE.md or a tracked doc, then deleting the scratch file** — otherwise it's lost on cleanup. This BACKLOG.md captures its backlog items; the decisions/coverage matrix still need a home.
 - **CORRECTLY CLOSED (not dropped):** Task N PgBouncer (N/A — REST API), multi-region replication (premature), AI embeddings (replaced by pg_trgm+TMDB), canary deploys (no traffic). Listed so they're not re-raised.
 
