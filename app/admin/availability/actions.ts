@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { requireRole } from '@/lib/auth/guards'
+import { withRole } from '@/lib/auth/with-role'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { delCached, titleCacheKey } from '@/lib/cache'
 import {
@@ -25,24 +25,26 @@ function deps() {
   }
 }
 
-export async function writeAvailability(
-  input: WriteAvailabilityFormInput
-): Promise<FlagServiceResult> {
-  const user = await requireRole(['contributor', 'reviewer', 'admin'])
-  const result = await writeAvailabilityCore(deps(), {
-    ...input,
-    actor: { id: user.id, role: user.role },
-  })
-  if (result.ok) revalidatePath(`/admin/availability/${input.titleId}`)
-  return result
-}
+export const writeAvailability = withRole(
+  ['contributor', 'reviewer', 'admin'],
+  async (user, input: WriteAvailabilityFormInput): Promise<FlagServiceResult> => {
+    const result = await writeAvailabilityCore(deps(), {
+      ...input,
+      actor: { id: user.id, role: user.role },
+    })
+    if (result.ok) revalidatePath(`/admin/availability/${input.titleId}`)
+    return result
+  }
+)
 
-export async function confirmAvailability(availabilityId: string): Promise<FlagServiceResult> {
-  const user = await requireRole(['reviewer', 'admin'])
-  const result = await confirmAvailabilityCore(deps(), {
-    availabilityId,
-    actor: { id: user.id, role: user.role },
-  })
-  if (result.ok) revalidatePath('/admin/pending')
-  return result
-}
+export const confirmAvailability = withRole(
+  ['reviewer', 'admin'],
+  async (user, availabilityId: string): Promise<FlagServiceResult> => {
+    const result = await confirmAvailabilityCore(deps(), {
+      availabilityId,
+      actor: { id: user.id, role: user.role },
+    })
+    if (result.ok) revalidatePath('/admin/pending')
+    return result
+  }
+)

@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getCached, setCached, titleCacheKey, DETAIL_TTL } from '@/lib/cache'
 import { captureException } from '@/lib/observability'
+import { withTimeout, DB_TIMEOUT_MS } from '@/lib/with-timeout'
 import type { Title, AvailabilityWithPlatform } from '@/types/database'
 
 export interface TitleDetail {
@@ -18,20 +19,24 @@ export async function getTitleDetail(id: string): Promise<TitleDetail | null> {
 
   const supabase = createAdminClient()
 
-  const { data: title, error: titleError } = await supabase
-    .from('titles')
-    .select('*')
-    .eq('id', id)
-    .single()
+  const { data: title, error: titleError } = await withTimeout(
+    supabase.from('titles').select('*').eq('id', id).single(),
+    DB_TIMEOUT_MS,
+    'titles.get'
+  )
 
   if (titleError || !title) return null
 
-  const { data: availability, error: availError } = await supabase
-    .from('availability')
-    .select('*, platform:platforms(*)')
-    .eq('title_id', id)
-    .eq('available', true)
-    .order('region_code')
+  const { data: availability, error: availError } = await withTimeout(
+    supabase
+      .from('availability')
+      .select('*, platform:platforms(*)')
+      .eq('title_id', id)
+      .eq('available', true)
+      .order('region_code'),
+    DB_TIMEOUT_MS,
+    'titles.availability'
+  )
 
   if (availError) {
     captureException(availError, { op: 'titles.availability', id })

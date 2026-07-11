@@ -10,6 +10,7 @@ vi.mock('@/lib/cache', () => ({
 }))
 
 import { getTitleDetail } from './title-detail'
+import { DB_TIMEOUT_MS } from '@/lib/with-timeout'
 import { getCached, setCached } from '@/lib/cache'
 
 const mockTitle = { id: 'uuid', tmdb_id: 27205, title: 'Inception', type: 'movie' }
@@ -57,5 +58,20 @@ describe('getTitleDetail', () => {
   it('throws when the availability query fails', async () => {
     setupDb({ title: mockTitle, availError: true })
     await expect(getTitleDetail('uuid')).rejects.toThrow()
+  })
+
+  it('fails fast (rejects) when a DB query hangs instead of waiting forever', async () => {
+    vi.useFakeTimers()
+    mockFrom.mockImplementation((table: string) => {
+      if (table === 'titles') {
+        return { select: () => ({ eq: () => ({ single: () => new Promise(() => {}) }) }) }
+      }
+      return {}
+    })
+    const p = getTitleDetail('uuid')
+    const assertion = expect(p).rejects.toThrow(/timed out/)
+    await vi.advanceTimersByTimeAsync(DB_TIMEOUT_MS)
+    await assertion
+    vi.useRealTimers()
   })
 })
